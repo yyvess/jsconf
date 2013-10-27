@@ -5,7 +5,9 @@ JSConf
 
 Library is built on the top off the Typesafe config.
 
-This Library is under development !!!
+This Library is under development.
+
+Your comment are welcome !
 
 ## Overview
 
@@ -27,7 +29,7 @@ Planned tasks :
 
 ####Simple data-source 
 
-File conf.conf.def (internal configuration) :
+File conf.def.conf `internal configuration` :
 
 ```javascript
 {
@@ -38,7 +40,7 @@ File conf.conf.def (internal configuration) :
 }
 ```
 
-File conf.def.conf (external configuration) :
+File conf.def.conf `external configuration` :
 
 ```javascript
 {
@@ -52,7 +54,7 @@ File conf.def.conf (external configuration) :
 
 ####Simple configuration bean
 
-File conf.def.conf (internal configuration) :
+File conf.def.conf `internal configuration` :
 
 ```javascript
 {
@@ -64,7 +66,7 @@ File conf.def.conf (internal configuration) :
 }
 ```
 
-File conf.conf (external configuration) :
+File conf.conf `external configuration` :
 
 ```javascript
 {
@@ -114,10 +116,10 @@ public class Service {
 ## References
 
 - https://github.com/typesafehub/config
-- http://projects.spring.io/spring-framework/
+- http://projects.spring.io/spring-framework
 
 ## License
 
-The license is Apache 2.0, see LICENSE file
+The license is Apache 2.0, see LICENSE file.
 
 Copyright (c) 2013, Yves Galante
