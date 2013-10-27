@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.jsconf</groupId>
-	<artifactId>core</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>org.jsconf.core</artifactId>
+	<version>0.1.0</version>
 	<packaging>jar</packaging>
 
 	<name>JSON Spring Configuration</name>
