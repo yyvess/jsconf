@@ -16,6 +16,9 @@
  */
 package org.jsconf.core.sample;
 
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,21 +27,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_02.xml" })
-public class Sample02 {
+@ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_00.xml" })
+public class Sample00 {
 
-	@Autowired
-	private ConfObject conf;
+	@Autowired()
+	private DataSource datasource;
 
 	@Test
 	public void test() {
-		Assert.assertNotNull(this.conf);
-		Assert.assertEquals("Hello World", this.conf.getVstring());
-		Assert.assertEquals(12, this.conf.getVint());
-		Assert.assertNotNull(this.conf.getVmap());
-		Assert.assertEquals("value1", this.conf.getVmap().get("key1"));
-		Assert.assertEquals("value2", this.conf.getVmap().get("key2"));
-		Assert.assertEquals("value1", this.conf.getVlist().get(0));
-		Assert.assertEquals("value2", this.conf.getVlist().get(1));
+		BasicDataSource basic = (BasicDataSource) this.datasource;
+		Assert.assertEquals("jdbc:mysql://localhost:3306/test", basic.getUrl());
+		Assert.assertEquals("com.mysql.jdbc.Driver", basic.getDriverClassName());
 	}
 }

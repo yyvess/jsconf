@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_04.xml" })
 public class Sample04 {
 
-	@Autowired()
+	@Autowired
 	private Sequence sequence;
 
 	@Test

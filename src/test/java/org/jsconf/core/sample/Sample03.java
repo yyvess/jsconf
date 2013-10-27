@@ -28,11 +28,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_03.xml" })
 public class Sample03 {
 
-	@Autowired()
+	@Autowired
 	@Qualifier("node")
 	private NodeObject node1;
 
-	@Autowired()
+	@Autowired
 	@Qualifier("Node_02")
 	private NodeObject node2;
 

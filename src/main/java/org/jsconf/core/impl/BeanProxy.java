@@ -15,7 +15,7 @@
  * 
  */
 
-package org.jsconf.core;
+package org.jsconf.core.impl;
 
 public interface BeanProxy {
 	@SafeVarargs

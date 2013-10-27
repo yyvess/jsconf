@@ -18,9 +18,9 @@ package org.jsconf.core.test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component("standardSpringBean")
+@Service("standardSpringBean")
 public class SpringBean {
 
 	private String value = "Hello World, I a spring bean!";

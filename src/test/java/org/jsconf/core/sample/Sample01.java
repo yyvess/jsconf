@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_01.xml" })
 public class Sample01 {
 
-	@Autowired()
+	@Autowired
 	private DataSource datasource;
 
 	@Test
