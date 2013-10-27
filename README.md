@@ -27,7 +27,7 @@ Planned tasks :
 
 ####Simple data-source 
 
-conf.conf.def (internal configuration) :
+File conf.conf.def (internal configuration) :
 
 ```javascript
 {
@@ -38,7 +38,7 @@ conf.conf.def (internal configuration) :
 }
 ```
 
-conf.conf (external configuration) :
+File conf.conf (external configuration) :
 
 ```javascript
 {
@@ -50,21 +50,21 @@ conf.conf (external configuration) :
 }
 ```
 
-####A configuration bean
+####Simple configuration bean
 
-conf.conf.def (internal configuration) :
+File conf.conf.def (internal configuration) :
 
 ```javascript
 {
 	"simpleConf" : {
 	    "ID" : "MyConf",
 	    "PROXY" : "true"
-        "PARENT_ID" : "confAbstract"
+        "PARENT" : "confAbstract"
     }
 }
 ```
 
-conf.conf (external configuration) :
+File conf.conf (external configuration) :
 
 ```javascript
 {
@@ -80,7 +80,7 @@ conf.conf (external configuration) :
 }
 ```
 
-The configuration bean can by directly injected on a spring service
+The configuration bean is directly injected the spring service
 
 ```java  
 @Service("service")
@@ -109,6 +109,7 @@ public class Service {
 </beans>
 ```
 
+- You can find more examples in the project code
 ## References
 
 - https://github.com/typesafehub/config

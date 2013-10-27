@@ -59,10 +59,10 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 
 	private static final String ID = "ID";
 	private static final String CLASS = "CLASS";
-	private static final String PARENT_ID = "PARENT_ID";
+	private static final String PARENT = "PARENT";
 	private static final String PROXY = "PROXY";
 
-	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT_ID, PROXY };
+	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, PROXY };
 
 	private final Set<String> beanName = new HashSet<String>();
 	private final Set<String> proxyName = new HashSet<String>();
@@ -154,7 +154,7 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 			}
 		}
 		LOG.debug("Initalize bean id : {}", id);
-		String parentId = getBeanValue(e, PARENT_ID);
+		String parentId = getBeanValue(e, PARENT);
 		String className = getBeanValue(e, CLASS);
 		String proxy = getBeanValue(e, PROXY);
 		BeanDefinitionBuilder beanDef = null;
@@ -219,7 +219,7 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		Object unwrapped = value.unwrapped();
 		if (isMap(unwrapped)) {
 			Map<?, ?> m = (Map<?, ?>) unwrapped;
-			return m.containsKey(CLASS) || m.containsKey(PARENT_ID);
+			return m.containsKey(CLASS) || m.containsKey(PARENT);
 		}
 		return false;
 	}
