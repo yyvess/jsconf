@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import org.jsconf.core.impl.BeanProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -234,7 +233,12 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		}
 		return null;
 	}
-
+	
+	public interface BeanProxy {
+		@SafeVarargs
+		public void setBean(Object bean);
+	}
+	
 	private static class ProxyHeandler implements InvocationHandler, BeanProxy {
 		private Object bean;
 
