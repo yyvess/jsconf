@@ -8,7 +8,6 @@
 	
 	<bean class="org.jsconf.core.ConfigurationFactory">
 		<property name="confName" value="org/jsconf/core/test/conf"/>
-		<property name="reloadable" value="true"/>
 	</bean>
 	
 	<context:component-scan base-package="org.jsconf" />

@@ -7,7 +7,6 @@
 
 	<bean class="org.jsconf.core.ConfigurationFactory">
 		<property name="confName" value="org/jsconf/core/sample/conf_05" />
-		<property name="reloadable" value="true" />
 	</bean>
 	
 </beans>

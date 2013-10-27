@@ -69,7 +69,6 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 	private final Map<String, BeanProxy> proxyRef = new HashMap<String, BeanProxy>();
 
 	private String confName = DEFAULT_CONF_NAME;
-	private boolean reloadable = false;
 	private Config devConfig;
 	private Config defConfig;
 	private GenericApplicationContext context;
@@ -85,16 +84,12 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		this.confName = confName;
 	}
 
-	public void setReloadable(boolean reloadable) {
-		this.reloadable = reloadable;
-	}
-
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		loadConfiguration();
 	}
 
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		if (this.reloadable && this.proxyName.contains(beanName)) {
+		if (this.proxyName.contains(beanName)) {
 			if (bean.getClass().getInterfaces().length > 0) {
 				ClassLoader cl = Thread.currentThread().getContextClassLoader();
 				List<Class<?>> asList = new ArrayList<Class<?>>();
@@ -141,7 +136,7 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 				makeBean(e, false);
 			}
 		}
-		LOG.debug("All beans are initalzed");
+		LOG.debug("Beans are initalzed");
 	}
 
 	private String makeBean(Entry<String, ConfigValue> e, boolean child) {
@@ -235,10 +230,13 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		return null;
 	}
 	
-	public interface BeanProxy {
-		@SafeVarargs
+	private interface BeanProxy {
+		@BeanMethod
 		public void setBean(Object bean);
 	}
+	
+	@java.lang.annotation.Retention(value=java.lang.annotation.RetentionPolicy.RUNTIME)
+	private @interface BeanMethod {}
 	
 	private static class ProxyHeandler implements InvocationHandler, BeanProxy {
 		private Object bean;
@@ -248,16 +246,15 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		}
 
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			if (method.isAnnotationPresent(SafeVarargs.class)) {
+			if (method.isAnnotationPresent(BeanMethod.class)) {
 				this.bean = args[0];
 				return null;
 			} else {
 				return method.invoke(this.bean, args);
 			}
 		}
-
-		// TODO Change annotation
-		@SafeVarargs
+		
+		@BeanMethod
 		public void setBean(Object bean) {
 			this.bean = bean;
 		}
