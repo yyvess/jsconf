@@ -12,7 +12,7 @@ This Library is under development !!!
 - JSON format
 - Spring injection 
 - Support hot reloading
-- Configuration can be divided to outsource only the variables
+- Configuration can be divided to outsource only variables
 
 Planned features :
 
@@ -38,7 +38,7 @@ File conf.conf.def (internal configuration) :
 }
 ```
 
-File conf.conf (external configuration) :
+File conf.def.conf (external configuration) :
 
 ```javascript
 {
@@ -52,7 +52,7 @@ File conf.conf (external configuration) :
 
 ####Simple configuration bean
 
-File conf.conf.def (internal configuration) :
+File conf.def.conf (internal configuration) :
 
 ```javascript
 {
@@ -80,7 +80,7 @@ File conf.conf (external configuration) :
 }
 ```
 
-The configuration bean is directly injected the spring service
+The configuration bean is directly injected to the spring service
 
 ```java  
 @Service("service")
@@ -109,7 +109,8 @@ public class Service {
 </beans>
 ```
 
-- You can find more examples in the project code
+- Find more examples in `src\test\resources\org\jsconf\core\sample`
+
 ## References
 
 - https://github.com/typesafehub/config
