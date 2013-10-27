@@ -1,4 +1,4 @@
-jsconf
+JSConf
 ======
 
 JSON Spring configuration
