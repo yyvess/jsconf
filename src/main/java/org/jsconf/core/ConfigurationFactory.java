@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -167,11 +168,11 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 				beanDef = BeanDefinitionBuilder.genericBeanDefinition(Class.forName(className));
 			} catch (ClassNotFoundException e1) {
 				LOG.error("Class not found : {}", className);
-				//TODO throw new Ex
+				throw new FatalBeanException("Class not found", e1);
 			}
 		} else {
 			LOG.error("Bean have not class or parent defined", id);
-			//TODO throw new Ex
+			throw new FatalBeanException("Bean have not class or parent defined");
 		}
 		if (StringUtils.hasText(proxy) && Boolean.valueOf(proxy)) {
 			this.proxyName.add(id);
@@ -208,8 +209,8 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 				}
 			}
 		} else {
-			// TODO
-			throw new RuntimeException();
+			LOG.error("Bean configuration to be of the type map");
+			throw new FatalBeanException("Bean configuration to be of the type map");
 		}
 	}
 
