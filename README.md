@@ -1,9 +1,9 @@
+JSON configuration library integrated into Spring
+
 JSConf
 ======
 
-Copyright (c) 2013, Yves Galante
-
-JSON configuration library for Spring build on the top off the Typesafe configuration library.
+Library is built on the top off the Typesafe config.
 
 This Library is under development !!!
 
@@ -12,7 +12,7 @@ This Library is under development !!!
 - JSON format
 - Spring injection 
 - Support hot reloading
-- Configuration can be split to externalize only some variables
+- Configuration can be divided to outsource only the variables
 
 Planned features :
 
@@ -50,10 +50,7 @@ conf.conf (external configuration) :
 }
 ```
 
-####Bean spring 
-
--The bean "MyConf" can be injected on an others standard bean spring
-
+####A configuration bean
 
 conf.conf.def (internal configuration) :
 
@@ -83,6 +80,42 @@ conf.conf (external configuration) :
 }
 ```
 
+The configuration bean can by directly injected on a spring service
+
+```java  
+@Service("service")
+public class Service {
+
+	@Autowired
+	@Qualifier("MyConf")
+    private Conf conf;
+}
+
+```
+
+```xml  
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+	
+	<bean class="org.jsconf.core.ConfigurationFactory"/>
+	
+	<bean id="confAbstract" class="SimpleConf" abstract="true"/>
+	
+</beans>
+```
+
+## References
+
+- https://github.com/typesafehub/config
+- http://projects.spring.io/spring-framework/
+
 ## License
 
 The license is Apache 2.0, see LICENSE file
+
+Copyright (c) 2013, Yves Galante
