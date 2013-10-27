@@ -33,9 +33,9 @@ File conf.def.conf `internal configuration` :
 
 ```javascript
 {
-	"datasource" : {
-	        "CLASS" : "org.apache.commons.dbcp.BasicDataSource",
-	        "driverClassName" : "com.mysql.jdbc.Driver"
+	datasource : {
+	        CLASS : "org.apache.commons.dbcp.BasicDataSource",
+	        driverClassName : "com.mysql.jdbc.Driver"
 	}
 }
 ```
@@ -56,15 +56,18 @@ File conf.def.conf `external configuration` :
 
 File conf.def.conf `internal configuration` :
 
+- keyword PROXY is mandatory is you need support hot reload
+
 ```javascript
 {
-	"simpleConf" : {
-	    "ID" : "MyConf",
-	    "PROXY" : "true"
-        "PARENT" : "confAbstract"
+	simpleConf : {
+	    ID : "MyConf",
+	    PROXY : "true"
+        PARENT : "confAbstract"
     }
 }
 ```
+
 
 File conf.conf `external configuration` :
 
