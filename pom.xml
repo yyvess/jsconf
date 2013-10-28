@@ -8,8 +8,17 @@
 	<packaging>jar</packaging>
 
 	<name>JSON Spring Configuration</name>
-	<url>http://maven.apache.org</url>
-
+	<url>https://github.com/yyvess/jsconf</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<url>https://github.com/yyvess/jsconf.git</url>
+	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring-version>3.2.4.RELEASE</spring-version>
