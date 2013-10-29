@@ -22,7 +22,7 @@ Planned tasks :
 
 ####Simple data-source 
 
-File `conf.conf` external configuration :
+File `conf.conf` :
 
 ```javascript
 {
