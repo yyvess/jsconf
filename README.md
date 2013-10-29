@@ -22,7 +22,23 @@ Planned tasks :
 
 ####Simple data-source 
 
-File `conf.def.conf` internal configuration :
+File `conf.conf` external configuration :
+
+```javascript
+{
+	datasource : {
+	    CLASS : "org.apache.commons.dbcp.BasicDataSource",
+	    driverClassName : "com.mysql.jdbc.Driver",
+	    url : "jdbc:mysql://localhost:3306/test",
+	    username : "user",
+	    password : "********"
+	}
+}
+```
+
+####Splited configuration
+
+Internal configuration file `conf.def.conf`  :
 
 ```javascript
 {
@@ -33,7 +49,7 @@ File `conf.def.conf` internal configuration :
 }
 ```
 
-File `conf.conf` external configuration :
+External configuration file `conf.conf` :
 
 ```javascript
 {
@@ -56,7 +72,7 @@ File `conf.def.conf` internal configuration :
 	simpleConf : {
 	    ID : "MyConf",
 	    PROXY : "true"
-        PARENT : "confAbstract"
+	    PARENT : "confAbstract"
     }
 }
 ```
