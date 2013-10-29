@@ -22,7 +22,7 @@ Planned tasks :
 
 ####Simple data-source 
 
-File conf.def.conf `internal configuration` :
+File `conf.def.conf` internal configuration :
 
 ```javascript
 {
