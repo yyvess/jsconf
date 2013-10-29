@@ -62,7 +62,7 @@ File `conf.def.conf` internal configuration :
 ```
 
 
-File conf.conf `external configuration` :
+File `conf.conf` external configuration :
 
 ```javascript
 {
@@ -78,7 +78,7 @@ File conf.conf `external configuration` :
 }
 ```
 
-The configuration bean is directly injected to the spring service
+The configuration bean is directly injected to a spring service
 
 ```java  
 @Service("service")
