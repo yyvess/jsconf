@@ -126,8 +126,17 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 
 	private void loadConfiguration() {
 		LOG.debug("Loading configuration");
+		String[] profiles = this.context.getEnvironment().getActiveProfiles();
 		this.devConfig = ConfigFactory.parseResourcesAnySyntax(this.confName);
+		for(String profile : profiles) {
+			Config c = ConfigFactory.parseResourcesAnySyntax(this.confName.concat("-").concat(profile));
+			this.devConfig = c.withFallback(this.devConfig);
+		}
 		this.defConfig = ConfigFactory.parseResourcesAnySyntax(this.confName.concat(".").concat(DEFAULT_SUFIX_DEF));
+		for(String profile : profiles) {
+			Config c = ConfigFactory.parseResourcesAnySyntax(this.confName.concat("-").concat(profile).concat(".").concat(DEFAULT_SUFIX_DEF));
+			this.defConfig = c.withFallback(this.defConfig);
+		}
 		this.defConfig = this.devConfig.withFallback(this.defConfig);
 		LOG.debug("Configuration loaded");
 		LOG.debug("Initalize beans");

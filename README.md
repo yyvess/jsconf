@@ -1,24 +1,17 @@
-JSON configuration library integrated into Spring
+Configuration library for Java using JSON format, integrated with Spring on the top of Typesafe config.
 
 JSConf
 ======
 
 Library is built on the top off the Typesafe config.
 
-This Library is under development.
-
-Your comment are welcome !
-
 ## Overview
 
 - JSON format
 - Spring injection 
+- Support spring profile
 - Support hot reloading
 - Configuration can be divided to outsource only variables
-
-Planned features :
-
-- Support spring profile
 
 Planned tasks :
 - Documentation
@@ -40,7 +33,7 @@ File conf.def.conf `internal configuration` :
 }
 ```
 
-File conf.def.conf `external configuration` :
+File `conf.def.conf` external configuration :
 
 ```javascript
 {
@@ -54,7 +47,7 @@ File conf.def.conf `external configuration` :
 
 ####Simple configuration bean
 
-File conf.def.conf `internal configuration` :
+File `conf.def.conf` internal configuration :
 
 - keyword PROXY is mandatory is you need support hot reload
 
