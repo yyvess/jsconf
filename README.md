@@ -33,7 +33,7 @@ File `conf.def.conf` internal configuration :
 }
 ```
 
-File `conf.def.conf` external configuration :
+File `conf.conf` external configuration :
 
 ```javascript
 {
