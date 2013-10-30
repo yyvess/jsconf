@@ -5,6 +5,7 @@ JSConf
 
 Library is built on the top off the Typesafe config.
 
+
 ## Overview
 
 - JSON format
@@ -17,6 +18,8 @@ Planned tasks :
 - Documentation
 - Clean code
 
+####Feedback 
+We welcome your feedback jsconf@jmob.net
 
 ##Examples
 
