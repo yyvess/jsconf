@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.jsconf</groupId>
-	<artifactId>org.jsconf.core</artifactId>
+	<artifactId>core</artifactId>
 	<version>0.3.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -11,7 +11,7 @@
 	<url>https://github.com/yyvess/jsconf</url>
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
+			<name>The Apache Software License, Ve rsion 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
@@ -78,12 +78,25 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>				<artifactId>maven-compiler-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-                			<source>1.6</source>
-                			<target>1.6</target>
-            		</configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<parallel>classes</parallel>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>%regex[.*[Sample]\d+.*]</include>
+					</includes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
