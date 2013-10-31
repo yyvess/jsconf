@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +71,10 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 	private Config devConfig;
 	private Config defConfig;
 	private GenericApplicationContext context;
+	private int beanIdGen = 0;
 
 	public ConfigurationFactory() {
+		super();
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -118,6 +119,9 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		for (String name : this.beanName) {
 			this.context.removeBeanDefinition(name);
 		}
+		this.beanName.clear();
+		this.proxyName.clear();
+		this.beanIdGen = 0;
 		loadConfiguration();
 		for (Entry<String, BeanProxy> e : this.proxyRef.entrySet()) {
 			this.proxyRef.get(e.getKey()).setBean(this.context.getBean(e.getKey()));
@@ -152,7 +156,7 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		String id = getBeanValue(e, ID);
 		if (StringUtils.isEmpty(id)) {
 			if (child) {
-				id = UUID.randomUUID().toString();
+				id = "child-".concat(String.valueOf(++beanIdGen));
 			} else {
 				id = e.getKey();
 			}
@@ -219,8 +223,7 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 	}
 
 	private boolean isABean(Entry<String, ConfigValue> entry) {
-		ConfigValue value = entry.getValue();
-		Object unwrapped = value.unwrapped();
+		Object unwrapped = entry.getValue().unwrapped();
 		if (isMap(unwrapped)) {
 			Map<?, ?> m = (Map<?, ?>) unwrapped;
 			return m.containsKey(CLASS) || m.containsKey(PARENT);
@@ -268,5 +271,6 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 			this.bean = bean;
 		}
 	}
+	
 
 }
