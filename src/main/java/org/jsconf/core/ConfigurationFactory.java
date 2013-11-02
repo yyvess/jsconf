@@ -56,10 +56,10 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 	private static final String DEFAULT_CONF_NAME = "conf";
 	private static final String DEFAULT_SUFIX_DEF = "def";
 
-	private static final String ID = "ID";
-	private static final String CLASS = "CLASS";
-	private static final String PARENT = "PARENT";
-	private static final String PROXY = "PROXY";
+	private static final String ID = "_id";
+	private static final String CLASS = "_class";
+	private static final String PARENT = "_parent";
+	private static final String PROXY = "_proxy";
 
 	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, PROXY };
 

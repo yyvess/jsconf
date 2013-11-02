@@ -30,7 +30,7 @@ File `conf.conf` :
 ```javascript
 {
 	datasource : {
-	    CLASS : "org.apache.commons.dbcp.BasicDataSource",
+	    _class : "org.apache.commons.dbcp.BasicDataSource",
 	    driverClassName : "com.mysql.jdbc.Driver",
 	    url : "jdbc:mysql://localhost:3306/test",
 	    username : "user",
@@ -46,7 +46,7 @@ Internal configuration file `conf.def.conf`  :
 ```javascript
 {
 	datasource : {
-	        CLASS : "org.apache.commons.dbcp.BasicDataSource",
+	        _class : "org.apache.commons.dbcp.BasicDataSource",
 	        driverClassName : "com.mysql.jdbc.Driver"
 	}
 }
@@ -66,22 +66,22 @@ External configuration file `conf.conf` :
 
 ####Simple configuration bean
 
-File `conf.def.conf` internal configuration :
+Internal configuration file `conf.def.conf`  :
 
 - keyword PROXY is mandatory is you need support hot reload
 
 ```javascript
 {
 	simpleConf : {
-	    ID : "MyConf",
-	    PROXY : "true"
-	    PARENT : "confAbstract"
+	    _id : "MyConf",
+	    _proxy : "true"
+	    _parent : "confAbstract"
     }
 }
 ```
 
 
-File `conf.conf` external configuration :
+External configuration file `conf.conf` :
 
 ```javascript
 {
