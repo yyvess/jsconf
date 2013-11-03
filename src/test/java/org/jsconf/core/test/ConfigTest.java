@@ -77,7 +77,7 @@ public class ConfigTest {
 	}
 
 	public void testLoadReload() throws URISyntaxException, InterruptedException {
-		this.beanFactory.setConfName("org/jsconf/core/test/conf_reload");
+		this.beanFactory.setConfName("org/jsconf/core/test/app_reload");
 		this.beanFactory.reload();
 		Assert.assertEquals("Hello World, I a spring bean!", this.springBean.getValue());
 		Assert.assertEquals("Hello", this.v.getValue());

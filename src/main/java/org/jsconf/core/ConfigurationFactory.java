@@ -53,15 +53,16 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigurationFactory.class);
 
-	private static final String DEFAULT_CONF_NAME = "conf";
+	private static final String DEFAULT_CONF_NAME = "app";
 	private static final String DEFAULT_SUFIX_DEF = "def";
 
 	private static final String ID = "_id";
 	private static final String CLASS = "_class";
 	private static final String PARENT = "_parent";
+	private static final String REF = "_ref";
 	private static final String PROXY = "_proxy";
 
-	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, PROXY };
+	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, REF, PROXY };
 
 	private final Set<String> beanName = new HashSet<String>();
 	private final Set<String> proxyName = new HashSet<String>();
@@ -77,6 +78,7 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		super();
 	}
 
+	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.context = (GenericApplicationContext) applicationContext;
 	}
@@ -85,10 +87,12 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		this.confName = confName;
 	}
 
+	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		loadConfiguration();
 	}
 
+	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (this.proxyName.contains(beanName)) {
 			if (bean.getClass().getInterfaces().length > 0) {
@@ -107,10 +111,12 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		return bean;
 	}
 
+	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 
 	}
 
+	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		return bean;
 	}
@@ -131,14 +137,14 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 	private void loadConfiguration() {
 		LOG.debug("Loading configuration");
 		String[] profiles = this.context.getEnvironment().getActiveProfiles();
-		this.devConfig = ConfigFactory.parseResourcesAnySyntax(this.confName);
-		for(String profile : profiles) {
-			Config c = ConfigFactory.parseResourcesAnySyntax(this.confName.concat("-").concat(profile));
+		this.devConfig = confName(this.confName, null, null);
+		for (String profile : profiles) {
+			Config c = confName(this.confName, profile, null);
 			this.devConfig = c.withFallback(this.devConfig);
 		}
-		this.defConfig = ConfigFactory.parseResourcesAnySyntax(this.confName.concat(".").concat(DEFAULT_SUFIX_DEF));
-		for(String profile : profiles) {
-			Config c = ConfigFactory.parseResourcesAnySyntax(this.confName.concat("-").concat(profile).concat(".").concat(DEFAULT_SUFIX_DEF));
+		this.defConfig = confName(this.confName, null, DEFAULT_SUFIX_DEF);
+		for (String profile : profiles) {
+			Config c = confName(this.confName, profile, DEFAULT_SUFIX_DEF);
 			this.defConfig = c.withFallback(this.defConfig);
 		}
 		this.defConfig = this.devConfig.withFallback(this.defConfig);
@@ -152,8 +158,23 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		LOG.debug("Beans are initalzed");
 	}
 
+	private Config confName(String name, String profile, String sufix) {
+		String finalName = name;
+		if (StringUtils.hasText(profile)) {
+			finalName = finalName.concat("-").concat(profile);
+		}
+		if (StringUtils.hasText(sufix)) {
+			finalName = finalName.concat(".").concat(sufix);
+		}
+		return ConfigFactory.parseResourcesAnySyntax(finalName);
+	}
+
 	private String makeBean(Entry<String, ConfigValue> e, boolean child) {
+		BeanDefinitionBuilder beanDef = null;
 		String id = getBeanValue(e, ID);
+		String parentId = getBeanValue(e, PARENT);
+		String className = getBeanValue(e, CLASS);
+		String proxy = getBeanValue(e, PROXY);
 		if (StringUtils.isEmpty(id)) {
 			if (child) {
 				id = "child-".concat(String.valueOf(++beanIdGen));
@@ -162,10 +183,6 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 			}
 		}
 		LOG.debug("Initalize bean id : {}", id);
-		String parentId = getBeanValue(e, PARENT);
-		String className = getBeanValue(e, CLASS);
-		String proxy = getBeanValue(e, PROXY);
-		BeanDefinitionBuilder beanDef = null;
 		if (StringUtils.hasText(parentId)) {
 			beanDef = BeanDefinitionBuilder.childBeanDefinition(parentId);
 			if (StringUtils.hasText(className)) {
@@ -209,6 +226,12 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 				if (valueType.equals(ConfigValueType.OBJECT)) {
 					if (isABean(e)) {
 						beanDef.addPropertyReference(e.getKey(), makeBean(e, true));
+					} else if (REF.equals(e.getKey())) {
+						@SuppressWarnings("unchecked")
+						Map<String, String> refs = (Map<String, String>) e.getValue().unwrapped();
+						for (Entry<String, String> r : refs.entrySet()) {
+							beanDef.addPropertyReference(r.getKey(), r.getValue());
+						}
 					} else {
 						beanDef.addPropertyValue(e.getKey(), e.getValue().unwrapped());
 					}
@@ -241,15 +264,16 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 		}
 		return null;
 	}
-	
+
 	private interface BeanProxy {
 		@BeanMethod
 		public void setBean(Object bean);
 	}
-	
-	@java.lang.annotation.Retention(value=java.lang.annotation.RetentionPolicy.RUNTIME)
-	private @interface BeanMethod {}
-	
+
+	@java.lang.annotation.Retention(value = java.lang.annotation.RetentionPolicy.RUNTIME)
+	private @interface BeanMethod {
+	}
+
 	private static class ProxyHeandler implements InvocationHandler, BeanProxy {
 		private Object bean;
 
@@ -257,6 +281,7 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 			setBean(bean);
 		}
 
+		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			if (method.isAnnotationPresent(BeanMethod.class)) {
 				this.bean = args[0];
@@ -265,12 +290,11 @@ public class ConfigurationFactory implements BeanDefinitionRegistryPostProcessor
 				return method.invoke(this.bean, args);
 			}
 		}
-		
+
+		@Override
 		@BeanMethod
 		public void setBean(Object bean) {
 			this.bean = bean;
 		}
 	}
-	
-
 }

@@ -1,22 +1,23 @@
-Configuration library for Java using JSON format, integrated with Spring on the top of Typesafe config.
+JSON configuration library for Java Spring application, build on the top of Typesafe config.
 
 JSConf
 ======
 
-Library is built on the top off the Typesafe config.
+Configure your spring application with JSON instead of placeholder.
 
 
 ## Overview
 
 - JSON format
-- Spring injection 
+- Spring integration 
 - Support spring profile
-- Support hot reloading
-- Configuration can be divided to outsource only variables
+- Support reloading
+- Configuration files can be spited to outsource only variables
 
 Planned tasks :
 - Documentation
 - Clean code
+- Auto reload
 
 ####Feedback 
 We welcome your feedback jsconf@jmob.net
@@ -25,7 +26,7 @@ We welcome your feedback jsconf@jmob.net
 
 ####Simple data-source 
 
-File `conf.conf` :
+File `app.conf` :
 
 ```javascript
 {
@@ -39,20 +40,33 @@ File `conf.conf` :
 }
 ```
 
+```java  
+@Service("service")
+public class Service {
+
+	@Autowired
+    private DataSource datasource;
+}
+```
+
 ####Splited configuration
 
-Internal configuration file `conf.def.conf`  :
+Internal configuration file `app.def.conf`  :
 
 ```javascript
 {
 	datasource : {
 	        _class : "org.apache.commons.dbcp.BasicDataSource",
 	        driverClassName : "com.mysql.jdbc.Driver"
-	}
+	},     
+	sequence : {
+        _class : "org.jsconf.core.sample.Sequence",
+        _ref : {dataSource : datasource}
+    }
 }
 ```
 
-External configuration file `conf.conf` :
+External configuration file `app.conf` :
 
 ```javascript
 {
@@ -60,13 +74,28 @@ External configuration file `conf.conf` :
 	    url : "jdbc:mysql://localhost:3306/test",
 	    username : "user",
 	    password : "********"
+	}, 
+	sequence : {
+ 		name : "SEQ_NAME"
 	}
+}
+```
+
+```java  
+@Service("service")
+public class Service {
+
+	@Autowired
+    private DataSource datasource;
+    
+	@Autowired
+    private Sequence sequence;
 }
 ```
 
 ####Simple configuration bean
 
-Internal configuration file `conf.def.conf`  :
+Internal configuration file `app.def.conf`  :
 
 - keyword PROXY is mandatory is you need support hot reload
 
@@ -81,7 +110,7 @@ Internal configuration file `conf.def.conf`  :
 ```
 
 
-External configuration file `conf.conf` :
+External configuration file `app.conf` :
 
 ```javascript
 {
@@ -107,7 +136,6 @@ public class Service {
 	@Qualifier("MyConf")
     private Conf conf;
 }
-
 ```
 
 ```xml  

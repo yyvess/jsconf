@@ -6,7 +6,7 @@
 	http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<bean class="org.jsconf.core.ConfigurationFactory">
-		<property name="confName" value="org/jsconf/core/sample/conf_06" />
+		<property name="confName" value="org/jsconf/core/sample/app_06" />
 	</bean>
 	
 </beans>

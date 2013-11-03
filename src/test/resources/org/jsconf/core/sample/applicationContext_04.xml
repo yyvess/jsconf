@@ -7,10 +7,6 @@
 
 
 	<bean class="org.jsconf.core.ConfigurationFactory">
-		<property name="confName" value="org/jsconf/core/sample/conf_04" />
-	</bean>
-	
-	<bean id ="seqPrototype" class="org.jsconf.core.sample.Sequence">
-		<property name="dataSource" ref="datasource" />
+		<property name="confName" value="org/jsconf/core/sample/app_04" />
 	</bean>
 </beans>

@@ -41,11 +41,11 @@ public class Sample05 {
 		final Object ref = this.conf;
 		Assert.assertNotNull(this.conf);
 		Assert.assertEquals("Tic", this.conf.getVstring());
-		this.factory.setConfName("org/jsconf/core/sample/conf_05_2");
+		this.factory.setConfName("org/jsconf/core/sample/app_05_2");
 		this.factory.reload();
 		Assert.assertTrue(ref == this.conf);
 		Assert.assertEquals("Tac", this.conf.getVstring());
-		this.factory.setConfName("org/jsconf/core/sample/conf_05");
+		this.factory.setConfName("org/jsconf/core/sample/app_05");
 		this.factory.reload();
 	}
 }
