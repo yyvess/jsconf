@@ -10,8 +10,8 @@ Configure your spring application with JSON instead of placeholder.
 
 - JSON format
 - Spring integration 
-- Support spring profile
 - Support reloading
+- Support spring profile
 - Configuration files can be spited to outsource only variables
 
 Planned tasks :
