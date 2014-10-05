@@ -20,8 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-@Service("standardSpringBean")
-public class SpringBean {
+@Service("serviceSpring")
+public class ServiceSpringBean {
 
 	private String value = "Hello World, I a spring bean!";
 

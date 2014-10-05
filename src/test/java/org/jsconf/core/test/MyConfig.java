@@ -32,18 +32,13 @@ public class MyConfig implements MyConfigInterface {
 	private Map<String, String> aMap;
 
 	@Autowired
-	@Qualifier("father")
+	@Qualifier("child")
 	private SimpleBeanSpring springBeanConfigured;
 
 	@Autowired
 	@Qualifier("springOnConf")
 	private SimpleBeanSpring springBean;
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.dy.conf.spring.ConfigInterface#getValue()
-	 */
 	public String getValue() {
 		return this.value;
 	}
@@ -60,11 +55,6 @@ public class MyConfig implements MyConfigInterface {
 		this.value = value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.dy.conf.spring.ConfigInterface#getAChild()
-	 */
 	public MyConfigInterface getAChild() {
 		return this.aChild;
 	}
@@ -73,11 +63,6 @@ public class MyConfig implements MyConfigInterface {
 		this.aChild = aChild;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.dy.conf.spring.ConfigInterface#getAInt()
-	 */
 	public int getAInt() {
 		return this.aInt;
 	}
@@ -86,11 +71,6 @@ public class MyConfig implements MyConfigInterface {
 		this.aInt = aInt;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.dy.conf.spring.ConfigInterface#getAMap()
-	 */
 	public Map<String, String> getAMap() {
 		return this.aMap;
 	}

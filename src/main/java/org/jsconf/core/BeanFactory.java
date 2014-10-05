@@ -40,8 +40,6 @@ public class BeanFactory {
 
 	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, REF, PROXY };
 
-	private static int beanIdGen;
-
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private final ConfigurationFactory confFactory;
@@ -51,9 +49,9 @@ public class BeanFactory {
 	private String id;
 	private String className;
 	private String parentId;
-	private boolean child;
+	private String childName;
 	private boolean proxy;
-	private boolean isABean;
+	private boolean isValid;
 	private Map<String, ConfigValue> properties;
 
 	public BeanFactory(ConfigurationFactory confFactory, GenericApplicationContext context) {
@@ -63,22 +61,23 @@ public class BeanFactory {
 
 	@SuppressWarnings("unchecked")
 	public BeanFactory withConfig(Entry<String, ConfigValue> config) {
-		this.isABean = isABean(config);
-		if (this.isABean) {
-			this.key = config.getKey();
-			this.id = getBeanValue(config, ID);
-			this.className = getBeanValue(config, CLASS);
-			this.parentId = getBeanValue(config, PARENT);
-			this.proxy = Boolean.TRUE.equals(getBeanValue(config, PROXY));
-			if (isAMap(config.getValue())) {
-				this.properties = (Map<String, ConfigValue>) config.getValue();
-			}
+		if (!isABeanConfigEntry(config)) {
+			return this;
+		}
+		this.isValid = true;
+		this.key = config.getKey();
+		this.id = getBeanValue(config, ID);
+		this.className = getBeanValue(config, CLASS);
+		this.parentId = getBeanValue(config, PARENT);
+		this.proxy = Boolean.TRUE.equals(getBeanValue(config, PROXY));
+		if (isAMap(config.getValue())) {
+			this.properties = (Map<String, ConfigValue>) config.getValue();
 		}
 		return this;
 	}
 
-	public boolean isABean() {
-		return this.isABean;
+	public boolean isValid() {
+		return this.isValid;
 	}
 
 	public boolean isProxy() {
@@ -88,8 +87,8 @@ public class BeanFactory {
 	public String registerBean() {
 		BeanDefinitionBuilder beanDef;
 		if (StringUtils.isEmpty(this.id)) {
-			if (this.child) {
-				this.id = "child-" + ++beanIdGen;
+			if (StringUtils.hasText(this.childName)) {
+				this.id = "child-" + childName;
 			} else {
 				this.id = this.key;
 			}
@@ -119,19 +118,20 @@ public class BeanFactory {
 		return this.id;
 	}
 
-	private BeanFactory withChild(boolean child) {
-		this.child = child;
+	private BeanFactory withChildName(String childName) {
+		this.childName = childName;
 		return this;
 	}
 
 	private void setBeanProperties(Map<String, ConfigValue> properties, BeanDefinitionBuilder beanDef) {
 		if (properties != null) {
+			int childId = 0;
 			for (Entry<String, ConfigValue> e : properties.entrySet()) {
 				ConfigValueType valueType = e.getValue().valueType();
 				if (valueType.equals(ConfigValueType.OBJECT)) {
-					BeanFactory beanBuilder = new BeanFactory(this.confFactory, this.context).withConfig(e).withChild(
-							true);
-					if (beanBuilder.isABean) {
+					if (isABeanConfigEntry(e)) {
+						BeanFactory beanBuilder = new BeanFactory(this.confFactory, this.context);
+						beanBuilder.withConfig(e).withChildName(this.id.concat("-child-") + ++childId);
 						beanDef.addPropertyReference(e.getKey(), beanBuilder.registerBean());
 					} else if (REF.equals(e.getKey())) {
 						@SuppressWarnings("unchecked")
@@ -160,7 +160,7 @@ public class BeanFactory {
 		return null;
 	}
 
-	private boolean isABean(Entry<String, ConfigValue> entry) {
+	private boolean isABeanConfigEntry(Entry<String, ConfigValue> entry) {
 		Object unwrapped = entry.getValue().unwrapped();
 		if (isAMap(unwrapped)) {
 			Map<?, ?> m = (Map<?, ?>) unwrapped;

@@ -23,11 +23,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
@@ -37,9 +35,8 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValue;
 
-@Configurable
-public class ConfigurationFactory implements ApplicationContextAware, BeanDefinitionRegistryPostProcessor,
-		BeanPostProcessor {
+public class ConfigurationFactory implements ApplicationContextAware, BeanFactoryPostProcessor,
+BeanPostProcessor {
 
 	private static final String DEFAULT_CONF_NAME = "app";
 	private static final String DEFAULT_SUFIX_DEF = "def";
@@ -62,11 +59,11 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanDefini
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		loadContext();
 	}
-	
-	public void reload() {
+
+	public synchronized void reload() {
 		clearContext();
 		loadContext();
-		this.proxyPostProcessor.injectProxyBean();
+		this.proxyPostProcessor.forceProxyInitalization();
 	}
 
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -74,9 +71,6 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanDefini
 			return this.proxyPostProcessor.postProcessBeforeInitialization(bean, beanName);
 		}
 		return bean;
-	}
-
-	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 	}
 
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -106,7 +100,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanDefini
 		this.log.debug("Initalize beans");
 		for (Entry<String, ConfigValue> entry : this.defConfig.root().entrySet()) {
 			BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(entry);
-			if (beanBuilder.isABean()) {
+			if (beanBuilder.isValid()) {
 				buildBeans(beanBuilder);
 			}
 		}

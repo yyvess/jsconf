@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +43,17 @@ public class ProxyPostProcessor {
 
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (bean.getClass().getInterfaces().length > 0) {
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			List<Class<?>> asList = new ArrayList<Class<?>>();
-			asList.addAll(Arrays.asList(bean.getClass().getInterfaces()));
-			asList.add(BeanProxy.class);
-			Class<?>[] interfaces = asList.toArray(new Class<?>[0]);
-			BeanProxy proxy = (BeanProxy) Proxy.newProxyInstance(cl, interfaces, new ProxyHeandler(bean));
-			this.proxyRef.put(beanName, proxy);
+			BeanProxy proxy = this.proxyRef.get(beanName);
+			if (proxy == null) {
+				ClassLoader cl = Thread.currentThread().getContextClassLoader();
+				List<Class<?>> asList = new ArrayList<Class<?>>();
+				asList.addAll(Arrays.asList(bean.getClass().getInterfaces()));
+				asList.add(BeanProxy.class);
+				Class<?>[] interfaces = asList.toArray(new Class<?>[0]);
+				proxy = (BeanProxy) Proxy.newProxyInstance(cl, interfaces, new ProxyHeandler());
+				this.proxyRef.put(beanName, proxy);
+			}
+			proxy.setBean(bean);
 			return proxy;
 		} else {
 			this.log.warn("Only bean with interface can be proxy :{}", beanName);
@@ -58,30 +61,30 @@ public class ProxyPostProcessor {
 		return bean;
 	}
 
-	public void injectProxyBean() {
-		for (Entry<String, BeanProxy> e : this.proxyRef.entrySet()) {
-			this.proxyRef.get(e.getKey()).setBean(this.context.getBean(e.getKey()));
+	public void forceProxyInitalization() {
+		for (String beanName : this.proxyRef.keySet()) {
+			this.context.getBean(beanName);
 		}
 	}
 
 	@java.lang.annotation.Retention(value = java.lang.annotation.RetentionPolicy.RUNTIME)
-	private @interface BeanMethod {
+	private @interface SetBeanMethod {
 	}
 
 	private interface BeanProxy {
-		@BeanMethod
+		@SetBeanMethod
 		public void setBean(Object bean);
 	}
 
-	private static class ProxyHeandler implements InvocationHandler, BeanProxy {
+	private static class ProxyHeandler implements InvocationHandler {
+
 		private Object bean;
 
-		public ProxyHeandler(Object bean) {
-			setBean(bean);
+		public ProxyHeandler() {
 		}
 
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			if (method.isAnnotationPresent(BeanMethod.class)) {
+			if (method.isAnnotationPresent(SetBeanMethod.class)) {
 				this.bean = args[0];
 				return null;
 			} else {
@@ -89,9 +92,5 @@ public class ProxyPostProcessor {
 			}
 		}
 
-		@BeanMethod
-		public void setBean(Object bean) {
-			this.bean = bean;
-		}
 	}
 }

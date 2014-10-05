@@ -20,15 +20,15 @@ import java.util.Map;
 
 public interface MyConfigInterface {
 
-	public abstract String getValue();
+	String getValue();
 
-	public abstract MyConfigInterface getAChild();
+	MyConfigInterface getAChild();
 
-	public abstract int getAInt();
+	int getAInt();
 
-	public abstract Map<String, String> getAMap();
+	Map<String, String> getAMap();
 
-	public abstract String getValueSpring();
+	String getValueSpring();
 
-	public abstract String getValueSpringConfigured();
+	String getValueSpringConfigured();
 }
