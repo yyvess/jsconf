@@ -39,6 +39,7 @@ public class BeanFactory {
 	private static final String PROXY = "_proxy";
 
 	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, REF, PROXY };
+
 	private static int beanIdGen;
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -88,7 +89,7 @@ public class BeanFactory {
 		BeanDefinitionBuilder beanDef;
 		if (StringUtils.isEmpty(this.id)) {
 			if (this.child) {
-				this.id = "child-".concat(String.valueOf(++beanIdGen));
+				this.id = "child-" + ++beanIdGen;
 			} else {
 				this.id = this.key;
 			}

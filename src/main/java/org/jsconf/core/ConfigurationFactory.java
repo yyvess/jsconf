@@ -51,9 +51,9 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanDefini
 	private String configuration = DEFAULT_CONF_NAME;
 
 	private GenericApplicationContext context;
+	private ProxyPostProcessor proxyPostProcessor;
 	private Config devConfig;
 	private Config defConfig;
-	private org.jsconf.core.ProxyPostProcessor configurationPostProcessor;
 
 	public void setConfiguration(String configuration) {
 		this.configuration = configuration;
@@ -62,68 +62,18 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanDefini
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		loadContext();
 	}
-
+	
 	public void reload() {
-		for (String name : this.beanName) {
-			this.context.removeBeanDefinition(name);
-		}
-		this.beanName.clear();
-		this.proxyBeanName.clear();
+		clearContext();
 		loadContext();
-		this.configurationPostProcessor.injectProxyBean();
-	}
-
-	private void loadContext() {
-		this.log.debug("Loading configuration");
-		String[] profiles = this.context.getEnvironment().getActiveProfiles();
-		this.devConfig = confName(this.configuration, null, null);
-		for (String profile : profiles) {
-			Config c = confName(this.configuration, profile, null);
-			this.devConfig = c.withFallback(this.devConfig);
-		}
-		this.defConfig = confName(this.configuration, null, DEFAULT_SUFIX_DEF);
-		for (String profile : profiles) {
-			Config c = confName(this.configuration, profile, DEFAULT_SUFIX_DEF);
-			this.defConfig = c.withFallback(this.defConfig);
-		}
-		this.defConfig = this.devConfig.withFallback(this.defConfig);
-		this.log.debug("Configuration loaded");
-		this.log.debug("Initalize beans");
-		for (Entry<String, ConfigValue> e : this.defConfig.root().entrySet()) {
-			BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(e);
-			if (beanBuilder.isABean()) {
-				initBeans(beanBuilder);
-			}
-		}
-		this.log.debug("Beans are initalzed");
-	}
-
-	private String initBeans(BeanFactory beanBuilder) {
-		String beanId = beanBuilder.registerBean();
-		if (beanBuilder.isProxy()) {
-			this.proxyBeanName.add(beanId);
-		}
-		this.log.debug("Regitre bean id : {}", beanId);
-		this.beanName.add(beanId);
-		return beanId;
+		this.proxyPostProcessor.injectProxyBean();
 	}
 
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (this.proxyBeanName.contains(beanName)) {
-			return this.configurationPostProcessor.postProcessBeforeInitialization(bean, beanName);
+			return this.proxyPostProcessor.postProcessBeforeInitialization(bean, beanName);
 		}
 		return bean;
-	}
-
-	private Config confName(String name, String profile, String sufix) {
-		String finalName = name;
-		if (StringUtils.hasText(profile)) {
-			finalName = finalName.concat("-").concat(profile);
-		}
-		if (StringUtils.hasText(sufix)) {
-			finalName = finalName.concat(".").concat(sufix);
-		}
-		return ConfigFactory.parseResourcesAnySyntax(finalName);
 	}
 
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
@@ -135,6 +85,60 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanDefini
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.context = (GenericApplicationContext) applicationContext;
-		this.configurationPostProcessor = new ProxyPostProcessor(applicationContext);
+		this.proxyPostProcessor = new ProxyPostProcessor(applicationContext);
+	}
+
+	private void loadContext() {
+		this.log.debug("Loading configuration");
+		String[] profiles = this.context.getEnvironment().getActiveProfiles();
+		this.devConfig = getConfig(this.configuration, null, null);
+		for (String profile : profiles) {
+			Config c = getConfig(this.configuration, profile, null);
+			this.devConfig = c.withFallback(this.devConfig);
+		}
+		this.defConfig = getConfig(this.configuration, null, DEFAULT_SUFIX_DEF);
+		for (String profile : profiles) {
+			Config c = getConfig(this.configuration, profile, DEFAULT_SUFIX_DEF);
+			this.defConfig = c.withFallback(this.defConfig);
+		}
+		this.defConfig = this.devConfig.withFallback(this.defConfig);
+		this.log.debug("Configuration loaded");
+		this.log.debug("Initalize beans");
+		for (Entry<String, ConfigValue> entry : this.defConfig.root().entrySet()) {
+			BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(entry);
+			if (beanBuilder.isABean()) {
+				buildBeans(beanBuilder);
+			}
+		}
+		this.log.debug("Beans are initalzed");
+	}
+
+	private void clearContext() {
+		for (String name : this.beanName) {
+			this.context.removeBeanDefinition(name);
+		}
+		this.beanName.clear();
+		this.proxyBeanName.clear();
+	}
+
+	private String buildBeans(BeanFactory beanBuilder) {
+		String beanId = beanBuilder.registerBean();
+		if (beanBuilder.isProxy()) {
+			this.proxyBeanName.add(beanId);
+		}
+		this.log.debug("Regitre bean id : {}", beanId);
+		this.beanName.add(beanId);
+		return beanId;
+	}
+
+	private Config getConfig(String name, String profile, String sufix) {
+		String finalName = name;
+		if (StringUtils.hasText(profile)) {
+			finalName = finalName.concat("-").concat(profile);
+		}
+		if (StringUtils.hasText(sufix)) {
+			finalName = finalName.concat(".").concat(sufix);
+		}
+		return ConfigFactory.parseResourcesAnySyntax(finalName);
 	}
 }
