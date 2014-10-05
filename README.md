@@ -15,9 +15,8 @@ Configure your spring application with JSON instead of placeholder.
 - Configuration files can be spited to outsource only variables
 
 Planned tasks :
+- Auto reloading
 - Documentation
-- Clean code
-- Auto reload
 
 ####Feedback 
 We welcome your feedback jsconf@jmob.net
