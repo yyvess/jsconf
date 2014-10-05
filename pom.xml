@@ -23,9 +23,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring-version>3.2.4.RELEASE</spring-version>
 		<junit-version>4.11</junit-version>
-		<typesafe-version>1.0.2</typesafe-version>
-		<logback-version>1.0.13</logback-version>
-		<guava-version>15.0</guava-version>
+		<typesafe-version>1.2.1</typesafe-version>
+		<logback-version>1.1.2</logback-version>
 		<dhcp.version>1.4</dhcp.version>
 	</properties>
 
@@ -44,17 +43,13 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring-version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava-version}</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -82,8 +77,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.5</source>
+					<target>1.5</target>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -6,13 +6,13 @@
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 package org.jsconf.core.test;
 
@@ -52,7 +52,7 @@ public class ConfigTest {
 
 		Assert.assertEquals("Hello World, I a spring bean!", this.springBean.getValue());
 		Assert.assertEquals("Hello", this.v.getValue());
-		Assert.assertEquals("Hello", v.getValue());
+		Assert.assertEquals("Hello", this.v.getValue());
 		Assert.assertEquals(10, this.v.getAInt());
 		Assert.assertNotNull(this.v.getAChild());
 		Assert.assertNotEquals(this.v, this.v.getAChild());
@@ -77,7 +77,7 @@ public class ConfigTest {
 	}
 
 	public void testLoadReload() throws URISyntaxException, InterruptedException {
-		this.beanFactory.setConfName("org/jsconf/core/test/app_reload");
+		this.beanFactory.setConfiguration("org/jsconf/core/test/app_reload");
 		this.beanFactory.reload();
 		Assert.assertEquals("Hello World, I a spring bean!", this.springBean.getValue());
 		Assert.assertEquals("Hello", this.v.getValue());

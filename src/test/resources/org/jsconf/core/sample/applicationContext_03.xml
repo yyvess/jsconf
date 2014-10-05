@@ -6,7 +6,7 @@
 	http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<bean class="org.jsconf.core.ConfigurationFactory">
-		<property name="confName" value="org/jsconf/core/sample/app_03" />
+		<property name="configuration" value="org/jsconf/core/sample/app_03" />
 	</bean>
 	
 	<bean id="abtractNode" class="org.jsconf.core.sample.NodeObject" abstract="true">

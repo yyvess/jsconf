@@ -7,6 +7,6 @@
 
 
 	<bean class="org.jsconf.core.ConfigurationFactory">
-		<property name="confName" value="org/jsconf/core/sample/app_04" />
+		<property name="configuration" value="org/jsconf/core/sample/app_04" />
 	</bean>
 </beans>
