@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns="http://www.jmob.net/schema/jsconf"
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:beans="http://www.springframework.org/schema/beans"
-        targetNamespace="http://www.jmob.net/schema/jsconf"
-        elementFormDefault="qualified"
-        attributeFormDefault="unqualified">
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	targetNamespace="http://www.jmob.net/schema/jsconf" 
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
 
-    <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"/>
+	<xsd:import namespace="http://www.springframework.org/schema/beans"
+		schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" />
 
+	<xsd:simpleType name="Format">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="CONF" />
+			<xsd:enumeration value="JSON" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
-    <xsd:element name="factory">
-        <xsd:complexType>
-            <xsd:complexContent>
-                <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="name" type="xsd:string" />
-                </xsd:extension>
-            </xsd:complexContent>
-        </xsd:complexType>
-    </xsd:element>
+	<xsd:element name="factory">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:attribute name="resource" type="xsd:token" use="required"/>
+					<xsd:attribute name="format" type="Format" />
+					<xsd:attribute name="strict" type="xsd:boolean" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
 
 </xsd:schema>

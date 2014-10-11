@@ -32,11 +32,11 @@ import com.typesafe.config.ConfigValueType;
 
 public class BeanFactory {
 
-	private static final String ID = "_id";
-	private static final String CLASS = "_class";
-	private static final String PARENT = "_parent";
-	private static final String REF = "_ref";
-	private static final String PROXY = "_proxy";
+	private static final String ID = "@Id";
+	private static final String CLASS = "@Class";
+	private static final String PARENT = "@Parent";
+	private static final String REF = "@Ref";
+	private static final String PROXY = "@Proxy";
 
 	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, REF, PROXY };
 
@@ -97,7 +97,7 @@ public class BeanFactory {
 		if (StringUtils.hasText(this.parentId)) {
 			beanDef = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
 			if (StringUtils.hasText(this.className)) {
-				this.log.warn("def.conf : CLASS value :{} is ignored, use PARENT_ID value :{}", this.className,
+				this.log.warn("def.conf : CLASS value :{} is ignored, use PARENT@Id value :{}", this.className,
 						this.parentId);
 			}
 		} else if (StringUtils.hasText(this.className)) {

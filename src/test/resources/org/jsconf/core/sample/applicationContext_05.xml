@@ -9,6 +9,6 @@
 	http://www.jmob.net/schema/jsconf
 	http://www.jmob.net/schema/jsconf/jsconf-1.0.xsd">
 
-	<jsconf:factory id="factory" name="org/jsconf/core/sample/app_05"/>
+	<jsconf:factory id="factory" resource="org/jsconf/core/sample/app_05"/>
 	
 </beans>

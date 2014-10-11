@@ -9,7 +9,7 @@
 	http://www.jmob.net/schema/jsconf
 	http://www.jmob.net/schema/jsconf/jsconf-1.0.xsd">
 
-	<jsconf:factory id="factory" name="org/jsconf/core/sample/app_03"/>
+	<jsconf:factory id="factory" resource="org/jsconf/core/sample/app_03"/>
 	
 	<bean id="abtractNode" class="org.jsconf.core.sample.NodeObject" abstract="true">
 		<property name="name" value="yves" />

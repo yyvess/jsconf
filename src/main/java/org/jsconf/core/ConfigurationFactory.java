@@ -33,10 +33,11 @@ import org.springframework.util.StringUtils;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigParseOptions;
+import com.typesafe.config.ConfigSyntax;
 import com.typesafe.config.ConfigValue;
 
-public class ConfigurationFactory implements ApplicationContextAware, BeanFactoryPostProcessor,
-BeanPostProcessor {
+public class ConfigurationFactory implements ApplicationContextAware, BeanFactoryPostProcessor, BeanPostProcessor {
 
 	private static final String DEFAULT_CONF_NAME = "app";
 	private static final String DEFAULT_SUFIX_DEF = "def";
@@ -45,15 +46,28 @@ BeanPostProcessor {
 	private final Set<String> beanName = new HashSet<String>();
 	private final Set<String> proxyBeanName = new HashSet<String>();
 
-	private String configuration = DEFAULT_CONF_NAME;
+	private String resourceName = DEFAULT_CONF_NAME;
 
 	private GenericApplicationContext context;
 	private ProxyPostProcessor proxyPostProcessor;
+	private ConfigParseOptions options = ConfigParseOptions.defaults();
 	private Config devConfig;
 	private Config defConfig;
 
-	public void setConfiguration(String configuration) {
-		this.configuration = configuration;
+	public void setFormat(String format) {
+		if (StringUtils.hasText(format)) {
+			options = options.setSyntax(ConfigSyntax.valueOf(format));
+		}
+	}
+
+	public void setStrict(String strict) {
+		if (StringUtils.hasText(strict)) {
+			options = options.setAllowMissing(!Boolean.valueOf(strict));
+		}
+	}
+
+	public void setResourceName(String resource) {
+		this.resourceName = resource;
 	}
 
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -85,14 +99,14 @@ BeanPostProcessor {
 	private void loadContext() {
 		this.log.debug("Loading configuration");
 		String[] profiles = this.context.getEnvironment().getActiveProfiles();
-		this.devConfig = getConfig(this.configuration, null, null);
+		this.devConfig = getConfig(this.resourceName, null, null);
 		for (String profile : profiles) {
-			Config c = getConfig(this.configuration, profile, null);
+			Config c = getConfig(this.resourceName, profile, null);
 			this.devConfig = c.withFallback(this.devConfig);
 		}
-		this.defConfig = getConfig(this.configuration, null, DEFAULT_SUFIX_DEF);
+		this.defConfig = getConfig(this.resourceName, null, DEFAULT_SUFIX_DEF);
 		for (String profile : profiles) {
-			Config c = getConfig(this.configuration, profile, DEFAULT_SUFIX_DEF);
+			Config c = getConfig(this.resourceName, profile, DEFAULT_SUFIX_DEF);
 			this.defConfig = c.withFallback(this.defConfig);
 		}
 		this.defConfig = this.devConfig.withFallback(this.defConfig);
@@ -133,6 +147,6 @@ BeanPostProcessor {
 		if (StringUtils.hasText(sufix)) {
 			finalName = finalName.concat(".").concat(sufix);
 		}
-		return ConfigFactory.parseResourcesAnySyntax(finalName);
+		return ConfigFactory.parseResourcesAnySyntax(finalName, options);
 	}
 }

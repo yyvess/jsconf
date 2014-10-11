@@ -28,7 +28,9 @@ public class ConfigFactoryBeanParser extends AbstractSingleBeanDefinitionParser 
 	}
 
 	protected void doParse(Element element, BeanDefinitionBuilder bean) {
-		bean.addPropertyValue("configuration", element.getAttribute("name"));
+		bean.addPropertyValue("resourceName", element.getAttribute("resource"));
+		bean.addPropertyValue("format", element.getAttribute("format"));
+		bean.addPropertyValue("strict", element.getAttribute("strict"));
 	}
 
 }

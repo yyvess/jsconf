@@ -46,16 +46,15 @@ public class ConfigTest {
 	@Test
 	@Repeat(value = 10)
 	public void test() throws URISyntaxException, InterruptedException {
-		this.beanFactory.setConfiguration("org/jsconf/core/test/app");
+		this.beanFactory.setResourceName("org/jsconf/core/test/app");
 		this.beanFactory.reload();
 		testLoad();
-		this.beanFactory.setConfiguration("org/jsconf/core/test/app_reload");
+		this.beanFactory.setResourceName("org/jsconf/core/test/app_reload");
 		this.beanFactory.reload();
 		testLoadReload();
 	}
 
 	public void testLoad() {
-
 		Assert.assertEquals("Hello World, I a spring bean!", this.service.getValue());
 		Assert.assertEquals("Hello", this.v.getValue());
 		Assert.assertEquals("Hello", this.v.getValue());

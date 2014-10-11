@@ -3,20 +3,17 @@ JSON configuration library for Java Spring application, build on the top of Type
 JSConf
 ======
 
-Configure your spring application with JSON instead of placeholder.
+Configure easily your applications with configurations format JSON instead of properties files.
 
 
 ## Overview
 
-- JSON format
+- JSON / HOCON formats
 - Spring integration 
-- Support reloading
-- Support spring profile
-- Configuration files can be spited to outsource only variables
+- Hot reloading
+- Spring profile
+- Spit configuration files to outsource only variables
 
-Planned tasks :
-- Auto reloading
-- Documentation
 
 ####Feedback 
 We welcome your feedback jsconf@jmob.net
@@ -29,12 +26,12 @@ File `app.conf` :
 
 ```javascript
 {
-	datasource : {
-	    _class : "org.apache.commons.dbcp.BasicDataSource",
-	    driverClassName : "com.mysql.jdbc.Driver",
-	    url : "jdbc:mysql://localhost:3306/test",
-	    username : "user",
-	    password : "********"
+	"datasource" : {
+	    "@Class" : "org.apache.commons.dbcp.BasicDataSource",
+	    "driverClassName" : "com.mysql.jdbc.Driver",
+	    "url" : "jdbc:mysql://localhost:3306/test",
+	    "username" : "user",
+	    "password" : "********"
 	}
 }
 ```
@@ -48,19 +45,19 @@ public class Service {
 }
 ```
 
-####Splited configuration
+####Split configuration
 
-Internal configuration file `app.def.conf`  :
+Embedded configuration file `app.def.conf`  :
 
 ```javascript
 {
-	datasource : {
-	        _class : "org.apache.commons.dbcp.BasicDataSource",
-	        driverClassName : "com.mysql.jdbc.Driver"
+	"datasource" : {
+	        "@Class" : "org.apache.commons.dbcp.BasicDataSource",
+	        "driverClassName" : "com.mysql.jdbc.Driver"
 	},     
-	sequence : {
-        _class : "org.jsconf.core.sample.Sequence",
-        _ref : {dataSource : datasource}
+	"sequence" : {
+        "@Class" : "org.jsconf.core.sample.Sequence",
+        "@Ref" : {dataSource : datasource}
     }
 }
 ```
@@ -94,16 +91,16 @@ public class Service {
 
 ####Simple configuration bean
 
-Internal configuration file `app.def.conf`  :
+Embedded configuration file `app.def.conf`  :
 
 - keyword PROXY is mandatory is you need support hot reload
 
 ```javascript
 {
-	simpleConf : {
-	    _id : "MyConf",
-	    _proxy : "true"
-	    _parent : "confAbstract"
+	"simpleConf" : {
+	    "@Id" : "MyConf",
+	    "@Proxy" : "true"
+	    "@Parent" : "confAbstract"
     }
 }
 ```
@@ -146,9 +143,8 @@ public class Service {
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 	
-	<bean class="org.jsconf.core.ConfigurationFactory"/>
-	
-	<bean id="confAbstract" class="SimpleConf" abstract="true"/>
+	<jsconf:factory id="factory" resource="org/jsconf/core/test/app" />	
+	<bean id="confAbstract" class="SimpleConf" abstract="true"/>	
 	
 </beans>
 ```
@@ -164,4 +160,4 @@ public class Service {
 
 The license is Apache 2.0, see LICENSE file.
 
-Copyright (c) 2013, Yves Galante
+Copyright (c) 2013-2014, Yves Galante
