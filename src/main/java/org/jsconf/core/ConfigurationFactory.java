@@ -110,7 +110,6 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 			this.defConfig = c.withFallback(this.defConfig);
 		}
 		this.defConfig = this.devConfig.withFallback(this.defConfig);
-		this.log.debug("Configuration loaded");
 		this.log.debug("Initalize beans");
 		for (Entry<String, ConfigValue> entry : this.defConfig.root().entrySet()) {
 			BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(entry);
@@ -134,7 +133,6 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 		if (beanBuilder.isProxy()) {
 			this.proxyBeanName.add(beanId);
 		}
-		this.log.debug("Regitre bean id : {}", beanId);
 		this.beanName.add(beanId);
 		return beanId;
 	}

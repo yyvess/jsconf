@@ -41,7 +41,6 @@ public class BeanFactory {
 	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, REF, PROXY };
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
 	private final ConfigurationFactory confFactory;
 	private final GenericApplicationContext context;
 
@@ -85,15 +84,16 @@ public class BeanFactory {
 	}
 
 	public String registerBean() {
+		String id = this.id;
 		BeanDefinitionBuilder beanDef;
-		if (StringUtils.isEmpty(this.id)) {
+		if (StringUtils.isEmpty(id)) {
 			if (StringUtils.hasText(this.childName)) {
-				this.id = "child-" + childName;
+				id = this.childName;
 			} else {
-				this.id = this.key;
+				id = this.key;
 			}
 		}
-		this.log.debug("Initalize bean id : {}", this.id);
+		this.log.debug("Initalize bean id : {}", id);
 		if (StringUtils.hasText(this.parentId)) {
 			beanDef = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
 			if (StringUtils.hasText(this.className)) {
@@ -108,22 +108,16 @@ public class BeanFactory {
 				throw new FatalBeanException("Class not found", e);
 			}
 		} else {
-			this.log.error("Bean have not Class and parent Id defined", this.id);
+			this.log.error("Bean have not Class and parent Id defined", id);
 			throw new FatalBeanException("Bean have not class or parent defined");
 		}
-		this.log.debug("Set properties on bean id : {}", this.id);
-		setBeanProperties(this.properties, beanDef);
-		this.log.debug("Regitre bean id : {}", this.id);
-		this.context.registerBeanDefinition(this.id, beanDef.getBeanDefinition());
-		return this.id;
+		setBeanProperties(beanDef, id, this.properties);
+		this.log.debug("Regitre bean id : {}", id);
+		this.context.registerBeanDefinition(id, beanDef.getBeanDefinition());
+		return id;
 	}
 
-	private BeanFactory withChildName(String childName) {
-		this.childName = childName;
-		return this;
-	}
-
-	private void setBeanProperties(Map<String, ConfigValue> properties, BeanDefinitionBuilder beanDef) {
+	private void setBeanProperties(BeanDefinitionBuilder beanDef, String id, Map<String, ConfigValue> properties) {
 		if (properties != null) {
 			int childId = 0;
 			for (Entry<String, ConfigValue> e : properties.entrySet()) {
@@ -131,7 +125,7 @@ public class BeanFactory {
 				if (valueType.equals(ConfigValueType.OBJECT)) {
 					if (isABeanConfigEntry(e)) {
 						BeanFactory beanBuilder = new BeanFactory(this.confFactory, this.context);
-						beanBuilder.withConfig(e).withChildName(this.id.concat("-child-") + ++childId);
+						beanBuilder.withConfig(e).defineChildName(id, ++childId);
 						beanDef.addPropertyReference(e.getKey(), beanBuilder.registerBean());
 					} else if (REF.equals(e.getKey())) {
 						@SuppressWarnings("unchecked")
@@ -147,6 +141,11 @@ public class BeanFactory {
 				}
 			}
 		}
+	}
+
+	private BeanFactory defineChildName(String parentId, int childId) {
+		this.childName = parentId.concat("-child-") + childId;
+		return this;
 	}
 
 	private <T> T getBeanValue(Entry<String, ConfigValue> entry, String key) {

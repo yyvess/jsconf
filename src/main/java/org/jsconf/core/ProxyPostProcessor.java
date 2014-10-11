@@ -49,7 +49,7 @@ public class ProxyPostProcessor {
 				List<Class<?>> asList = new ArrayList<Class<?>>();
 				asList.addAll(Arrays.asList(bean.getClass().getInterfaces()));
 				asList.add(BeanProxy.class);
-				Class<?>[] interfaces = asList.toArray(new Class<?>[0]);
+				Class<?>[] interfaces = asList.toArray(new Class<?>[asList.size()]);
 				proxy = (BeanProxy) Proxy.newProxyInstance(cl, interfaces, new ProxyHeandler());
 				this.proxyRef.put(beanName, proxy);
 			}
