@@ -125,7 +125,7 @@ Configuration file `app.json` :
 	}
 }
 ```
-When the configuration is reloaded, beans are seamlessly updated on your services.
+When the configuration files change, beans are seamlessly updated on your services.
 
 ```java  
 @Service("service")
