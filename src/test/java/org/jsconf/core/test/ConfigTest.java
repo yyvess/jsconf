@@ -54,7 +54,7 @@ public class ConfigTest {
 		testLoadReload();
 	}
 
-	public void testLoad() {
+	private void testLoad() {
 		Assert.assertEquals("Hello World, I a spring bean!", this.service.getValue());
 		Assert.assertEquals("Hello", this.v.getValue());
 		Assert.assertEquals("Hello", this.v.getValue());
@@ -77,7 +77,7 @@ public class ConfigTest {
 		Assert.assertEquals("{word1=Hello}", this.v.getAMap().toString());
 	}
 
-	public void testLoadReload() throws URISyntaxException, InterruptedException {
+	private void testLoadReload() throws URISyntaxException, InterruptedException {
 		Assert.assertEquals("Hello World, I a spring bean!", this.service.getValue());
 		Assert.assertEquals("Hello 2", this.v.getValue());
 		Assert.assertEquals(10, this.v.getAInt());

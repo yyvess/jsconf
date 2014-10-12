@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jsconf.core.service.ConfigWatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -43,6 +44,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 	private static final String DEFAULT_SUFIX_DEF = "def";
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final ConfigWatchService watchService = new ConfigWatchService(this);
 	private final Set<String> beanName = new HashSet<String>();
 	private final Set<String> proxyBeanName = new HashSet<String>();
 
@@ -118,6 +120,9 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 			}
 		}
 		this.log.debug("Beans are initalzed");
+		if (!this.proxyBeanName.isEmpty()) {
+			this.watchService.watch(this.resourceName);
+		}
 	}
 
 	private void clearContext() {

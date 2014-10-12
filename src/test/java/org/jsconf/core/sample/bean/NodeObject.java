@@ -14,12 +14,26 @@
  * limitations under the License.
  *
  */
-package org.jsconf.core.sample;
+package org.jsconf.core.sample.bean;
 
-public interface ConfInterface {
+public class NodeObject {
 
-	String getVstring();
+	private String name;
+	private ConfObject child;
 
-	void setVstring(String vstring);
+	public ConfObject getChild() {
+		return this.child;
+	}
 
+	public void setChild(ConfObject child) {
+		this.child = child;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

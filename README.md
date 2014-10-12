@@ -5,7 +5,6 @@ JSConf
 
 Configure easily your applications with format JSON instead of flat properties files.
 
-
 ## Overview
 
 - JSON / HOCON formats
@@ -14,12 +13,9 @@ Configure easily your applications with format JSON instead of flat properties f
 - Spring profile
 
 
-####Feedback 
-We welcome your feedback jsconf@jmob.net
-
 ##Examples
 
-####A Simple bean 
+####Simplest bean definition 
 
 File `app.conf` :
 
@@ -64,7 +60,7 @@ Initialize the factory on your applicationContext.xml
 Define only values on your first configuration file. 
 Into a second file packaged with your application, define beans.
 
-External configuration file `app.conf` :
+Your external configuration file `app.conf` :
 
 ```javascript
 {
@@ -88,7 +84,7 @@ Beans definition `app.def.conf`  :
 	        "driverClassName" : "com.mysql.jdbc.Driver"
 	},     
 	"sequence" : {
-        "@Class" : "org.jsconf.core.sample.Sequence",
+        "@Class" : "org.jsconf.core.sample.bean.Sequence",
         "@Ref" : {dataSource : datasource}
     }
 }
@@ -108,7 +104,7 @@ public class Service {
 }
 ```
 
-####Active hot reloading support
+####Hot reloading support
 
 Add the keyword "@Proxy" at your bean definition.
 
@@ -153,3 +149,6 @@ public class Service {
 The license is Apache 2.0, see LICENSE file.
 
 Copyright (c) 2013-2014, Yves Galante
+
+####Feedback 
+We welcome your feedback jsconf@jmob.net

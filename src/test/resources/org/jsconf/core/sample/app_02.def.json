@@ -1,5 +1,5 @@
 {
     "simpleConf" : {
-        "@Class" : "org.jsconf.core.sample.ConfObject"
+        "@Class" : "org.jsconf.core.sample.bean.ConfObject"
     }
 }

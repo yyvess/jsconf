@@ -16,6 +16,7 @@
  */
 package org.jsconf.core.sample;
 
+import org.jsconf.core.sample.bean.Sequence;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

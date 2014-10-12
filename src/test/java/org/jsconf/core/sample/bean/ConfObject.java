@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.jsconf.core.sample;
+package org.jsconf.core.sample.bean;
 
 import java.util.List;
 import java.util.Map;

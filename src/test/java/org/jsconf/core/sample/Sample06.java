@@ -17,6 +17,7 @@
 package org.jsconf.core.sample;
 
 import org.jsconf.core.ConfigurationFactory;
+import org.jsconf.core.sample.bean.ConfInterface;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
