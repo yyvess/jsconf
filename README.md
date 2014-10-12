@@ -115,9 +115,9 @@ Configuration file `app.json` :
 	"simpleConf" : {
 	    "@Proxy" : "true"
 	    "@Class" : "org.jsconf.core.test.MyConfig",
-	    "vstring : "Hello World",
-	    "vint : 12,
-	    "vmap : {
+	    "vstring" : "Hello World",
+	    "vint" : 12,
+	    "vmap" : {
 	       "key1" : "value1",
 	       "key2" : "value2"
 	    },
