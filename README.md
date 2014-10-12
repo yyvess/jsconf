@@ -3,7 +3,7 @@ JSON configuration library for Java Spring application, build on the top of Type
 JSConf
 ======
 
-Configure easily your applications with configurations format JSON instead of properties files.
+Configure easily your applications with format JSON instead of flat properties files.
 
 
 ## Overview
@@ -12,7 +12,6 @@ Configure easily your applications with configurations format JSON instead of pr
 - Spring integration 
 - Hot reloading
 - Spring profile
-- Spit configuration files to outsource only variables
 
 
 ####Feedback 
@@ -20,7 +19,7 @@ We welcome your feedback jsconf@jmob.net
 
 ##Examples
 
-####Simple data-source 
+####A Simple bean 
 
 File `app.conf` :
 
@@ -35,7 +34,7 @@ File `app.conf` :
 	}
 }
 ```
-
+Use it as a bean Spring ... it's a bean Spring 
 ```java  
 @Service("service")
 public class Service {
@@ -45,9 +44,42 @@ public class Service {
 }
 ```
 
-####Split configuration
+Initialize the factory on your applicationContext.xml
+```xml  
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:jsconf="http://www.jmob.net/schema/jsconf"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.jmob.net/schema/jsconf
+	http://www.jmob.net/schema/jsconf/jsconf-1.0.xsd">
+	
+	<jsconf:factory id="factory" resource="org/jsconf/core/test/app" format="CONF"/>
+	 
+</beans>
+```
 
-Embedded configuration file `app.def.conf`  :
+####Externalize only values
+
+Define only values on your first configuration file. 
+Into a second file packaged with your application, define beans.
+
+External configuration file `app.conf` :
+
+```javascript
+{
+	datasource : {
+	    url : "jdbc:mysql://localhost:3306/test",
+	    username : "user",
+	    password : "********"
+	}, 
+	sequence : {
+ 		name : "SEQ_ID"
+	}
+}
+```
+
+Beans definition `app.def.conf`  :
 
 ```javascript
 {
@@ -62,20 +94,7 @@ Embedded configuration file `app.def.conf`  :
 }
 ```
 
-External configuration file `app.conf` :
-
-```javascript
-{
-	datasource : {
-	    url : "jdbc:mysql://localhost:3306/test",
-	    username : "user",
-	    password : "********"
-	}, 
-	sequence : {
- 		name : "SEQ_NAME"
-	}
-}
-```
+And inject your bean ..
 
 ```java  
 @Service("service")
@@ -89,67 +108,40 @@ public class Service {
 }
 ```
 
-####Simple configuration bean
+####Active hot reloading support
 
-Embedded configuration file `app.def.conf`  :
+Add the keyword "@Proxy" at your bean definition.
 
-- keyword PROXY is mandatory is you need support hot reload
+Configuration file `app.json` :
 
 ```javascript
 {
 	"simpleConf" : {
-	    "@Id" : "MyConf",
 	    "@Proxy" : "true"
-	    "@Parent" : "confAbstract"
-    }
-}
-```
-
-
-External configuration file `app.conf` :
-
-```javascript
-{
-	simpleConf : {
-	    vstring : "Hello World",
-	    vint : 12,
-	    vmap : {
-	       key1 : "value1",
-	       key2 : "value2"
+	    "@Class" : "org.jsconf.core.test.MyConfig",
+	    "vstring : "Hello World",
+	    "vint : 12,
+	    "vmap : {
+	       "key1" : "value1",
+	       "key2" : "value2"
 	    },
-	    vlist : [ "value1", "value2"]
+	    "vlist" : [ "value1", "value2"]
 	}
 }
 ```
-
-The configuration bean is directly injected to a spring service
+When the configuration is reloaded, beans are seamlessly updated on your services.
 
 ```java  
 @Service("service")
 public class Service {
 
-	@Autowired
-	@Qualifier("MyConf")
-    private Conf conf;
+    @Autowired
+    private MyConfig conf;
 }
 ```
 
-```xml  
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/context
-	http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-	
-	<jsconf:factory id="factory" resource="org/jsconf/core/test/app" />	
-	<bean id="confAbstract" class="SimpleConf" abstract="true"/>	
-	
-</beans>
-```
 
-- Find more examples in `src\test\resources\org\jsconf\core\sample`
+- Find more samples in `src\test\resources\org\jsconf\core\sample`
 
 ## References
 
