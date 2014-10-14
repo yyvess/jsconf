@@ -62,16 +62,32 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 		}
 	}
 
+	public ConfigurationFactory withFormat(String format) {
+		setFormat(format);
+		return this;
+	}
+
 	public void setStrict(String strict) {
 		if (StringUtils.hasText(strict)) {
 			options = options.setAllowMissing(!Boolean.valueOf(strict));
 		}
 	}
 
+	public ConfigurationFactory withStrict(String strict) {
+		setStrict(strict);
+		return this;
+	}
+
 	public void setResourceName(String resource) {
 		this.resourceName = resource;
 	}
 
+	public ConfigurationFactory withResourceName(String resource) {
+		setResourceName(resource);
+		return this;
+	}
+
+	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		loadContext();
 	}
@@ -82,6 +98,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 		this.proxyPostProcessor.forceProxyInitalization();
 	}
 
+	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (this.proxyBeanName.contains(beanName)) {
 			return this.proxyPostProcessor.postProcessBeforeInitialization(bean, beanName);
@@ -89,10 +106,12 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 		return bean;
 	}
 
+	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		return bean;
 	}
 
+	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.context = (GenericApplicationContext) applicationContext;
 		this.proxyPostProcessor = new ProxyPostProcessor(applicationContext);

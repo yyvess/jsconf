@@ -57,14 +57,15 @@ public class ConfigWatchService {
 	private static final class WatchTask implements Runnable {
 
 		private final Logger log = LoggerFactory.getLogger(this.getClass());
-		private ConfigurationFactory configuration;
-		private Path path;
+		private final ConfigurationFactory configuration;
+		private final Path path;
 
 		private WatchTask(ConfigurationFactory configuration, Path path) {
 			this.configuration = configuration;
 			this.path = path;
 		}
 
+		@Override
 		public void run() {
 			try {
 				try (WatchService watchService = path.getFileSystem().newWatchService()) {

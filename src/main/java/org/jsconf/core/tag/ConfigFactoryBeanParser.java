@@ -23,10 +23,12 @@ import org.w3c.dom.Element;
 
 public class ConfigFactoryBeanParser extends AbstractSingleBeanDefinitionParser {
 
+	@Override
 	protected Class<ConfigurationFactory> getBeanClass(Element element) {
 		return ConfigurationFactory.class;
 	}
 
+	@Override
 	protected void doParse(Element element, BeanDefinitionBuilder bean) {
 		bean.addPropertyValue("resourceName", element.getAttribute("resource"));
 		bean.addPropertyValue("format", element.getAttribute("format"));

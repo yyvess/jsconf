@@ -39,14 +39,17 @@ public class MyConfig implements MyConfigInterface {
 	@Qualifier("springOnConf")
 	private SimpleBeanSpring springBean;
 
+	@Override
 	public String getValue() {
 		return this.value;
 	}
 
+	@Override
 	public String getValueSpring() {
 		return this.springBean.getValue();
 	}
 
+	@Override
 	public String getValueSpringConfigured() {
 		return this.springBeanConfigured.getValue();
 	}
@@ -55,6 +58,7 @@ public class MyConfig implements MyConfigInterface {
 		this.value = value;
 	}
 
+	@Override
 	public MyConfigInterface getAChild() {
 		return this.aChild;
 	}
@@ -63,6 +67,7 @@ public class MyConfig implements MyConfigInterface {
 		this.aChild = aChild;
 	}
 
+	@Override
 	public int getAInt() {
 		return this.aInt;
 	}
@@ -71,6 +76,7 @@ public class MyConfig implements MyConfigInterface {
 		this.aInt = aInt;
 	}
 
+	@Override
 	public Map<String, String> getAMap() {
 		return this.aMap;
 	}

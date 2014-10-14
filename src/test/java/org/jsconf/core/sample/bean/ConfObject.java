@@ -26,10 +26,12 @@ public class ConfObject implements ConfInterface {
 	private Map<String, String> vmap;
 	private List<String> vlist;
 
+	@Override
 	public String getVstring() {
 		return this.vstring;
 	}
 
+	@Override
 	public void setVstring(String vstring) {
 		this.vstring = vstring;
 	}
