@@ -34,11 +34,12 @@ public class BeanFactory {
 
 	private static final String ID = "@Id";
 	private static final String CLASS = "@Class";
+	private static final String INTERFACE = "@Interface";
 	private static final String PARENT = "@Parent";
 	private static final String REF = "@Ref";
 	private static final String PROXY = "@Proxy";
 
-	private static final String[] RESERVED_WORD = { ID, CLASS, PARENT, REF, PROXY };
+	private static final String[] RESERVED_WORD = { ID, CLASS, INTERFACE, PARENT, REF, PROXY };
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private final ConfigurationFactory confFactory;
@@ -47,6 +48,7 @@ public class BeanFactory {
 	private String key;
 	private String id;
 	private String className;
+	private String interfaceName;
 	private String parentId;
 	private String childName;
 	private boolean proxy;
@@ -67,6 +69,7 @@ public class BeanFactory {
 		this.key = config.getKey();
 		this.id = getBeanValue(config, ID);
 		this.className = getBeanValue(config, CLASS);
+		this.interfaceName = getBeanValue(config, INTERFACE);
 		this.parentId = getBeanValue(config, PARENT);
 		this.proxy = Boolean.TRUE.equals(getBeanValue(config, PROXY));
 		if (isAMap(config.getValue())) {
@@ -103,6 +106,19 @@ public class BeanFactory {
 		} else if (StringUtils.hasText(this.className)) {
 			try {
 				beanDef = BeanDefinitionBuilder.genericBeanDefinition(Class.forName(this.className));
+			} catch (ClassNotFoundException e) {
+				this.log.error("Class not found : {}", this.className);
+				throw new FatalBeanException("Class not found", e);
+			}
+		} else if (StringUtils.hasText(this.interfaceName)) {
+			try {
+				Class<?> classBean = Class.forName(this.interfaceName);
+				if (!classBean.isInterface()) {
+					this.log.error("Interface {} is not a interface.", this.interfaceName);
+				}
+				beanDef = BeanDefinitionBuilder.genericBeanDefinition(VirtualBean.class);
+				beanDef.setFactoryMethod("factory");
+				beanDef.addConstructorArgValue(classBean);
 			} catch (ClassNotFoundException e) {
 				this.log.error("Class not found : {}", this.className);
 				throw new FatalBeanException("Class not found", e);
@@ -163,7 +179,7 @@ public class BeanFactory {
 		Object unwrapped = entry.getValue().unwrapped();
 		if (isAMap(unwrapped)) {
 			Map<?, ?> m = (Map<?, ?>) unwrapped;
-			return m.containsKey(CLASS) || m.containsKey(PARENT);
+			return m.containsKey(CLASS) || m.containsKey(INTERFACE) || m.containsKey(PARENT);
 		}
 		return false;
 	}

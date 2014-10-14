@@ -16,24 +16,17 @@
  */
 package org.jsconf.core.sample.bean;
 
-public class NodeObject {
+import java.util.List;
+import java.util.Map;
 
-	private String name;
-	private ComplexObject child;
+public interface ComplexInterface {
 
-	public ComplexObject getChild() {
-		return this.child;
-	}
+	String getVstring();
 
-	public void setChild(ComplexObject child) {
-		this.child = child;
-	}
+	int getVint();
 
-	public String getName() {
-		return this.name;
-	}
+	Map<?, ?> getVmap();
+	
+	List<?> getVlist();
 
-	public void setName(String name) {
-		this.name = name;
-	}
 }

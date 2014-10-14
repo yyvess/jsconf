@@ -16,20 +16,24 @@
  */
 package org.jsconf.core.sample;
 
-import org.jsconf.core.sample.bean.ConfObject;
+import org.jsconf.core.ConfigurationFactory;
+import org.jsconf.core.sample.bean.ConfByInterface;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_02.xml" })
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample02 {
 
 	@Autowired
-	private ConfObject conf;
+	private ConfByInterface conf;
 
 	@Test
 	public void test() {
@@ -41,5 +45,13 @@ public class Sample02 {
 		Assert.assertEquals("value2", this.conf.getVmap().get("key2"));
 		Assert.assertEquals("value1", this.conf.getVlist().get(0));
 		Assert.assertEquals("value2", this.conf.getVlist().get(1));
+	}
+
+	@Configuration
+	static class ContextConfiguration {
+		@Bean
+		public ConfigurationFactory configurationFactory() {
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_02");
+		}
 	}
 }

@@ -19,7 +19,7 @@ package org.jsconf.core.sample.bean;
 import java.util.List;
 import java.util.Map;
 
-public class ConfObject implements ConfInterface {
+public class ComplexObject implements ComplexInterface {
 
 	private String vstring;
 	private int vint;
@@ -31,11 +31,11 @@ public class ConfObject implements ConfInterface {
 		return this.vstring;
 	}
 
-	@Override
 	public void setVstring(String vstring) {
 		this.vstring = vstring;
 	}
 
+	@Override
 	public int getVint() {
 		return this.vint;
 	}
@@ -44,6 +44,7 @@ public class ConfObject implements ConfInterface {
 		this.vint = vint;
 	}
 
+	@Override
 	public Map<String, String> getVmap() {
 		return this.vmap;
 	}
@@ -52,6 +53,7 @@ public class ConfObject implements ConfInterface {
 		this.vmap = vmap;
 	}
 
+	@Override
 	public List<String> getVlist() {
 		return this.vlist;
 	}

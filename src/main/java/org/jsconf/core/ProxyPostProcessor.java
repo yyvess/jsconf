@@ -50,7 +50,7 @@ public class ProxyPostProcessor {
 				asList.addAll(Arrays.asList(bean.getClass().getInterfaces()));
 				asList.add(BeanProxy.class);
 				Class<?>[] interfaces = asList.toArray(new Class<?>[asList.size()]);
-				proxy = (BeanProxy) Proxy.newProxyInstance(cl, interfaces, new ProxyHeandler());
+				proxy = (BeanProxy) Proxy.newProxyInstance(cl, interfaces, new ProxyHandler());
 				this.proxyRef.put(beanName, proxy);
 			}
 			proxy.setBean(bean);
@@ -76,11 +76,11 @@ public class ProxyPostProcessor {
 		public void setBean(Object bean);
 	}
 
-	private static class ProxyHeandler implements InvocationHandler {
+	private static class ProxyHandler implements InvocationHandler {
 
 		private Object bean;
 
-		public ProxyHeandler() {
+		public ProxyHandler() {
 		}
 
 		@Override

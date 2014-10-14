@@ -1,5 +1,5 @@
 {
     "simpleConf" : {
-        "@Class" : "org.jsconf.core.sample.bean.ConfObject"
+        "@Interface" : "org.jsconf.core.sample.bean.ConfByInterface"
     }
 }
