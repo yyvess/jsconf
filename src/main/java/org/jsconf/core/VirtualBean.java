@@ -13,12 +13,16 @@ import org.springframework.jmx.access.InvocationFailureException;
 
 public class VirtualBean implements InvocationHandler {
 
+	private static final String GET_PREFIX = "get";
+	private static final String HASH_CODE_METHOD = "hashCode";
+	private static final String EQUALS_METHOD = "equals";
+
 	private final Map<String, Object> values;
 
 	public VirtualBean(Map<String, Object> values) {
 		this.values = new HashMap<String, Object>();
-		for (Entry<String, Object> e : values.entrySet()) {
-			this.values.put(toMethodeName(e.getKey()), e.getValue());
+		for (Entry<String, Object> e : values == null ? this.values.entrySet() : values.entrySet()) {
+			this.values.put(toGetMethod(e.getKey()), e.getValue());
 		}
 	}
 
@@ -26,28 +30,29 @@ public class VirtualBean implements InvocationHandler {
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		String methodName = method.getName();
 		int nbArgs = nbArgs(args);
-		if (methodName.startsWith("get")) {
-			if (nbArgs != 0) {
-				throw new InvocationFailureException(String.format("Incorect arg for method %s", methodName));
-			}
-			return values.get(methodName);
-		} else if (methodName.startsWith("equals") && nbArgs == 1) {
-			return equals(args[0]);
-		} else if (methodName.startsWith("hashCode") && nbArgs == 0) {
+		if (methodName.startsWith(GET_PREFIX) && nbArgs == 0) {
+			return magicGet(methodName);
+		} else if (methodName.startsWith(HASH_CODE_METHOD) && nbArgs == 0) {
 			return hashCode();
+		} else if (methodName.startsWith(EQUALS_METHOD) && nbArgs == 1) {
+			return equals(args[0]);
 		}
-		throw new InvocationFailureException(String.format("Incorect method name %s", methodName));
+		throw new InvocationFailureException(String.format("Incorect method name %s:%s", methodName, nbArgs));
+	}
+
+	private Object magicGet(String methodName) {
+		return values.get(methodName);
 	}
 
 	private int nbArgs(Object[] args) {
 		return args == null ? 0 : args.length;
 	}
 
-	private String toMethodeName(String propertyName) {
+	private String toGetMethod(String propertyName) {
 		if (propertyName.length() <= 1) {
-			return "get" + propertyName.toUpperCase();
+			return GET_PREFIX + propertyName.toUpperCase();
 		}
-		return "get" + propertyName.substring(0, 1).toUpperCase().concat(propertyName.substring(1));
+		return GET_PREFIX + propertyName.substring(0, 1).toUpperCase().concat(propertyName.substring(1));
 	}
 
 	@Override

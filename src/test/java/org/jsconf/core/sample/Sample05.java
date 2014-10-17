@@ -22,12 +22,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.Repeat;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_05.xml" })
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample05 {
 
 	@Autowired
@@ -48,5 +51,13 @@ public class Sample05 {
 		Assert.assertEquals("Tac", this.conf.getVstring());
 		this.factory.setResourceName("org/jsconf/core/sample/app_05");
 		this.factory.reload();
+	}
+
+	@Configuration
+	static class ContextConfiguration {
+		@Bean
+		public ConfigurationFactory configurationFactory() {
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_05");
+		}
 	}
 }

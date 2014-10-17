@@ -16,16 +16,20 @@
  */
 package org.jsconf.core.sample;
 
+import org.jsconf.core.ConfigurationFactory;
 import org.jsconf.core.sample.bean.Sequence;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_04.xml" })
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample04 {
 
 	@Autowired
@@ -37,5 +41,13 @@ public class Sample04 {
 		Assert.assertEquals("SEQ_NAME", this.sequence.getName());
 		Assert.assertEquals("org.apache.commons.dbcp.BasicDataSource", this.sequence.getDataSource().getClass()
 				.getName());
+	}
+
+	@Configuration
+	static class ContextConfiguration {
+		@Bean
+		public ConfigurationFactory configurationFactory() {
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_04");
+		}
 	}
 }
