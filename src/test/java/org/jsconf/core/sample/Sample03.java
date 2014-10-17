@@ -16,7 +16,7 @@
  */
 package org.jsconf.core.sample;
 
-import org.jsconf.core.sample.bean.NodeObject;
+import org.jsconf.core.sample.bean.SpringBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,11 +31,11 @@ public class Sample03 {
 
 	@Autowired
 	@Qualifier("node")
-	private NodeObject node1;
+	private SpringBean node1;
 
 	@Autowired
 	@Qualifier("Node_02")
-	private NodeObject node2;
+	private SpringBean node2;
 
 	@Test
 	public void test() {

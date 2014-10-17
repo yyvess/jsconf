@@ -17,7 +17,7 @@
 package org.jsconf.core.sample;
 
 import org.jsconf.core.ConfigurationFactory;
-import org.jsconf.core.sample.bean.ConfByInterface;
+import org.jsconf.core.sample.bean.ConfigBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 public class Sample02 {
 
 	@Autowired
-	private ConfByInterface conf;
+	// Interface has no implementation
+	private ConfigBean conf;
 
 	@Test
 	public void test() {

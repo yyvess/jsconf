@@ -19,22 +19,14 @@ package org.jsconf.core.sample.bean;
 import java.util.List;
 import java.util.Map;
 
-public interface ConfByInterface {
+public interface ConfigBean {
 
 	String getVstring();
 
 	int getVint();
 
 	Map<?, ?> getVmap();
-	
+
 	List<?> getVlist();
-
-	void setVlist(List<String> vlist);
-
-	void setVmap(Map<String, String> vmap);
-
-	void setVint(int vint);
-
-	void setVstring(String vstring);
 
 }

@@ -11,7 +11,7 @@
 
 	<jsconf:factory id="factory" resource="org/jsconf/core/sample/app_03"/>
 	
-	<bean id="abtractNode" class="org.jsconf.core.sample.bean.NodeObject" abstract="true">
+	<bean id="abtractNode" class="org.jsconf.core.sample.bean.SpringBean" abstract="true">
 		<property name="name" value="yves" />
 	</bean>
 

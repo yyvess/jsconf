@@ -17,6 +17,7 @@
 package org.jsconf.core;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -98,39 +99,59 @@ public class BeanFactory {
 		}
 		this.log.debug("Initalize bean id : {}", id);
 		if (StringUtils.hasText(this.parentId)) {
-			beanDef = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
-			if (StringUtils.hasText(this.className)) {
-				this.log.warn("def.conf : CLASS value :{} is ignored, use PARENT@Id value :{}", this.className,
-						this.parentId);
-			}
+			beanDef = buildBEanFromParent(id);
 		} else if (StringUtils.hasText(this.className)) {
-			try {
-				beanDef = BeanDefinitionBuilder.genericBeanDefinition(Class.forName(this.className));
-			} catch (ClassNotFoundException e) {
-				this.log.error("Class not found : {}", this.className);
-				throw new FatalBeanException("Class not found", e);
-			}
+			beanDef = buildBeanFromClass(id);
 		} else if (StringUtils.hasText(this.interfaceName)) {
-			try {
-				Class<?> classBean = Class.forName(this.interfaceName);
-				if (!classBean.isInterface()) {
-					this.log.error("Interface {} is not a interface.", this.interfaceName);
-				}
-				beanDef = BeanDefinitionBuilder.genericBeanDefinition(VirtualBean.class);
-				beanDef.setFactoryMethod("factory");
-				beanDef.addConstructorArgValue(classBean);
-			} catch (ClassNotFoundException e) {
-				this.log.error("Class not found : {}", this.className);
-				throw new FatalBeanException("Class not found", e);
-			}
+			beanDef = buildBeanFromInterface();
 		} else {
 			this.log.error("Bean have not Class and parent Id defined", id);
 			throw new FatalBeanException("Bean have not class or parent defined");
 		}
-		setBeanProperties(beanDef, id, this.properties);
 		this.log.debug("Regitre bean id : {}", id);
 		this.context.registerBeanDefinition(id, beanDef.getBeanDefinition());
 		return id;
+	}
+
+	private BeanDefinitionBuilder buildBEanFromParent(String id) {
+		BeanDefinitionBuilder beanDef;
+		beanDef = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
+		if (StringUtils.hasText(this.className)) {
+			this.log.warn("def.conf : CLASS value :{} is ignored, use PARENT@Id value :{}", this.className,
+					this.parentId);
+		}
+		setBeanProperties(beanDef, id, this.properties);
+		return beanDef;
+	}
+
+	private BeanDefinitionBuilder buildBeanFromClass(String id) {
+		try {
+			BeanDefinitionBuilder beanDef;
+			beanDef = BeanDefinitionBuilder.genericBeanDefinition(Class.forName(this.className));
+			setBeanProperties(beanDef, id, this.properties);
+			return beanDef;
+		} catch (ClassNotFoundException e) {
+			this.log.error("Class not found : {}", this.className);
+			throw new FatalBeanException("Class not found", e);
+		}
+	}
+
+	private BeanDefinitionBuilder buildBeanFromInterface() {
+		try {
+			BeanDefinitionBuilder beanDef;
+			Class<?> classBean = Class.forName(this.interfaceName);
+			if (!classBean.isInterface()) {
+				this.log.error("Interface {} is not a interface.", this.interfaceName);
+			}
+			beanDef = BeanDefinitionBuilder.genericBeanDefinition(VirtualBean.class);
+			// TODO set propeties value on construcorbeanDef.setFactoryMethod("factory");
+			beanDef.setFactoryMethod("factory");
+			beanDef.addConstructorArgValue(classBean).addConstructorArgValue(getBeanProperties(this.properties));
+			return beanDef;
+		} catch (ClassNotFoundException e) {
+			this.log.error("Class not found : {}", this.className);
+			throw new FatalBeanException("Class not found", e);
+		}
 	}
 
 	private void setBeanProperties(BeanDefinitionBuilder beanDef, String id, Map<String, ConfigValue> properties) {
@@ -157,6 +178,16 @@ public class BeanFactory {
 				}
 			}
 		}
+	}
+
+	private Map<String, Object> getBeanProperties(Map<String, ConfigValue> properties) {
+		Map<String, Object> values = new HashMap<>();
+		if (properties != null) {
+			for (Entry<String, ConfigValue> e : properties.entrySet()) {
+				values.put(e.getKey(), e.getValue().unwrapped());
+			}
+		}
+		return values;
 	}
 
 	private BeanFactory defineChildName(String parentId, int childId) {

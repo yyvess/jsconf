@@ -17,7 +17,7 @@
 package org.jsconf.core.sample;
 
 import org.jsconf.core.ConfigurationFactory;
-import org.jsconf.core.sample.bean.ComplexInterface;
+import org.jsconf.core.sample.bean.ConfigBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class Sample05 {
 
 	@Autowired
-	private ComplexInterface conf;
+	private ConfigBean conf;
 
 	@Autowired
 	private ConfigurationFactory factory;

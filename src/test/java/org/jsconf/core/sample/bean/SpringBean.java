@@ -16,16 +16,16 @@
  */
 package org.jsconf.core.sample.bean;
 
-public class NodeObject {
+public class SpringBean {
 
 	private String name;
-	private ComplexObject child;
+	private ConfigBean child;
 
-	public ComplexObject getChild() {
+	public ConfigBean getChild() {
 		return this.child;
 	}
 
-	public void setChild(ComplexObject child) {
+	public void setChild(ConfigBean child) {
 		this.child = child;
 	}
 
