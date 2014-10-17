@@ -21,12 +21,12 @@ import java.util.Map;
 
 public interface ConfigBean {
 
-	String getVstring();
+	String getUrl();
 
-	int getVint();
+	int getPort();
 
-	Map<?, ?> getVmap();
+	Map<?, ?> getAMap();
 
-	List<?> getVlist();
+	List<?> getAList();
 
 }

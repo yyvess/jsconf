@@ -45,19 +45,19 @@ public class Sample06 {
 	public void test() {
 		final Object ref = this.conf;
 		Assert.assertNotNull(this.conf);
-		Assert.assertEquals("Tic", this.conf.getVstring());
+		Assert.assertEquals("Tic", this.conf.getUrl());
 
 		this.context.getEnvironment().addActiveProfile("PROD");
 		this.factory.reload();
 
 		Assert.assertTrue(ref == this.conf);
-		Assert.assertEquals("Tac", this.conf.getVstring());
+		Assert.assertEquals("Tac", this.conf.getUrl());
 	}
 
 	@Configuration
 	static class ContextConfiguration {
 		@Bean
-		public ConfigurationFactory configurationFactory() {
+		public static ConfigurationFactory configurationFactory() {
 			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_06");
 		}
 	}

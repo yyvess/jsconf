@@ -47,7 +47,7 @@ public class Sample03 {
 		Assert.assertNotNull(this.node1.getChild());
 		Assert.assertNotNull(this.node2.getChild());
 		Assert.assertNotEquals(this.node1.getChild(), this.node2.getChild());
-		Assert.assertEquals(15, this.node1.getChild().getVint());
-		Assert.assertEquals(25, this.node2.getChild().getVint());
+		Assert.assertEquals(15, this.node1.getChild().getPort());
+		Assert.assertEquals(25, this.node2.getChild().getPort());
 	}
 }

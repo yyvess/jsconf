@@ -46,7 +46,7 @@ public class Sample04 {
 	@Configuration
 	static class ContextConfiguration {
 		@Bean
-		public ConfigurationFactory configurationFactory() {
+		public static ConfigurationFactory configurationFactory() {
 			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_04");
 		}
 	}

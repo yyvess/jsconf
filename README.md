@@ -104,7 +104,7 @@ public class Service {
 }
 ```
 
-####Hot reloading support
+####Hot reloading support 
 
 Add the keyword "@Proxy" at your bean definition.
 
@@ -114,14 +114,14 @@ Configuration file `app.json` :
 {
 	"simpleConf" : {
 	    "@Proxy" : "true"
-	    "@Class" : "org.jsconf.core.test.MyConfig",
-	    "vstring" : "Hello World",
-	    "vint" : 12,
-	    "vmap" : {
+	    "@Interface" : "org.jsconf.core.test.MyConfig",
+	    "url" : "https://localhost",
+	    "port" : 12,
+	    "aMap" : {
 	       "key1" : "value1",
 	       "key2" : "value2"
 	    },
-	    "vlist" : [ "value1", "value2"]
+	    "aList" : [ "value1", "value2"]
 	}
 }
 ```
@@ -135,7 +135,6 @@ public class Service {
     private MyConfig conf;
 }
 ```
-
 
 - Find more samples in `src\test\resources\org\jsconf\core\sample`
 
