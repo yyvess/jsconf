@@ -16,7 +16,9 @@
  */
 package org.jsconf.core;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -45,16 +47,15 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private final ConfigWatchService watchService = new ConfigWatchService(this);
-	private final Set<String> beanName = new HashSet<String>();
-	private final Set<String> proxyBeanName = new HashSet<String>();
+	private final Set<String> beanName = new HashSet<>();
+	private final Set<String> proxyBeanName = new HashSet<>();
 
 	private String resourceName = DEFAULT_CONF_NAME;
 
 	private GenericApplicationContext context;
 	private ProxyPostProcessor proxyPostProcessor;
 	private ConfigParseOptions options = ConfigParseOptions.defaults();
-	private Config devConfig;
-	private Config defConfig;
+	private Config config = ConfigFactory.empty();
 
 	public void setFormat(String format) {
 		if (StringUtils.hasText(format)) {
@@ -84,6 +85,35 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 
 	public ConfigurationFactory withResourceName(String resource) {
 		setResourceName(resource);
+		return this;
+	}
+
+	public ConfigurationFactory withBean(String path, Class<?> bean, String id) {
+		Map<String, String> properties = new HashMap<>(2);
+		Map<String, Map<String, String>> object = new HashMap<>(2);
+		if (StringUtils.hasText(id)) {
+			properties.put("\"" + BeanFactory.ID + "\"", id);
+		}
+		if (bean.isInterface()) {
+			properties.put("\"" + BeanFactory.INTERFACE + "\"", bean.getCanonicalName());
+		} else if (bean.isMemberClass()) {
+			properties.put("\"" + BeanFactory.CLASS + "\"", bean.getCanonicalName());
+		}
+		object.put(path, properties);
+		config = config.withFallback(ConfigFactory.parseMap(object));
+		return this;
+	}
+
+	public ConfigurationFactory withBean(String path, Class<?> bean) {
+		Map<String, String> properties = new HashMap<>(2);
+		Map<String, Map<String, String>> object = new HashMap<>(2);
+		if (bean.isInterface()) {
+			properties.put("\"@Interface\"", bean.getCanonicalName());
+		} else {
+			properties.put("\"@Class\"", bean.getCanonicalName());
+		}
+		object.put(path, properties);
+		config = config.withFallback(ConfigFactory.parseMap(object));
 		return this;
 	}
 
@@ -118,21 +148,24 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 	}
 
 	private void loadContext() {
+		Config devConfig;
+		Config defConfig;
 		this.log.debug("Loading configuration");
 		String[] profiles = this.context.getEnvironment().getActiveProfiles();
-		this.devConfig = getConfig(this.resourceName, null, null);
+		devConfig = getConfig(this.resourceName, null, null);
 		for (String profile : profiles) {
 			Config c = getConfig(this.resourceName, profile, null);
-			this.devConfig = c.withFallback(this.devConfig);
+			devConfig = c.withFallback(devConfig);
 		}
-		this.defConfig = getConfig(this.resourceName, null, DEFAULT_SUFIX_DEF);
+		defConfig = getConfig(this.resourceName, null, DEFAULT_SUFIX_DEF);
 		for (String profile : profiles) {
 			Config c = getConfig(this.resourceName, profile, DEFAULT_SUFIX_DEF);
-			this.defConfig = c.withFallback(this.defConfig);
+			defConfig = c.withFallback(defConfig);
 		}
-		this.defConfig = this.devConfig.withFallback(this.defConfig);
+		defConfig = devConfig.withFallback(defConfig);
+		defConfig = config.withFallback(defConfig);
 		this.log.debug("Initalize beans");
-		for (Entry<String, ConfigValue> entry : this.defConfig.root().entrySet()) {
+		for (Entry<String, ConfigValue> entry : defConfig.root().entrySet()) {
 			BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(entry);
 			if (beanBuilder.isValid()) {
 				buildBeans(beanBuilder);

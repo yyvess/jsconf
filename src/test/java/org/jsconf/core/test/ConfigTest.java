@@ -16,8 +16,6 @@
  */
 package org.jsconf.core.test;
 
-import java.net.URISyntaxException;
-
 import org.jsconf.core.ConfigurationFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,7 +43,7 @@ public class ConfigTest {
 
 	@Test
 	@Repeat(value = 10)
-	public void test() throws URISyntaxException, InterruptedException {
+	public void test() {
 		this.beanFactory.setResourceName("org/jsconf/core/test/app");
 		this.beanFactory.reload();
 		testLoad();
@@ -77,7 +75,7 @@ public class ConfigTest {
 		Assert.assertEquals("{word1=Hello}", this.v.getAMap().toString());
 	}
 
-	private void testLoadReload() throws URISyntaxException, InterruptedException {
+	private void testLoadReload() {
 		Assert.assertEquals("Hello World, I a spring bean!", this.service.getValue());
 		Assert.assertEquals("Hello 2", this.v.getValue());
 		Assert.assertEquals(10, this.v.getAInt());

@@ -33,7 +33,7 @@ import org.springframework.context.ApplicationContext;
 public class ProxyPostProcessor {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final Map<String, BeanProxy> proxyRef = new HashMap<String, BeanProxy>();
+	private final Map<String, BeanProxy> proxyRef = new HashMap<>();
 
 	private final ApplicationContext context;
 
@@ -46,7 +46,7 @@ public class ProxyPostProcessor {
 			BeanProxy proxy = this.proxyRef.get(beanName);
 			if (proxy == null) {
 				ClassLoader cl = Thread.currentThread().getContextClassLoader();
-				List<Class<?>> asList = new ArrayList<Class<?>>();
+				List<Class<?>> asList = new ArrayList<>();
 				asList.addAll(Arrays.asList(bean.getClass().getInterfaces()));
 				asList.add(BeanProxy.class);
 				Class<?>[] interfaces = asList.toArray(new Class<?>[asList.size()]);

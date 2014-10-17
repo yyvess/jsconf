@@ -55,7 +55,42 @@ Initialize the factory on your applicationContext.xml
 </beans>
 ```
 
-####Externalize only values
+####With JavaConfig
+
+File `app.conf` :
+
+```javascript
+{
+	"datasource" : {
+	    "driverClassName" : "com.mysql.jdbc.Driver",
+	    "url" : "jdbc:mysql://localhost:3306/test",
+	    "username" : "user",
+	    "password" : "********"
+	}
+}
+```
+Use it as a bean Spring ... it's a bean Spring 
+```java  
+@Service("service")
+public class Service {
+
+	@Autowired
+    private DataSource datasource;
+}
+```
+
+```java  
+@Configuration
+static class ContextConfiguration {
+   @Bean
+   public static ConfigurationFactory configurationFactory() {
+      return new ConfigurationFactory().withResourceName("myconfig.conf")
+         .withBean("datasource", BasicDataSource.class);
+   }
+}
+```
+
+####With a def.conf
 
 Define only values on your first configuration file. 
 Into a second file packaged with your application, define beans.

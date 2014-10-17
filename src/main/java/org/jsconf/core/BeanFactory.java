@@ -33,9 +33,9 @@ import com.typesafe.config.ConfigValueType;
 
 public class BeanFactory {
 
-	private static final String ID = "@Id";
-	private static final String CLASS = "@Class";
-	private static final String INTERFACE = "@Interface";
+	protected static final String ID = "@Id";
+	protected static final String CLASS = "@Class";
+	protected static final String INTERFACE = "@Interface";
 	private static final String PARENT = "@Parent";
 	private static final String REF = "@Ref";
 	private static final String PROXY = "@Proxy";

@@ -52,7 +52,8 @@ public class Sample02 {
 	static class ContextConfiguration {
 		@Bean
 		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_02");
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_02").withBean("simpleConf",
+					ConfigBean.class);
 		}
 	}
 }

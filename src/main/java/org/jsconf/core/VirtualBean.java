@@ -20,7 +20,7 @@ public class VirtualBean implements InvocationHandler {
 	private final Map<String, Object> values;
 
 	public VirtualBean(Map<String, Object> values) {
-		this.values = new HashMap<String, Object>();
+		this.values = new HashMap<>();
 		for (Entry<String, Object> e : values == null ? this.values.entrySet() : values.entrySet()) {
 			this.values.put(toGetMethod(e.getKey()), e.getValue());
 		}
@@ -86,7 +86,7 @@ public class VirtualBean implements InvocationHandler {
 	@SuppressWarnings("unchecked")
 	public static <T> T factory(Class<T> beanInterface, Map<String, Object> values) {
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		List<Class<?>> asList = new ArrayList<Class<?>>();
+		List<Class<?>> asList = new ArrayList<>();
 		asList.add(beanInterface);
 		Class<?>[] interfaces = asList.toArray(new Class<?>[asList.size()]);
 		return (T) Proxy.newProxyInstance(cl, interfaces, new VirtualBean(values));
