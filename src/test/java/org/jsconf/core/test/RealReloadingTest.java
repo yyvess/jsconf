@@ -22,11 +22,11 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class RealReloadingTest {
-	private static final String TIC = "Tic";
 
+	private static final String TIC = "Tic";
 	private static final String TAC = "Tac";
 
-	private static File createTempFile;
+	private static File tempFile;
 
 	@Autowired
 	private ConfigBean conf;
@@ -35,11 +35,10 @@ public class RealReloadingTest {
 	private ConfigurationFactory factory;
 
 	@BeforeClass
-	public static void init() throws IOException, InterruptedException {
+	public static void init() throws IOException {
 		String prefix = Long.toString(System.nanoTime());
-		createTempFile = File.createTempFile(prefix, "_app.conf");
-		createTempFile.deleteOnExit();
-		write(TIC);
+		tempFile = File.createTempFile(prefix, "_app.conf");
+		tempFile.deleteOnExit();
 	}
 
 	@Test
@@ -47,18 +46,18 @@ public class RealReloadingTest {
 	public void test() throws IOException, InterruptedException {
 		final Object ref = this.conf;
 		Assert.assertNotNull(this.conf);
+		
+		Assert.assertEquals(null, this.conf.getUrl());
+		write(TIC);
 		Assert.assertEquals(TIC, this.conf.getUrl());
-
 		write(TAC);
-
-		Assert.assertTrue(ref == this.conf);
 		Assert.assertEquals(TAC, this.conf.getUrl());
+		
+		Assert.assertTrue(ref == this.conf);
 	}
 
 	private static void write(String value) throws IOException, InterruptedException {
-		createTempFile.delete();
-		createTempFile.createNewFile();
-		try (FileWriter fw = new FileWriter(createTempFile)) {
+		try (FileWriter fw = new FileWriter(tempFile)) {
 			fw.append("simpleConf : {  url : \"" + value + "\" }");
 		}
 		Thread.sleep(1000);
@@ -68,7 +67,7 @@ public class RealReloadingTest {
 	static class ContextConfiguration {
 		@Bean
 		public ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName(createTempFile.getName())//
+			return new ConfigurationFactory().withResourceName(tempFile.getName())//
 					.withBean("simpleConf", ConfigBean.class, null, true);
 		}
 	}

@@ -114,22 +114,18 @@ public class BeanFactory {
 	}
 
 	private BeanDefinitionBuilder buildBEanFromParent(String id) {
-		BeanDefinitionBuilder beanDef;
-		beanDef = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
+		BeanDefinitionBuilder beanDef  = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
 		if (StringUtils.hasText(this.className)) {
-			this.log.warn("def.conf : CLASS value :{} is ignored, use PARENT@Id value :{}", this.className,
+			this.log.warn("def.conf : CLASS value :{} is ignored, use parentId value :{}", this.className,
 					this.parentId);
 		}
-		setBeanProperties(beanDef, id, this.properties);
-		return beanDef;
+		return 	setBeanProperties(beanDef, id, this.properties);
 	}
 
 	private BeanDefinitionBuilder buildBeanFromClass(String id) {
 		try {
-			BeanDefinitionBuilder beanDef;
-			beanDef = BeanDefinitionBuilder.genericBeanDefinition(Class.forName(this.className));
-			setBeanProperties(beanDef, id, this.properties);
-			return beanDef;
+			BeanDefinitionBuilder beanDef = BeanDefinitionBuilder.genericBeanDefinition(Class.forName(this.className));
+			return setBeanProperties(beanDef, id, this.properties);
 		} catch (ClassNotFoundException e) {
 			this.log.error("Class not found : {}", this.className);
 			throw new FatalBeanException("Class not found", e);
@@ -138,23 +134,19 @@ public class BeanFactory {
 
 	private BeanDefinitionBuilder buildBeanFromInterface() {
 		try {
-			BeanDefinitionBuilder beanDef;
 			Class<?> classBean = Class.forName(this.interfaceName);
 			if (!classBean.isInterface()) {
 				this.log.error("Interface {} is not a interface.", this.interfaceName);
 			}
-			beanDef = BeanDefinitionBuilder.genericBeanDefinition(VirtualBean.class);
-			// TODO set propeties value on construcorbeanDef.setFactoryMethod("factory");
-			beanDef.setFactoryMethod("factory");
-			beanDef.addConstructorArgValue(classBean).addConstructorArgValue(getBeanProperties(this.properties));
-			return beanDef;
+			return BeanDefinitionBuilder.genericBeanDefinition(VirtualBean.class).setFactoryMethod("factory")//
+					.addConstructorArgValue(classBean).addConstructorArgValue(getAllProperties(this.properties));
 		} catch (ClassNotFoundException e) {
 			this.log.error("Class not found : {}", this.className);
 			throw new FatalBeanException("Class not found", e);
 		}
 	}
 
-	private void setBeanProperties(BeanDefinitionBuilder beanDef, String id, Map<String, ConfigValue> properties) {
+	private BeanDefinitionBuilder setBeanProperties(BeanDefinitionBuilder beanDef, String id, Map<String, ConfigValue> properties) {
 		if (properties != null) {
 			int childId = 0;
 			for (Entry<String, ConfigValue> e : properties.entrySet()) {
@@ -178,9 +170,10 @@ public class BeanFactory {
 				}
 			}
 		}
+		return beanDef;
 	}
 
-	private Map<String, Object> getBeanProperties(Map<String, ConfigValue> properties) {
+	private Map<String, Object> getAllProperties(Map<String, ConfigValue> properties) {
 		Map<String, Object> values = new HashMap<>();
 		if (properties != null) {
 			for (Entry<String, ConfigValue> e : properties.entrySet()) {
@@ -191,26 +184,25 @@ public class BeanFactory {
 	}
 
 	private BeanFactory defineChildName(String parentId, int childId) {
-		this.childName = parentId.concat("-child-") + childId;
+		this.childName = parentId + "-child-" + childId;
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T> T getBeanValue(Entry<String, ConfigValue> entry, String key) {
 		ConfigValue value = entry.getValue();
-		Object unwrapped = value.unwrapped();
-		if (unwrapped instanceof Map) {
-			@SuppressWarnings("unchecked")
-			Map<String, T> m = (Map<String, T>) unwrapped;
-			return m.get(key);
+		Object object = value.unwrapped();
+		if (isAMap(object)) {
+			return (T) ((Map<?, ?>) object).get(key);
 		}
 		return null;
 	}
 
 	private boolean isABeanConfigEntry(Entry<String, ConfigValue> entry) {
-		Object unwrapped = entry.getValue().unwrapped();
-		if (isAMap(unwrapped)) {
-			Map<?, ?> m = (Map<?, ?>) unwrapped;
-			return m.containsKey(CLASS) || m.containsKey(INTERFACE) || m.containsKey(PARENT);
+		Object object = entry.getValue().unwrapped();
+		if (isAMap(object)) {
+			Map<?, ?> map = (Map<?, ?>) object;
+			return map.containsKey(CLASS) || map.containsKey(INTERFACE) || map.containsKey(PARENT);
 		}
 		return false;
 	}
