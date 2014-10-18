@@ -1,4 +1,4 @@
-JSON configuration library for Java Spring application, build on the top of Typesafe config.
+Spring configuration module provides JSON & HOCON support, build on the top of Typesafe config
 
 JSConf
 ======
