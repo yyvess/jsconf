@@ -20,7 +20,9 @@ import org.springframework.stereotype.Component;
 
 @Component("springOnConf")
 public class SimpleBeanSpring {
-	private String value = "Hello World, I a spring bean!";
+
+	private String value;
+	private MyConfig childRef;
 
 	public String getValue() {
 		return this.value;
@@ -28,5 +30,13 @@ public class SimpleBeanSpring {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public MyConfig getChildRef() {
+		return childRef;
+	}
+
+	public void setChildRef(MyConfig childRef) {
+		this.childRef = childRef;
 	}
 }

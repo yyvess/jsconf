@@ -45,14 +45,11 @@ public class Sample05 {
 		final Object ref = this.conf;
 		Assert.assertNotNull(this.conf);
 		Assert.assertEquals("https://localhost/Tic", this.conf.getUrl());
-		this.factory.setResourceName("org/jsconf/core/sample/app_05_2");
-
-		this.factory.reload();
+		this.factory.withResourceName("org/jsconf/core/sample/app_05_2").reload();
 
 		Assert.assertTrue(ref == this.conf);
 		Assert.assertEquals("https://localhost/Tac", this.conf.getUrl());
-		this.factory.setResourceName("org/jsconf/core/sample/app_05");
-		this.factory.reload();
+		this.factory.withResourceName("org/jsconf/core/sample/app_05").reload();
 	}
 
 	@Configuration

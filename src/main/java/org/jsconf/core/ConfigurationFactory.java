@@ -16,7 +16,10 @@
  */
 package org.jsconf.core;
 
-import static org.jsconf.core.BeanFactory.*;
+import static org.jsconf.core.BeanFactory.CLASS;
+import static org.jsconf.core.BeanFactory.ID;
+import static org.jsconf.core.BeanFactory.INTERFACE;
+import static org.jsconf.core.BeanFactory.PROXY;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,10 +64,11 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 
 	public void setFormat(String format) {
 		if (StringUtils.hasText(format)) {
-			options = options.setSyntax(ConfigSyntax.valueOf(format));
+			options = options.setSyntax(ConfigSyntax.valueOf(format.toUpperCase()));
 		}
 	}
 
+	// TOOD use enum
 	public ConfigurationFactory withFormat(String format) {
 		setFormat(format);
 		return this;
@@ -76,8 +80,8 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 		}
 	}
 
-	public ConfigurationFactory withStrict(String strict) {
-		setStrict(strict);
+	public ConfigurationFactory withStrict(boolean strict) {
+		setStrict(Boolean.toString(strict));
 		return this;
 	}
 

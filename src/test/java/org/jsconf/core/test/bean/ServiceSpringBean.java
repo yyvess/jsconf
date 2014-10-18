@@ -27,7 +27,7 @@ public class ServiceSpringBean {
 
 	@Autowired
 	@Qualifier("test")
-	private MyConfigInterface child;
+	private MyConfig child;
 
 	public String getValue() {
 		return this.value;
@@ -41,7 +41,7 @@ public class ServiceSpringBean {
 		this.value = value;
 	}
 
-	public MyConfigInterface getChild() {
+	public MyConfig getConfig() {
 		return this.child;
 	}
 }

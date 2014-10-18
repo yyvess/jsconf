@@ -114,12 +114,12 @@ public class BeanFactory {
 	}
 
 	private BeanDefinitionBuilder buildBEanFromParent(String id) {
-		BeanDefinitionBuilder beanDef  = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
+		BeanDefinitionBuilder beanDef = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
 		if (StringUtils.hasText(this.className)) {
 			this.log.warn("def.conf : CLASS value :{} is ignored, use parentId value :{}", this.className,
 					this.parentId);
 		}
-		return 	setBeanProperties(beanDef, id, this.properties);
+		return setBeanProperties(beanDef, id, this.properties);
 	}
 
 	private BeanDefinitionBuilder buildBeanFromClass(String id) {
@@ -146,7 +146,8 @@ public class BeanFactory {
 		}
 	}
 
-	private BeanDefinitionBuilder setBeanProperties(BeanDefinitionBuilder beanDef, String id, Map<String, ConfigValue> properties) {
+	private BeanDefinitionBuilder setBeanProperties(BeanDefinitionBuilder beanDef, String id,
+			Map<String, ConfigValue> properties) {
 		if (properties != null) {
 			int childId = 0;
 			for (Entry<String, ConfigValue> e : properties.entrySet()) {

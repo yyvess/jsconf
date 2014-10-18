@@ -46,13 +46,13 @@ public class RealReloadingTest {
 	public void test() throws IOException, InterruptedException {
 		final Object ref = this.conf;
 		Assert.assertNotNull(this.conf);
-		
+
 		Assert.assertEquals(null, this.conf.getUrl());
 		write(TIC);
 		Assert.assertEquals(TIC, this.conf.getUrl());
 		write(TAC);
 		Assert.assertEquals(TAC, this.conf.getUrl());
-		
+
 		Assert.assertTrue(ref == this.conf);
 	}
 

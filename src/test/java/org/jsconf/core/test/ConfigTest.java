@@ -17,86 +17,63 @@
 package org.jsconf.core.test;
 
 import org.jsconf.core.ConfigurationFactory;
-import org.jsconf.core.test.bean.MyConfigInterface;
+import org.jsconf.core.test.bean.MyConfig;
 import org.jsconf.core.test.bean.ServiceSpringBean;
+import org.jsconf.core.test.bean.SimpleBeanSpring;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.annotation.Repeat;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/org/jsconf/core/test/applicationContext.xml" })
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ConfigTest {
 
 	@Autowired()
-	@Qualifier(value = "test")
-	private MyConfigInterface v;
+	@Qualifier(value = "test_2")
+	private SimpleBeanSpring config;
 
 	@Autowired()
 	@Qualifier(value = "serviceSpring")
 	private ServiceSpringBean service;
 
-	@Autowired()
-	private ConfigurationFactory beanFactory;
+	@Test
+	public void test() {
+		MyConfig localConfig = this.service.getConfig();
+		Assert.assertNotNull(localConfig.getAChild());
+		Assert.assertEquals("Hello World, I a spring bean!", this.service.getValue());
+		Assert.assertEquals("Hello from Config", localConfig.getValue());
+		Assert.assertEquals(10, localConfig.getAInt());
+		Assert.assertNotNull(localConfig.getAChild());
+		Assert.assertNotEquals(localConfig, localConfig.getAChild());
+		Assert.assertEquals("Hello from child", localConfig.getAChild().getValue());
+		Assert.assertEquals("Spring value", localConfig.getAChild().getSpringValue());
+		Assert.assertEquals(5, localConfig.getAChild().getAInt());
+		Assert.assertEquals(1, localConfig.getAMap().size());
+		Assert.assertEquals("{word1=A map value}", localConfig.getAMap().toString());
+	}
 
 	@Test
-	@Repeat(value = 10)
-	public void test() {
-		this.beanFactory.setResourceName("org/jsconf/core/test/app");
-		this.beanFactory.reload();
-		testLoad();
-		this.beanFactory.setResourceName("org/jsconf/core/test/app_reload");
-		this.beanFactory.reload();
-		testLoadReload();
+	public void test2() {
+		Assert.assertEquals("I am a child of springOnConf!", this.config.getValue());
+		Assert.assertEquals("Hello from child", this.config.getChildRef().getValue());
+		Assert.assertEquals(this.service.getConfig().getAChild(), this.config.getChildRef());
 	}
 
-	private void testLoad() {
-		Assert.assertEquals("Hello World, I a spring bean!", this.service.getValue());
-		Assert.assertEquals("Hello", this.v.getValue());
-		Assert.assertEquals("Hello", this.v.getValue());
-		Assert.assertEquals(10, this.v.getAInt());
-		Assert.assertNotNull(this.v.getAChild());
-		Assert.assertNotEquals(this.v, this.v.getAChild());
-		Assert.assertEquals(5, this.v.getAChild().getAInt());
-
-		Assert.assertEquals("Hello World, I a spring bean!", this.v.getValueSpring());
-		Assert.assertEquals("I am a child of springOnConf!", this.v.getValueSpringConfigured());
-
-		Assert.assertEquals("World", this.v.getAChild().getValue());
-		Assert.assertEquals("World", this.v.getAChild().getValue());
-		Assert.assertEquals("World", this.service.getChild().getAChild().getValue());
-		Assert.assertEquals("Hello", this.service.getChild().getValue());
-		// Same instance
-		Assert.assertTrue(this.v == this.service.getChild());
-
-		Assert.assertEquals(1, this.v.getAMap().size());
-		Assert.assertEquals("{word1=Hello}", this.v.getAMap().toString());
-	}
-
-	private void testLoadReload() {
-		Assert.assertEquals("Hello World, I a spring bean!", this.service.getValue());
-		Assert.assertEquals("Hello 2", this.v.getValue());
-		Assert.assertEquals(10, this.v.getAInt());
-		Assert.assertNotNull(this.v.getAChild());
-		Assert.assertNotEquals(this.v, this.v.getAChild());
-		Assert.assertEquals(12, this.v.getAChild().getAInt());
-
-		Assert.assertEquals("Hello World, I a spring bean!", this.v.getValueSpring());
-		Assert.assertEquals("I am a child of springOnConf version 2!", this.v.getValueSpringConfigured());
-
-		Assert.assertEquals("Hello 2", this.service.getChild().getValue());
-		Assert.assertEquals("World 2", this.service.getChild().getAChild().getValue());
-		Assert.assertEquals("World 2", this.v.getAChild().getValue());
-		Assert.assertEquals("World 2", this.v.getAChild().getValue());
-		// Same instance
-		Assert.assertTrue(this.v == this.service.getChild());
-
-		Assert.assertEquals(2, this.v.getAMap().size());
-		Assert.assertEquals("{word1=Hello, word2=World}", this.v.getAMap().toString());
+	@Configuration
+	@ComponentScan(basePackageClasses = { ServiceSpringBean.class })
+	static class ContextConfiguration {
+		@Bean
+		public static ConfigurationFactory configurationFactory() {
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app");
+		}
 	}
 
 }

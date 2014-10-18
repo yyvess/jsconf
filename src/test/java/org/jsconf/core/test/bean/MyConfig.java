@@ -18,56 +18,37 @@ package org.jsconf.core.test.bean;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 
-public class MyConfig implements MyConfigInterface {
+public class MyConfig {
+
+	@Value(value = "Spring value")
+	private String springValue;
 
 	private String value;
 
-	private MyConfigInterface aChild;
+	private MyConfig aChild;
 
 	private int aInt;
 
 	private Map<String, String> aMap;
 
-	@Autowired
-	@Qualifier("child")
-	private SimpleBeanSpring springBeanConfigured;
-
-	@Autowired
-	@Qualifier("springOnConf")
-	private SimpleBeanSpring springBean;
-
-	@Override
 	public String getValue() {
 		return this.value;
-	}
-
-	@Override
-	public String getValueSpring() {
-		return this.springBean.getValue();
-	}
-
-	@Override
-	public String getValueSpringConfigured() {
-		return this.springBeanConfigured.getValue();
 	}
 
 	public void setValue(String value) {
 		this.value = value;
 	}
 
-	@Override
-	public MyConfigInterface getAChild() {
+	public MyConfig getAChild() {
 		return this.aChild;
 	}
 
-	public void setAChild(MyConfigInterface aChild) {
+	public void setAChild(MyConfig aChild) {
 		this.aChild = aChild;
 	}
 
-	@Override
 	public int getAInt() {
 		return this.aInt;
 	}
@@ -76,13 +57,16 @@ public class MyConfig implements MyConfigInterface {
 		this.aInt = aInt;
 	}
 
-	@Override
 	public Map<String, String> getAMap() {
 		return this.aMap;
 	}
 
 	public void setAMap(Map<String, String> aMap) {
 		this.aMap = aMap;
+	}
+
+	public String getSpringValue() {
+		return springValue;
 	}
 
 }
