@@ -17,6 +17,8 @@
 package org.jsconf.core.test;
 
 import org.jsconf.core.ConfigurationFactory;
+import org.jsconf.core.test.bean.MyConfigInterface;
+import org.jsconf.core.test.bean.ServiceSpringBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

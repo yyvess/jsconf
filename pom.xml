@@ -91,6 +91,9 @@
 						<include>**/*Test.java</include>
 						<include>%regex[.*[Sample]\d+.*]</include>
 					</includes>
+					<additionalClasspathElements>
+						<additionalClasspathElement>${java.io.tmpdir}</additionalClasspathElement>
+					</additionalClasspathElements>
 				</configuration>
 			</plugin>
 		</plugins>

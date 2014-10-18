@@ -11,6 +11,6 @@
 	
 	<jsconf:factory id="factory" resource="org/jsconf/core/test/app" format="CONF"/>
 	
-	<context:component-scan base-package="org.jsconf.core.test" />
+	<context:component-scan base-package="org.jsconf.core.test.bean" />
 	 
 </beans>

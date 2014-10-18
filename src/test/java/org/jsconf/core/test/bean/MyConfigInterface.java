@@ -14,19 +14,21 @@
  * limitations under the License.
  *
  */
-package org.jsconf.core.test;
+package org.jsconf.core.test.bean;
 
-import org.springframework.stereotype.Component;
+import java.util.Map;
 
-@Component("springOnConf")
-public class SimpleBeanSpring {
-	private String value = "Hello World, I a spring bean!";
+public interface MyConfigInterface {
 
-	public String getValue() {
-		return this.value;
-	}
+	String getValue();
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+	MyConfigInterface getAChild();
+
+	int getAInt();
+
+	Map<String, String> getAMap();
+
+	String getValueSpring();
+
+	String getValueSpringConfigured();
 }

@@ -14,34 +14,19 @@
  * limitations under the License.
  *
  */
-package org.jsconf.core.test;
+package org.jsconf.core.test.bean;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service("serviceSpring")
-public class ServiceSpringBean {
-
+@Component("springOnConf")
+public class SimpleBeanSpring {
 	private String value = "Hello World, I a spring bean!";
-
-	@Autowired
-	@Qualifier("test")
-	private MyConfigInterface child;
 
 	public String getValue() {
 		return this.value;
 	}
 
-	public String getChildValue() {
-		return this.child.getValue();
-	}
-
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public MyConfigInterface getChild() {
-		return this.child;
 	}
 }

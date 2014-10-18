@@ -48,8 +48,8 @@ public class Sample01 {
 	static class ContextConfiguration {
 		@Bean
 		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_01.conf").withBean(
-					"datasource", BasicDataSource.class);
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_01.conf") //
+					.withBean("datasource", BasicDataSource.class);
 		}
 	}
 }

@@ -16,13 +16,15 @@
  */
 package org.jsconf.core;
 
+import static org.jsconf.core.BeanFactory.*;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.jsconf.core.service.ConfigWatchService;
+import org.jsconf.core.service.WatchConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -46,7 +48,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 	private static final String DEFAULT_SUFIX_DEF = "def";
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final ConfigWatchService watchService = new ConfigWatchService(this);
+	private final WatchConfiguration watchService = new WatchConfiguration(this);
 	private final Set<String> beanName = new HashSet<>();
 	private final Set<String> proxyBeanName = new HashSet<>();
 
@@ -88,29 +90,27 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 		return this;
 	}
 
-	public ConfigurationFactory withBean(String path, Class<?> bean, String id) {
-		Map<String, String> properties = new HashMap<>(2);
-		Map<String, Map<String, String>> object = new HashMap<>(2);
-		if (StringUtils.hasText(id)) {
-			properties.put("\"" + BeanFactory.ID + "\"", id);
-		}
-		if (bean.isInterface()) {
-			properties.put("\"" + BeanFactory.INTERFACE + "\"", bean.getCanonicalName());
-		} else if (bean.isMemberClass()) {
-			properties.put("\"" + BeanFactory.CLASS + "\"", bean.getCanonicalName());
-		}
-		object.put(path, properties);
-		config = config.withFallback(ConfigFactory.parseMap(object));
-		return this;
+	public ConfigurationFactory withBean(String path, Class<?> bean) {
+		return withBean(path, bean, null);
 	}
 
-	public ConfigurationFactory withBean(String path, Class<?> bean) {
-		Map<String, String> properties = new HashMap<>(2);
-		Map<String, Map<String, String>> object = new HashMap<>(2);
+	public ConfigurationFactory withBean(String path, Class<?> bean, String id) {
+		return withBean(path, bean, id, false);
+	}
+
+	public ConfigurationFactory withBean(String path, Class<?> bean, String id, boolean proxy) {
+		Map<String, Object> properties = new HashMap<>(2);
+		Map<String, Map<String, Object>> object = new HashMap<>(2);
+		if (StringUtils.hasText(id)) {
+			properties.put("\"" + ID + "\"", id);
+		}
+		if (proxy) {
+			properties.put("\"" + PROXY + "\"", true);
+		}
 		if (bean.isInterface()) {
-			properties.put("\"@Interface\"", bean.getCanonicalName());
+			properties.put("\"" + INTERFACE + "\"", bean.getCanonicalName());
 		} else {
-			properties.put("\"@Class\"", bean.getCanonicalName());
+			properties.put("\"" + CLASS + "\"", bean.getCanonicalName());
 		}
 		object.put(path, properties);
 		config = config.withFallback(ConfigFactory.parseMap(object));

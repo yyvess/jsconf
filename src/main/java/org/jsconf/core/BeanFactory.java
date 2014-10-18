@@ -36,9 +36,9 @@ public class BeanFactory {
 	protected static final String ID = "@Id";
 	protected static final String CLASS = "@Class";
 	protected static final String INTERFACE = "@Interface";
-	private static final String PARENT = "@Parent";
-	private static final String REF = "@Ref";
-	private static final String PROXY = "@Proxy";
+	protected static final String PARENT = "@Parent";
+	protected static final String REF = "@Ref";
+	protected static final String PROXY = "@Proxy";
 
 	private static final String[] RESERVED_WORD = { ID, CLASS, INTERFACE, PARENT, REF, PROXY };
 

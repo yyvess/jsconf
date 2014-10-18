@@ -19,13 +19,13 @@ import org.jsconf.core.ConfigurationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConfigWatchService {
+public class WatchConfiguration {
 
 	private static final Pattern WIN_PATH = Pattern.compile("^[/]\\w[:][/].*");
 	private static final String[] CONFIG_EXTENTIONS = { "", ".json", ".conf" };
 	private final ConfigurationFactory configurationFactory;
 
-	public ConfigWatchService(ConfigurationFactory configurationFactory) {
+	public WatchConfiguration(ConfigurationFactory configurationFactory) {
 		this.configurationFactory = configurationFactory;
 	}
 
