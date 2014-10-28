@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.jsconf.core;
+package org.jsconf.core.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

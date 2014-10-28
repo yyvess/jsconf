@@ -52,6 +52,8 @@ public class RealReloadingTest {
 		Assert.assertEquals(TIC, this.conf.getUrl());
 		write(TAC);
 		Assert.assertEquals(TAC, this.conf.getUrl());
+		write(TIC);
+		Assert.assertEquals(TIC, this.conf.getUrl());
 
 		Assert.assertTrue(ref == this.conf);
 	}
@@ -68,7 +70,7 @@ public class RealReloadingTest {
 		@Bean
 		public ConfigurationFactory configurationFactory() {
 			return new ConfigurationFactory().withResourceName(tempFile.getName())//
-					.withBean("simpleConf", ConfigBean.class, null, true);
+					.withBean("simpleConf", ConfigBean.class, "myBeanId", true);
 		}
 	}
 }

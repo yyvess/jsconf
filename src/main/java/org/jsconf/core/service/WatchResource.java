@@ -19,20 +19,29 @@ import org.jsconf.core.ConfigurationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WatchConfiguration {
+public class WatchResource {
 
 	private static final Pattern WIN_PATH = Pattern.compile("^[/]\\w[:][/].*");
 	private static final String[] CONFIG_EXTENTIONS = { "", ".json", ".conf" };
 	private final ConfigurationFactory configurationFactory;
+	private Thread thread;
 
-	public WatchConfiguration(ConfigurationFactory configurationFactory) {
+	public WatchResource(ConfigurationFactory configurationFactory) {
 		this.configurationFactory = configurationFactory;
 	}
 
-	public void watch(String ressource) {
+	public WatchResource watch(String ressource) {
 		Path path = getConfigurationPath(ressource);
 		if (path != null) {
-			new Thread(new WatchTask(configurationFactory, path), "Configuration Watch Service").start();
+			this.thread = new Thread(new WatchTask(this.configurationFactory, path), "Configuration Watch Service");
+			this.thread.start();
+		}
+		return this;
+	}
+
+	public void stop() {
+		if (this.thread != null && this.thread.isAlive()) {
+			this.thread.interrupt();
 		}
 	}
 
@@ -68,9 +77,9 @@ public class WatchConfiguration {
 		@Override
 		public void run() {
 			try {
-				try (WatchService watchService = path.getFileSystem().newWatchService()) {
-					path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
-					log.debug("Watch configuration change on {}", path.toString());
+				try (WatchService watchService = this.path.getFileSystem().newWatchService()) {
+					this.path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
+					this.log.debug("Watch configuration change on {}", this.path.toString());
 					WatchKey watchKey;
 					do {
 						watchKey = watchService.take();
@@ -78,18 +87,20 @@ public class WatchConfiguration {
 							Kind<?> kind = event.kind();
 							if (StandardWatchEventKinds.ENTRY_CREATE.equals(kind)
 									|| StandardWatchEventKinds.ENTRY_MODIFY.equals(kind)) {
-								log.debug("Reloading configuration");
+								this.log.debug("Reloading configuration");
 								this.configuration.reload();
-								Thread.sleep(10000);
+								return;
 							}
 						}
 					} while (watchKey.reset());
-					log.info("Configuration watching service stoped");
+					this.log.info("Configuration watching service stoped");
 					watchKey.cancel();
 					watchService.close();
 				}
-			} catch (InterruptedException | IOException e) {
-				log.error("Configuration watching service stoped", e);
+			} catch (IOException e) {
+				this.log.error("Configuration watching service stoped", e);
+			} catch (InterruptedException e) {
+				this.log.info("Configuration watching service stoped");
 			}
 		}
 	}

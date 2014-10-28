@@ -16,40 +16,42 @@
  */
 package org.jsconf.core.sample;
 
-import org.jsconf.core.ConfigFormat;
 import org.jsconf.core.ConfigurationFactory;
-import org.jsconf.core.sample.bean.Sequence;
+import org.jsconf.core.sample.bean.ConfigBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+@ActiveProfiles("PROD")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
-public class Sample04 {
+public class Sample07 {
 
 	@Autowired
-	private Sequence sequence;
+	private ConfigBean conf;
+
+	@Autowired
+	private ConfigurationFactory factory;
 
 	@Test
 	public void test() {
-		Assert.assertNotNull(this.sequence);
-		Assert.assertEquals("SEQ_NAME", this.sequence.getName());
-		Assert.assertEquals("org.apache.commons.dbcp.BasicDataSource", this.sequence.getDataSource().getClass()
-				.getName());
+		Assert.assertEquals("Tac", this.conf.getUrl());
 	}
 
 	@Configuration
 	static class ContextConfiguration {
+
 		@Bean
 		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_04.conf")
-					.withFormat(ConfigFormat.CONF).withDefinition(true).withStrict(true);
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_07.conf").withProfiles(true)
+					.withDefinition(true);
 		}
 	}
 }

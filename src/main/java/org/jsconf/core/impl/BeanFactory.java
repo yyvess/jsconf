@@ -14,13 +14,14 @@
  * limitations under the License.
  *
  */
-package org.jsconf.core;
+package org.jsconf.core.impl;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jsconf.core.ConfigurationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.FatalBeanException;
@@ -33,12 +34,12 @@ import com.typesafe.config.ConfigValueType;
 
 public class BeanFactory {
 
-	protected static final String ID = "@Id";
-	protected static final String CLASS = "@Class";
-	protected static final String INTERFACE = "@Interface";
-	protected static final String PARENT = "@Parent";
-	protected static final String REF = "@Ref";
-	protected static final String PROXY = "@Proxy";
+	public static final String ID = "@Id";
+	public static final String CLASS = "@Class";
+	public static final String INTERFACE = "@Interface";
+	public static final String PARENT = "@Parent";
+	public static final String REF = "@Ref";
+	public static final String PROXY = "@Proxy";
 
 	private static final String[] RESERVED_WORD = { ID, CLASS, INTERFACE, PARENT, REF, PROXY };
 
@@ -89,7 +90,7 @@ public class BeanFactory {
 
 	public String registerBean() {
 		String id = this.id;
-		BeanDefinitionBuilder beanDef;
+		BeanDefinitionBuilder beanDefinition;
 		if (StringUtils.isEmpty(id)) {
 			if (StringUtils.hasText(this.childName)) {
 				id = this.childName;
@@ -99,33 +100,34 @@ public class BeanFactory {
 		}
 		this.log.debug("Initalize bean id : {}", id);
 		if (StringUtils.hasText(this.parentId)) {
-			beanDef = buildBEanFromParent(id);
+			beanDefinition = buildBEanFromParent(id);
 		} else if (StringUtils.hasText(this.className)) {
-			beanDef = buildBeanFromClass(id);
+			beanDefinition = buildBeanFromClass(id);
 		} else if (StringUtils.hasText(this.interfaceName)) {
-			beanDef = buildBeanFromInterface();
+			beanDefinition = buildBeanFromInterface();
 		} else {
 			this.log.error("Bean have not Class and parent Id defined", id);
 			throw new FatalBeanException("Bean have not class or parent defined");
 		}
 		this.log.debug("Regitre bean id : {}", id);
-		this.context.registerBeanDefinition(id, beanDef.getBeanDefinition());
+		this.context.registerBeanDefinition(id, beanDefinition.getBeanDefinition());
 		return id;
 	}
 
 	private BeanDefinitionBuilder buildBEanFromParent(String id) {
-		BeanDefinitionBuilder beanDef = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
+		BeanDefinitionBuilder beanDefinition = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
 		if (StringUtils.hasText(this.className)) {
 			this.log.warn("def.conf : CLASS value :{} is ignored, use parentId value :{}", this.className,
 					this.parentId);
 		}
-		return setBeanProperties(beanDef, id, this.properties);
+		return setBeanProperties(beanDefinition, id, this.properties);
 	}
 
 	private BeanDefinitionBuilder buildBeanFromClass(String id) {
 		try {
-			BeanDefinitionBuilder beanDef = BeanDefinitionBuilder.genericBeanDefinition(Class.forName(this.className));
-			return setBeanProperties(beanDef, id, this.properties);
+			BeanDefinitionBuilder beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(Class
+					.forName(this.className));
+			return setBeanProperties(beanDefinition, id, this.properties);
 		} catch (ClassNotFoundException e) {
 			this.log.error("Class not found : {}", this.className);
 			throw new FatalBeanException("Class not found", e);
@@ -146,7 +148,7 @@ public class BeanFactory {
 		}
 	}
 
-	private BeanDefinitionBuilder setBeanProperties(BeanDefinitionBuilder beanDef, String id,
+	private BeanDefinitionBuilder setBeanProperties(BeanDefinitionBuilder beanDefinition, String id,
 			Map<String, ConfigValue> properties) {
 		if (properties != null) {
 			int childId = 0;
@@ -156,22 +158,22 @@ public class BeanFactory {
 					if (isABeanConfigEntry(e)) {
 						BeanFactory beanBuilder = new BeanFactory(this.confFactory, this.context);
 						beanBuilder.withConfig(e).defineChildName(id, ++childId);
-						beanDef.addPropertyReference(e.getKey(), beanBuilder.registerBean());
+						beanDefinition.addPropertyReference(e.getKey(), beanBuilder.registerBean());
 					} else if (REF.equals(e.getKey())) {
 						@SuppressWarnings("unchecked")
 						Map<String, String> refs = (Map<String, String>) e.getValue().unwrapped();
 						for (Entry<String, String> r : refs.entrySet()) {
-							beanDef.addPropertyReference(r.getKey(), r.getValue());
+							beanDefinition.addPropertyReference(r.getKey(), r.getValue());
 						}
 					} else {
-						beanDef.addPropertyValue(e.getKey(), e.getValue().unwrapped());
+						beanDefinition.addPropertyValue(e.getKey(), e.getValue().unwrapped());
 					}
 				} else if (!Arrays.asList(RESERVED_WORD).contains(e.getKey())) {
-					beanDef.addPropertyValue(e.getKey(), e.getValue().unwrapped());
+					beanDefinition.addPropertyValue(e.getKey(), e.getValue().unwrapped());
 				}
 			}
 		}
-		return beanDef;
+		return beanDefinition;
 	}
 
 	private Map<String, Object> getAllProperties(Map<String, ConfigValue> properties) {

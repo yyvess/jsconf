@@ -1,4 +1,4 @@
-package org.jsconf.core;
+package org.jsconf.core.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -41,7 +41,7 @@ public class VirtualBean implements InvocationHandler {
 	}
 
 	private Object magicGet(String methodName) {
-		return values.get(methodName);
+		return this.values.get(methodName);
 	}
 
 	private int nbArgs(Object[] args) {
@@ -67,11 +67,11 @@ public class VirtualBean implements InvocationHandler {
 			return false;
 		}
 		VirtualBean other = (VirtualBean) obj;
-		if (values == null) {
+		if (this.values == null) {
 			if (other.values != null) {
 				return false;
 			}
-		} else if (!values.equals(other.values)) {
+		} else if (!this.values.equals(other.values)) {
 			return false;
 		}
 		return true;
@@ -80,7 +80,7 @@ public class VirtualBean implements InvocationHandler {
 	@Override
 	public int hashCode() {
 		final int prime = 47;
-		return prime + (values == null ? 0 : values.hashCode());
+		return prime + (this.values == null ? 0 : this.values.hashCode());
 	}
 
 	@SuppressWarnings("unchecked")

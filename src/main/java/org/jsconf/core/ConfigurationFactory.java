@@ -16,18 +16,22 @@
  */
 package org.jsconf.core;
 
-import static org.jsconf.core.BeanFactory.CLASS;
-import static org.jsconf.core.BeanFactory.ID;
-import static org.jsconf.core.BeanFactory.INTERFACE;
-import static org.jsconf.core.BeanFactory.PROXY;
+import static org.jsconf.core.impl.BeanFactory.CLASS;
+import static org.jsconf.core.impl.BeanFactory.ID;
+import static org.jsconf.core.impl.BeanFactory.INTERFACE;
+import static org.jsconf.core.impl.BeanFactory.PROXY;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.jsconf.core.service.WatchConfiguration;
+import org.jsconf.core.impl.BeanFactory;
+import org.jsconf.core.impl.ProxyPostProcessor;
+import org.jsconf.core.service.WatchResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -47,55 +51,75 @@ import com.typesafe.config.ConfigValue;
 
 public class ConfigurationFactory implements ApplicationContextAware, BeanFactoryPostProcessor, BeanPostProcessor {
 
-	private static final String DEFAULT_CONF_NAME = "app";
-	private static final String DEFAULT_SUFIX_DEF = "def";
-
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final WatchConfiguration watchService = new WatchConfiguration(this);
 	private final Set<String> beanName = new HashSet<>();
 	private final Set<String> proxyBeanName = new HashSet<>();
+	private final List<WatchResource> watcher = new ArrayList<>();
 
-	private String resourceName = DEFAULT_CONF_NAME;
+	private boolean withDefinition = false;
+	private boolean withProfiles = false;
+
+	private String resourceName;
 
 	private GenericApplicationContext context;
 	private ProxyPostProcessor proxyPostProcessor;
-	private ConfigParseOptions options = ConfigParseOptions.defaults();
+	private ConfigParseOptions options = ConfigParseOptions.defaults().setAllowMissing(false);
 	private Config config = ConfigFactory.empty();
 
-	public void setFormat(String format) {
-		if (StringUtils.hasText(format)) {
-			options = options.setSyntax(ConfigSyntax.valueOf(format.toUpperCase()));
+	public void setFormat(ConfigFormat format) {
+		if (format != null) {
+			this.options = this.options.setSyntax(ConfigSyntax.valueOf(format.name()));
 		}
 	}
 
+	public void setStrict(boolean strict) {
+		this.options = this.options.setAllowMissing(!strict);
+	}
+
+	public void setDefinition(boolean withDefinition) {
+		this.withDefinition = Boolean.valueOf(withDefinition);
+	}
+
+	public void setProfiles(boolean withProfiles) {
+		this.withProfiles = withProfiles;
+	}
+
 	// TOOD use enum
-	public ConfigurationFactory withFormat(String format) {
+	public ConfigurationFactory withFormat(ConfigFormat format) {
 		setFormat(format);
 		return this;
 	}
 
-	public void setStrict(String strict) {
-		if (StringUtils.hasText(strict)) {
-			options = options.setAllowMissing(!Boolean.valueOf(strict));
-		}
-	}
-
 	public ConfigurationFactory withStrict(boolean strict) {
-		setStrict(Boolean.toString(strict));
+		setStrict(strict);
 		return this;
 	}
 
-	public void setResourceName(String resource) {
-		this.resourceName = resource;
+	public ConfigurationFactory withDefinition(boolean def) {
+		setDefinition(def);
+		return this;
 	}
 
-	public ConfigurationFactory withResourceName(String resource) {
-		setResourceName(resource);
+	public ConfigurationFactory withProfiles(boolean profile) {
+		setProfiles(profile);
+		return this;
+	}
+
+	public void setResourceName(String resourceName) {
+		this.resourceName = resourceName;
+	}
+
+	public ConfigurationFactory withResourceName(String resourceName) {
+		setResourceName(resourceName);
 		return this;
 	}
 
 	public ConfigurationFactory withBean(String path, Class<?> bean) {
 		return withBean(path, bean, null);
+	}
+
+	public ConfigurationFactory withBean(String path, Class<?> bean, boolean proxy) {
+		return withBean(path, bean, null, proxy);
 	}
 
 	public ConfigurationFactory withBean(String path, Class<?> bean, String id) {
@@ -117,7 +141,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 			properties.put("\"" + CLASS + "\"", bean.getCanonicalName());
 		}
 		object.put(path, properties);
-		config = config.withFallback(ConfigFactory.parseMap(object));
+		this.config = this.config.withFallback(ConfigFactory.parseMap(object));
 		return this;
 	}
 
@@ -152,24 +176,14 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 	}
 
 	private void loadContext() {
-		Config devConfig;
-		Config defConfig;
 		this.log.debug("Loading configuration");
-		String[] profiles = this.context.getEnvironment().getActiveProfiles();
-		devConfig = getConfig(this.resourceName, null, null);
-		for (String profile : profiles) {
-			Config c = getConfig(this.resourceName, profile, null);
-			devConfig = c.withFallback(devConfig);
+		Config localConfig = this.config;
+		List<String> ressources = new ArrayList<>(withProfile(this.resourceName));
+		for (String resource : ressources) {
+			localConfig = localConfig.withFallback(ConfigFactory.parseResourcesAnySyntax(resource, this.options));
 		}
-		defConfig = getConfig(this.resourceName, null, DEFAULT_SUFIX_DEF);
-		for (String profile : profiles) {
-			Config c = getConfig(this.resourceName, profile, DEFAULT_SUFIX_DEF);
-			defConfig = c.withFallback(defConfig);
-		}
-		defConfig = devConfig.withFallback(defConfig);
-		defConfig = config.withFallback(defConfig);
 		this.log.debug("Initalize beans");
-		for (Entry<String, ConfigValue> entry : defConfig.root().entrySet()) {
+		for (Entry<String, ConfigValue> entry : localConfig.root().entrySet()) {
 			BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(entry);
 			if (beanBuilder.isValid()) {
 				buildBeans(beanBuilder);
@@ -177,14 +191,20 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 		}
 		this.log.debug("Beans are initalzed");
 		if (!this.proxyBeanName.isEmpty()) {
-			this.watchService.watch(this.resourceName);
+			for (String resource : ressources) {
+				this.watcher.add(new WatchResource(this).watch(resource));
+			}
 		}
 	}
 
 	private void clearContext() {
+		for (WatchResource watch : this.watcher) {
+			watch.stop();
+		}
 		for (String name : this.beanName) {
 			this.context.removeBeanDefinition(name);
 		}
+		this.watcher.clear();
 		this.beanName.clear();
 		this.proxyBeanName.clear();
 	}
@@ -198,14 +218,36 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 		return beanId;
 	}
 
-	private Config getConfig(String name, String profile, String sufix) {
-		String finalName = name;
-		if (StringUtils.hasText(profile)) {
-			finalName = finalName.concat("-").concat(profile);
+	private List<String> withProfile(String name) {
+		List<String> ressourcesName = new ArrayList<>();
+		if (this.withProfiles) {
+			String[] profiles = this.context.getEnvironment().getActiveProfiles();
+			for (String profile : profiles) {
+				String nameWithProfile = name;
+				int idx = name.lastIndexOf(".");
+				if (idx > 0) {
+					nameWithProfile = nameWithProfile.subSequence(0, idx) + "-" + profile + name.substring(idx);
+				} else {
+					nameWithProfile = nameWithProfile + "-" + profile;
+				}
+				ressourcesName.add(nameWithProfile);
+			}
 		}
-		if (StringUtils.hasText(sufix)) {
-			finalName = finalName.concat(".").concat(sufix);
+		ressourcesName.addAll(withDefinition(name));
+		return ressourcesName;
+	}
+
+	private List<String> withDefinition(String name) {
+		List<String> ressourcesName = new ArrayList<>();
+		if (this.withDefinition) {
+			int idx = name.lastIndexOf(".");
+			if (idx > 0) {
+				ressourcesName.add(name.subSequence(0, idx) + ".def" + name.substring(idx));
+			} else {
+				ressourcesName.add(name + ".def");
+			}
 		}
-		return ConfigFactory.parseResourcesAnySyntax(finalName, options);
+		ressourcesName.add(name);
+		return ressourcesName;
 	}
 }

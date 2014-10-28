@@ -33,7 +33,7 @@ public class SimpleBeanSpring {
 	}
 
 	public MyConfig getChildRef() {
-		return childRef;
+		return this.childRef;
 	}
 
 	public void setChildRef(MyConfig childRef) {

@@ -7,7 +7,7 @@ Configure easily your applications with format JSON instead of flat properties f
 
 ## Overview
 
-- JSON / HOCON formats
+- JSON,  HOCON and properties formats
 - Spring integration 
 - Hot reloading
 - Spring profile
@@ -92,7 +92,7 @@ static class ContextConfiguration {
 
 ####Usage with definition file 
 
-Define only values on your first configuration file. 
+Definitionine only values on your first configuration file. 
 Into a second file packaged with your application, define beans.
 
 Your external configuration file `app.conf` :

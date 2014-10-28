@@ -13,6 +13,7 @@
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="CONF" />
 			<xsd:enumeration value="JSON" />
+			<xsd:enumeration value="PROPERTIES" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -21,8 +22,10 @@
 			<xsd:complexContent>
 				<xsd:extension base="beans:identifiedType">
 					<xsd:attribute name="resource" type="xsd:token" use="required"/>
-					<xsd:attribute name="format" type="Format" />
 					<xsd:attribute name="strict" type="xsd:boolean" />
+					<xsd:attribute name="format" type="Format" />
+					<xsd:attribute name="definition" type="xsd:boolean" />
+					<xsd:attribute name="profile" type="xsd:boolean" />
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>

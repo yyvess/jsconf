@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.test.annotation.Repeat;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -38,27 +38,30 @@ public class Sample06 {
 
 	@Autowired
 	private ConfigurationFactory factory;
-	@Autowired
-	private GenericApplicationContext context;
 
 	@Test
+	@Repeat(value = 4)
 	public void test() {
 		final Object ref = this.conf;
 		Assert.assertNotNull(this.conf);
-		Assert.assertEquals("Tic", this.conf.getUrl());
+		Assert.assertEquals("https://localhost/Tic", this.conf.getUrl());
+		Assert.assertEquals(2, this.conf.getAMap().size());
 
-		this.context.getEnvironment().addActiveProfile("PROD");
-		this.factory.reload();
-
+		// Simulates configuration file change
+		this.factory.withResourceName("org/jsconf/core/sample/app_06_2").reload();
 		Assert.assertTrue(ref == this.conf);
-		Assert.assertEquals("Tac", this.conf.getUrl());
+		Assert.assertEquals("https://localhost/Tac", this.conf.getUrl());
+		Assert.assertEquals(null, this.conf.getAMap());
+
+		this.factory.withResourceName("org/jsconf/core/sample/app_06").reload();
 	}
 
 	@Configuration
 	static class ContextConfiguration {
 		@Bean
 		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_06");
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_06.properties").withBean(
+					"simpleConf", ConfigBean.class, true);
 		}
 	}
 }

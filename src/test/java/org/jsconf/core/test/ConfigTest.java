@@ -72,7 +72,7 @@ public class ConfigTest {
 	static class ContextConfiguration {
 		@Bean
 		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app");
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app").withDefinition(true);
 		}
 	}
 

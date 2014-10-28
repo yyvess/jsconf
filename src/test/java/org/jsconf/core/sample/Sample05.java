@@ -45,6 +45,7 @@ public class Sample05 {
 		final Object ref = this.conf;
 		Assert.assertNotNull(this.conf);
 		Assert.assertEquals("https://localhost/Tic", this.conf.getUrl());
+		// Simulates configuration file change
 		this.factory.withResourceName("org/jsconf/core/sample/app_05_2").reload();
 
 		Assert.assertTrue(ref == this.conf);
@@ -56,7 +57,7 @@ public class Sample05 {
 	static class ContextConfiguration {
 		@Bean
 		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_05");
+			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_05").withDefinition(true);
 		}
 	}
 }

@@ -66,7 +66,7 @@ public class MyConfig {
 	}
 
 	public String getSpringValue() {
-		return springValue;
+		return this.springValue;
 	}
 
 }
