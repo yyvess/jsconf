@@ -14,25 +14,26 @@
  * limitations under the License.
  *
  */
-package org.jsconf.core.test.bean;
+package org.jsconf.core.sample.bean;
 
-import java.util.List;
-import java.util.Map;
+public class RootConfigBean {
 
-public interface ConfigBean {
+	private ConfigBean child;
+	private String value;
 
-	String getX();
+	public ConfigBean getChild() {
+		return this.child;
+	}
 
-	void setX(String value);
+	public void setChild(ConfigBean child) {
+		this.child = child;
+	}
 
-	void setX();
+	public String getValue() {
+		return this.value;
+	}
 
-	String getUrl();
-
-	int getPort();
-
-	Map<?, ?> getAMap();
-
-	List<?> getAList();
-
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

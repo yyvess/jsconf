@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 import org.jsconf.core.ConfigurationFactory;
 import org.jsconf.core.impl.VirtualBean;
-import org.jsconf.core.test.bean.ConfigBean;
+import org.jsconf.core.test.bean.InterfaceBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,19 +42,19 @@ public class VirtualBeanTest {
 
 	@Autowired
 	@Qualifier("simpleConf")
-	private ConfigBean conf;
+	private InterfaceBean conf;
 	@Autowired
 	@Qualifier("simpleConf2")
-	private ConfigBean conf2;
+	private InterfaceBean conf2;
 	@Autowired
 	@Qualifier("simpleConf3")
-	private ConfigBean conf3;
+	private InterfaceBean conf3;
 
 	@Test
 	public void testHashCode() {
-		assertEquals(1445101388, this.conf.hashCode());
+		assertEquals(-337078263, this.conf.hashCode());
 		assertEquals(this.conf.hashCode(), this.conf2.hashCode());
-		assertEquals(1448348166, this.conf3.hashCode());
+		assertEquals(-333831485, this.conf3.hashCode());
 		assertEquals(new VirtualBean(null).hashCode(), new VirtualBean(null).hashCode());
 	}
 
@@ -68,14 +68,14 @@ public class VirtualBeanTest {
 		assertNotEquals(this.conf, new VirtualBean(null));
 		assertNotEquals(new VirtualBean(null), this.conf);
 		assertNotSame(this.conf, this.conf2);
-		assertNotEquals(this.conf, this.conf3);
 		assertEquals(this.conf, this.conf2);
+		assertNotEquals(this.conf, this.conf3);
 		assertNotEquals(this.conf, this.conf3);
 	}
 
 	@Test
 	public void testToString() {
-		assertEquals("{getUrl=https://localhost/Tic, get@Interface=org.jsconf.core.test.bean.ConfigBean}",
+		assertEquals("{getUrl=https://localhost/Tic, get@Interface=org.jsconf.core.test.bean.InterfaceBean}",
 				this.conf.toString());
 	}
 
