@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.test.bean;
 
 import java.util.Map;
@@ -22,51 +23,51 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class MyConfig {
 
-	@Value(value = "Spring value")
-	private String springValue;
+    @Value(value = "Spring value")
+    private String springValue;
 
-	private String value;
+    private String value;
 
-	private MyConfig aChild;
+    private MyConfig aChild;
 
-	private int aInt;
+    private int aInt;
 
-	private Map<String, String> aMap;
+    private Map<String, String> aMap;
 
-	public String getValue() {
-		return this.value;
-	}
+    public String getValue() {
+        return this.value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public MyConfig getAChild() {
-		return this.aChild;
-	}
+    public MyConfig getAChild() {
+        return this.aChild;
+    }
 
-	public void setAChild(MyConfig aChild) {
-		this.aChild = aChild;
-	}
+    public void setAChild(MyConfig aChild) {
+        this.aChild = aChild;
+    }
 
-	public int getAInt() {
-		return this.aInt;
-	}
+    public int getAInt() {
+        return this.aInt;
+    }
 
-	public void setAInt(int aInt) {
-		this.aInt = aInt;
-	}
+    public void setAInt(int aInt) {
+        this.aInt = aInt;
+    }
 
-	public Map<String, String> getAMap() {
-		return this.aMap;
-	}
+    public Map<String, String> getAMap() {
+        return this.aMap;
+    }
 
-	public void setAMap(Map<String, String> aMap) {
-		this.aMap = aMap;
-	}
+    public void setAMap(Map<String, String> aMap) {
+        this.aMap = aMap;
+    }
 
-	public String getSpringValue() {
-		return this.springValue;
-	}
+    public String getSpringValue() {
+        return this.springValue;
+    }
 
 }

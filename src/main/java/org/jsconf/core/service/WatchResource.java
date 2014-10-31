@@ -21,87 +21,87 @@ import org.slf4j.LoggerFactory;
 
 public class WatchResource {
 
-	private static final Pattern WIN_PATH = Pattern.compile("^[/]\\w[:][/].*");
-	private static final String[] CONFIG_EXTENTIONS = { "", ".json", ".conf" };
-	private final ConfigurationFactory configurationFactory;
-	private Thread thread;
+    private static final Pattern WIN_PATH = Pattern.compile("^[/]\\w[:][/].*");
+    private static final String[] CONFIG_EXTENTIONS = { "", ".json", ".conf" };
+    private final ConfigurationFactory configurationFactory;
+    private Thread thread;
 
-	public WatchResource(ConfigurationFactory configurationFactory) {
-		this.configurationFactory = configurationFactory;
-	}
+    public WatchResource(ConfigurationFactory configurationFactory) {
+        this.configurationFactory = configurationFactory;
+    }
 
-	public WatchResource watch(String ressource) {
-		Path path = getConfigurationPath(ressource);
-		if (path != null) {
-			this.thread = new Thread(new WatchTask(this.configurationFactory, path), "Configuration Watch Service");
-			this.thread.start();
-		}
-		return this;
-	}
+    public WatchResource watch(String ressource) {
+        Path path = getConfigurationPath(ressource);
+        if (path != null) {
+            this.thread = new Thread(new WatchTask(this.configurationFactory, path), "Configuration Watch Service");
+            this.thread.start();
+        }
+        return this;
+    }
 
-	public void stop() {
-		if (this.thread != null && this.thread.isAlive()) {
-			this.thread.interrupt();
-		}
-	}
+    public void stop() {
+        if (this.thread != null && this.thread.isAlive()) {
+            this.thread.interrupt();
+        }
+    }
 
-	private Path getConfigurationPath(String ressource) {
-		URL systemResource = null;
-		for (String extention : CONFIG_EXTENTIONS) {
-			if (systemResource == null) {
-				systemResource = ClassLoader.getSystemResource(ressource.concat(extention));
-			}
-		}
-		if (systemResource == null) {
-			return null;
-		}
-		String path = systemResource.getFile();
-		// Bug on toPath() ?
-		if (WIN_PATH.matcher(path).matches()) {
-			path = path.substring(1);
-		}
-		return new File(path).getParentFile().toPath();
-	}
+    private Path getConfigurationPath(String ressource) {
+        URL systemResource = null;
+        for (String extention : CONFIG_EXTENTIONS) {
+            if (systemResource == null) {
+                systemResource = ClassLoader.getSystemResource(ressource.concat(extention));
+            }
+        }
+        if (systemResource == null) {
+            return null;
+        }
+        String path = systemResource.getFile();
+        // Bug on toPath() ?
+        if (WIN_PATH.matcher(path).matches()) {
+            path = path.substring(1);
+        }
+        return new File(path).getParentFile().toPath();
+    }
 
-	private static final class WatchTask implements Runnable {
+    private static final class WatchTask implements Runnable {
 
-		private final Logger log = LoggerFactory.getLogger(this.getClass());
-		private final ConfigurationFactory configuration;
-		private final Path path;
+        private final Logger log = LoggerFactory.getLogger(this.getClass());
+        private final ConfigurationFactory configuration;
+        private final Path path;
 
-		private WatchTask(ConfigurationFactory configuration, Path path) {
-			this.configuration = configuration;
-			this.path = path;
-		}
+        private WatchTask(ConfigurationFactory configuration, Path path) {
+            this.configuration = configuration;
+            this.path = path;
+        }
 
-		@Override
-		public void run() {
-			try {
-				try (WatchService watchService = this.path.getFileSystem().newWatchService()) {
-					this.path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
-					this.log.debug("Watch configuration change on {}", this.path.toString());
-					WatchKey watchKey;
-					do {
-						watchKey = watchService.take();
-						for (final WatchEvent<?> event : watchKey.pollEvents()) {
-							Kind<?> kind = event.kind();
-							if (StandardWatchEventKinds.ENTRY_CREATE.equals(kind)
-									|| StandardWatchEventKinds.ENTRY_MODIFY.equals(kind)) {
-								this.log.debug("Reloading configuration");
-								this.configuration.reload();
-								return;
-							}
-						}
-					} while (watchKey.reset());
-					this.log.info("Configuration watching service stoped");
-					watchKey.cancel();
-					watchService.close();
-				}
-			} catch (IOException e) {
-				this.log.error("Configuration watching service stoped", e);
-			} catch (InterruptedException e) {
-				this.log.info("Configuration watching service stoped");
-			}
-		}
-	}
+        @Override
+        public void run() {
+            try {
+                try (WatchService watchService = this.path.getFileSystem().newWatchService()) {
+                    this.path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
+                    this.log.debug("Watch configuration change on {}", this.path.toString());
+                    WatchKey watchKey;
+                    do {
+                        watchKey = watchService.take();
+                        for (final WatchEvent<?> event : watchKey.pollEvents()) {
+                            Kind<?> kind = event.kind();
+                            if (StandardWatchEventKinds.ENTRY_CREATE.equals(kind)
+                                    || StandardWatchEventKinds.ENTRY_MODIFY.equals(kind)) {
+                                this.log.debug("Reloading configuration");
+                                this.configuration.reload();
+                                return;
+                            }
+                        }
+                    } while (watchKey.reset());
+                    this.log.info("Configuration watching service stoped");
+                    watchKey.cancel();
+                    watchService.close();
+                }
+            } catch (IOException e) {
+                this.log.error("Configuration watching service stoped", e);
+            } catch (InterruptedException e) {
+                this.log.info("Configuration watching service stoped");
+            }
+        }
+    }
 }

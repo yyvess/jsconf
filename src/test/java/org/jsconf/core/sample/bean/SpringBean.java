@@ -14,26 +14,27 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample.bean;
 
 public class SpringBean {
 
-	private String name;
-	private ConfigBean child;
+    private String name;
+    private ConfigBean child;
 
-	public ConfigBean getChild() {
-		return this.child;
-	}
+    public ConfigBean getChild() {
+        return this.child;
+    }
 
-	public void setChild(ConfigBean child) {
-		this.child = child;
-	}
+    public void setChild(ConfigBean child) {
+        this.child = child;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -14,28 +14,29 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample.bean;
 
 import javax.sql.DataSource;
 
 public class Sequence {
 
-	private DataSource dataSource;
-	private String name;
+    private DataSource dataSource;
+    private String name;
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public DataSource getDataSource() {
-		return this.dataSource;
-	}
+    public DataSource getDataSource() {
+        return this.dataSource;
+    }
 
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 }

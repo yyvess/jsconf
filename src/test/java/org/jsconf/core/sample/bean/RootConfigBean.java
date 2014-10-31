@@ -14,26 +14,27 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample.bean;
 
 public class RootConfigBean {
 
-	private ConfigBean child;
-	private String value;
+    private ConfigBean child;
+    private String value;
 
-	public ConfigBean getChild() {
-		return this.child;
-	}
+    public ConfigBean getChild() {
+        return this.child;
+    }
 
-	public void setChild(ConfigBean child) {
-		this.child = child;
-	}
+    public void setChild(ConfigBean child) {
+        this.child = child;
+    }
 
-	public String getValue() {
-		return this.value;
-	}
+    public String getValue() {
+        return this.value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

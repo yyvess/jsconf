@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.test;
 
 import static org.junit.Assert.assertEquals;
@@ -40,61 +41,61 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class VirtualBeanTest {
 
-	@Autowired
-	@Qualifier("simpleConf")
-	private InterfaceBean conf;
-	@Autowired
-	@Qualifier("simpleConf2")
-	private InterfaceBean conf2;
-	@Autowired
-	@Qualifier("simpleConf3")
-	private InterfaceBean conf3;
+    @Autowired
+    @Qualifier("simpleConf")
+    private InterfaceBean conf;
+    @Autowired
+    @Qualifier("simpleConf2")
+    private InterfaceBean conf2;
+    @Autowired
+    @Qualifier("simpleConf3")
+    private InterfaceBean conf3;
 
-	@Test
-	public void testHashCode() {
-		assertEquals(-337078263, this.conf.hashCode());
-		assertEquals(this.conf.hashCode(), this.conf2.hashCode());
-		assertEquals(-333831485, this.conf3.hashCode());
-		assertEquals(new VirtualBean(null).hashCode(), new VirtualBean(null).hashCode());
-	}
+    @Test
+    public void testHashCode() {
+        assertEquals(-337078263, this.conf.hashCode());
+        assertEquals(this.conf.hashCode(), this.conf2.hashCode());
+        assertEquals(-333831485, this.conf3.hashCode());
+        assertEquals(new VirtualBean(null).hashCode(), new VirtualBean(null).hashCode());
+    }
 
-	@Test
-	public void testEquals() {
-		assertNotEquals(this.conf, new String());
-		assertNotEquals(this.conf, null);
-		assertEquals(this.conf, this.conf);
-		assertEquals(new VirtualBean(null), new VirtualBean(null));
-		assertEquals(new VirtualBean(new HashMap<String, Object>()), new VirtualBean(new HashMap<String, Object>()));
-		assertNotEquals(this.conf, new VirtualBean(null));
-		assertNotEquals(new VirtualBean(null), this.conf);
-		assertNotSame(this.conf, this.conf2);
-		assertEquals(this.conf, this.conf2);
-		assertNotEquals(this.conf, this.conf3);
-		assertNotEquals(this.conf, this.conf3);
-	}
+    @Test
+    public void testEquals() {
+        assertNotEquals(this.conf, new String());
+        assertNotEquals(this.conf, null);
+        assertEquals(this.conf, this.conf);
+        assertEquals(new VirtualBean(null), new VirtualBean(null));
+        assertEquals(new VirtualBean(new HashMap<String, Object>()), new VirtualBean(new HashMap<String, Object>()));
+        assertNotEquals(this.conf, new VirtualBean(null));
+        assertNotEquals(new VirtualBean(null), this.conf);
+        assertNotSame(this.conf, this.conf2);
+        assertEquals(this.conf, this.conf2);
+        assertNotEquals(this.conf, this.conf3);
+        assertNotEquals(this.conf, this.conf3);
+    }
 
-	@Test
-	public void testToString() {
-		assertEquals("{getUrl=https://localhost/Tic, get@Interface=org.jsconf.core.test.bean.InterfaceBean}",
-				this.conf.toString());
-	}
+    @Test
+    public void testToString() {
+        assertEquals("{getUrl=https://localhost/Tic, get@Interface=org.jsconf.core.test.bean.InterfaceBean}",
+                this.conf.toString());
+    }
 
-	@Test
-	public void testGet() {
-		assertEquals("https://localhost/Tic", this.conf.getUrl());
-		assertEquals("xxx", this.conf3.getX());
-	}
+    @Test
+    public void testGet() {
+        assertEquals("https://localhost/Tic", this.conf.getUrl());
+        assertEquals("xxx", this.conf3.getX());
+    }
 
-	@Test(expected = InvocationFailureException.class)
-	public void testSet() {
-		this.conf3.setX("yyy");
-	}
+    @Test(expected = InvocationFailureException.class)
+    public void testSet() {
+        this.conf3.setX("yyy");
+    }
 
-	@Configuration
-	static class ContextConfiguration {
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_virtual");
-		}
-	}
+    @Configuration
+    static class ContextConfiguration {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_virtual");
+        }
+    }
 }

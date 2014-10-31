@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.test;
 
 import static org.junit.Assert.assertEquals;
@@ -36,57 +37,57 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ChildTest {
 
-	@Autowired
-	private MyConfig myConfig;
+    @Autowired
+    private MyConfig myConfig;
 
-	@Autowired
-	private MyConfig myConfigChild;
+    @Autowired
+    private MyConfig myConfigChild;
 
-	@Autowired
-	private MyConfig myConfig2;
+    @Autowired
+    private MyConfig myConfig2;
 
-	@Autowired
-	private MyConfig myConfigChild2;
+    @Autowired
+    private MyConfig myConfigChild2;
 
-	@Test
-	public void testChild() {
-		assertNotSame(this.myConfig, this.myConfig2);
-		assertNotSame(this.myConfigChild, this.myConfigChild2);
-	}
+    @Test
+    public void testChild() {
+        assertNotSame(this.myConfig, this.myConfig2);
+        assertNotSame(this.myConfigChild, this.myConfigChild2);
+    }
 
-	@Test
-	public void testChild1() {
-		assertEquals("Tic", this.myConfig.getValue());
-		assertNotSame(this.myConfig, this.myConfig.getAChild());
-		assertNotNull(this.myConfig.getAChild());
-		assertEquals("Tac", this.myConfig.getAChild().getValue());
-		assertSame(this.myConfigChild, this.myConfig.getAChild());
-	}
+    @Test
+    public void testChild1() {
+        assertEquals("Tic", this.myConfig.getValue());
+        assertNotSame(this.myConfig, this.myConfig.getAChild());
+        assertNotNull(this.myConfig.getAChild());
+        assertEquals("Tac", this.myConfig.getAChild().getValue());
+        assertSame(this.myConfigChild, this.myConfig.getAChild());
+    }
 
-	@Test
-	public void testChild2() {
-		assertEquals("Tic", this.myConfig2.getValue());
-		assertNotSame(this.myConfig2, this.myConfig2.getAChild());
-		assertNotNull(this.myConfig2.getAChild());
-		assertEquals("Tac", this.myConfig2.getAChild().getValue());
-		assertSame(this.myConfigChild2, this.myConfig2.getAChild());
-	}
+    @Test
+    public void testChild2() {
+        assertEquals("Tic", this.myConfig2.getValue());
+        assertNotSame(this.myConfig2, this.myConfig2.getAChild());
+        assertNotNull(this.myConfig2.getAChild());
+        assertEquals("Tac", this.myConfig2.getAChild().getValue());
+        assertSame(this.myConfigChild2, this.myConfig2.getAChild());
+    }
 
-	@Configuration
-	static class ContextConfiguration01 {
-		@Bean(name = "context")
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_child");
-		}
-	}
+    @Configuration
+    static class ContextConfiguration01 {
+        @Bean(name = "context")
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_child");
+        }
+    }
 
-	@Configuration
-	static class ContextConfiguration02 {
-		@Bean(name = "context2")
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_child2")
-					.withBean("myConfig", MyConfig.class, "myConfig2")
-					.withBean("myConfig/aChild", MyConfig.class, "myConfigChild2");
-		}
-	}
+    @Configuration
+    static class ContextConfiguration02 {
+        @Bean(name = "context2")
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_child2")
+                    .withBean("myConfig", MyConfig.class, "myConfig2")
+                    .withBean("myConfig/aChild", MyConfig.class, "myConfigChild2");
+        }
+    }
 }

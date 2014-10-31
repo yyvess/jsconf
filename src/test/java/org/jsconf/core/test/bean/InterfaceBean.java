@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.test.bean;
 
 import java.util.List;
@@ -21,18 +22,18 @@ import java.util.Map;
 
 public interface InterfaceBean {
 
-	String getX();
+    String getX();
 
-	void setX(String value);
+    void setX(String value);
 
-	void setX();
+    void setX();
 
-	String getUrl();
+    String getUrl();
 
-	int getPort();
+    int getPort();
 
-	Map<?, ?> getAMap();
+    Map<?, ?> getAMap();
 
-	List<?> getAList();
+    List<?> getAList();
 
 }

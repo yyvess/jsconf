@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.test.bean;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +24,25 @@ import org.springframework.stereotype.Service;
 @Service("serviceSpring")
 public class ServiceSpringBean {
 
-	private String value = "Hello World, I a spring bean!";
+    private String value = "Hello World, I a spring bean!";
 
-	@Autowired
-	@Qualifier("test")
-	private MyConfig child;
+    @Autowired
+    @Qualifier("test")
+    private MyConfig child;
 
-	public String getValue() {
-		return this.value;
-	}
+    public String getValue() {
+        return this.value;
+    }
 
-	public String getChildValue() {
-		return this.child.getValue();
-	}
+    public String getChildValue() {
+        return this.child.getValue();
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public MyConfig getConfig() {
-		return this.child;
-	}
+    public MyConfig getConfig() {
+        return this.child;
+    }
 }

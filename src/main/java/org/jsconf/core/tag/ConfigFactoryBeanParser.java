@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.tag;
 
 import org.jsconf.core.ConfigurationFactory;
@@ -23,18 +24,18 @@ import org.w3c.dom.Element;
 
 public class ConfigFactoryBeanParser extends AbstractSingleBeanDefinitionParser {
 
-	@Override
-	protected Class<ConfigurationFactory> getBeanClass(Element element) {
-		return ConfigurationFactory.class;
-	}
+    @Override
+    protected Class<ConfigurationFactory> getBeanClass(Element element) {
+        return ConfigurationFactory.class;
+    }
 
-	@Override
-	protected void doParse(Element element, BeanDefinitionBuilder bean) {
-		bean.addPropertyValue("resourceName", element.getAttribute("resource"));
-		bean.addPropertyValue("format", element.getAttribute("format"));
-		bean.addPropertyValue("strict", Boolean.valueOf(element.getAttribute("strict")));
-		bean.addPropertyValue("definition", Boolean.valueOf(element.getAttribute("definition")));
-		bean.addPropertyValue("profiles", Boolean.valueOf(element.getAttribute("profiles")));
-	}
+    @Override
+    protected void doParse(Element element, BeanDefinitionBuilder bean) {
+        bean.addPropertyValue("resourceName", element.getAttribute("resource"));
+        bean.addPropertyValue("format", element.getAttribute("format"));
+        bean.addPropertyValue("strict", Boolean.valueOf(element.getAttribute("strict")));
+        bean.addPropertyValue("definition", Boolean.valueOf(element.getAttribute("definition")));
+        bean.addPropertyValue("profiles", Boolean.valueOf(element.getAttribute("profiles")));
+    }
 
 }

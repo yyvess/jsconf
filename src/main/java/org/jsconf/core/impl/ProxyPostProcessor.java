@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.impl;
 
 import java.lang.reflect.InvocationHandler;
@@ -31,65 +32,65 @@ import org.springframework.context.ApplicationContext;
 
 public class ProxyPostProcessor {
 
-	private final Map<String, BeanProxy> proxyRef = new HashMap<>();
+    private final Map<String, BeanProxy> proxyRef = new HashMap<>();
 
-	private final ApplicationContext context;
+    private final ApplicationContext context;
 
-	public ProxyPostProcessor(ApplicationContext context) {
-		this.context = context;
-	}
+    public ProxyPostProcessor(ApplicationContext context) {
+        this.context = context;
+    }
 
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		if (bean.getClass().getInterfaces().length > 0) {
-			BeanProxy proxy = this.proxyRef.get(beanName);
-			if (proxy == null) {
-				ClassLoader cl = Thread.currentThread().getContextClassLoader();
-				List<Class<?>> asList = new ArrayList<>();
-				asList.addAll(Arrays.asList(bean.getClass().getInterfaces()));
-				asList.add(BeanProxy.class);
-				Class<?>[] interfaces = asList.toArray(new Class<?>[asList.size()]);
-				proxy = (BeanProxy) Proxy.newProxyInstance(cl, interfaces, new ProxyHandler());
-				this.proxyRef.put(beanName, proxy);
-			}
-			proxy.setBean(bean);
-			return proxy;
-		} else {
-			throw new BeanCreationException(beanName, String.format("Only bean with interface can be proxy : %s",
-					beanName));
-		}
-	}
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if (bean.getClass().getInterfaces().length > 0) {
+            BeanProxy proxy = this.proxyRef.get(beanName);
+            if (proxy == null) {
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                List<Class<?>> asList = new ArrayList<>();
+                asList.addAll(Arrays.asList(bean.getClass().getInterfaces()));
+                asList.add(BeanProxy.class);
+                Class<?>[] interfaces = asList.toArray(new Class<?>[asList.size()]);
+                proxy = (BeanProxy) Proxy.newProxyInstance(cl, interfaces, new ProxyHandler());
+                this.proxyRef.put(beanName, proxy);
+            }
+            proxy.setBean(bean);
+            return proxy;
+        } else {
+            throw new BeanCreationException(beanName, String.format("Only bean with interface can be proxy : %s",
+                    beanName));
+        }
+    }
 
-	public void forceProxyInitalization() {
-		for (String beanName : this.proxyRef.keySet()) {
-			this.context.getBean(beanName);
-		}
-	}
+    public void forceProxyInitalization() {
+        for (String beanName : this.proxyRef.keySet()) {
+            this.context.getBean(beanName);
+        }
+    }
 
-	@java.lang.annotation.Retention(value = java.lang.annotation.RetentionPolicy.RUNTIME)
-	private @interface SetBeanMethod {
-	}
+    @java.lang.annotation.Retention(value = java.lang.annotation.RetentionPolicy.RUNTIME)
+    private @interface SetBeanMethod {
+    }
 
-	private interface BeanProxy {
-		@SetBeanMethod
-		public void setBean(Object bean);
-	}
+    private interface BeanProxy {
+        @SetBeanMethod
+        public void setBean(Object bean);
+    }
 
-	private static class ProxyHandler implements InvocationHandler {
+    private static class ProxyHandler implements InvocationHandler {
 
-		private Object bean;
+        private Object bean;
 
-		public ProxyHandler() {
-		}
+        public ProxyHandler() {
+        }
 
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			if (method.isAnnotationPresent(SetBeanMethod.class)) {
-				this.bean = args[0];
-				return null;
-			} else {
-				return method.invoke(this.bean, args);
-			}
-		}
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (method.isAnnotationPresent(SetBeanMethod.class)) {
+                this.bean = args[0];
+                return null;
+            } else {
+                return method.invoke(this.bean, args);
+            }
+        }
 
-	}
+    }
 }

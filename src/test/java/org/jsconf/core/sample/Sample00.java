@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample;
 
 import javax.sql.DataSource;
@@ -34,21 +35,21 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample00 {
 
-	@Autowired()
-	private DataSource datasource;
+    @Autowired()
+    private DataSource datasource;
 
-	@Test
-	public void test() {
-		BasicDataSource basic = (BasicDataSource) this.datasource;
-		Assert.assertEquals("jdbc:mysql://localhost:3306/test", basic.getUrl());
-		Assert.assertEquals("com.mysql.jdbc.Driver", basic.getDriverClassName());
-	}
+    @Test
+    public void test() {
+        BasicDataSource basic = (BasicDataSource) this.datasource;
+        Assert.assertEquals("jdbc:mysql://localhost:3306/test", basic.getUrl());
+        Assert.assertEquals("com.mysql.jdbc.Driver", basic.getDriverClassName());
+    }
 
-	@Configuration
-	static class ContextConfiguration {
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_00");
-		}
-	}
+    @Configuration
+    static class ContextConfiguration {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_00");
+        }
+    }
 }

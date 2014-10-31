@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample;
 
 import org.jsconf.core.ConfigurationFactory;
@@ -34,24 +35,24 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample07 {
 
-	@Autowired
-	private ConfigBean conf;
+    @Autowired
+    private ConfigBean conf;
 
-	@Autowired
-	private ConfigurationFactory factory;
+    @Autowired
+    private ConfigurationFactory factory;
 
-	@Test
-	public void test() {
-		Assert.assertEquals("Tac", this.conf.getUrl());
-	}
+    @Test
+    public void test() {
+        Assert.assertEquals("Tac", this.conf.getUrl());
+    }
 
-	@Configuration
-	static class ContextConfiguration {
+    @Configuration
+    static class ContextConfiguration {
 
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_07.conf").withProfiles(true)
-					.withDefinition(true);
-		}
-	}
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_07.conf").withProfiles(true)
+                    .withDefinition(true);
+        }
+    }
 }

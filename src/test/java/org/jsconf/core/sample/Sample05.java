@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample;
 
 import org.jsconf.core.ConfigurationFactory;
@@ -33,31 +34,31 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample05 {
 
-	@Autowired
-	private ConfigBean conf;
+    @Autowired
+    private ConfigBean conf;
 
-	@Autowired
-	private ConfigurationFactory factory;
+    @Autowired
+    private ConfigurationFactory factory;
 
-	@Test
-	@Repeat(value = 4)
-	public void test() {
-		final Object ref = this.conf;
-		Assert.assertNotNull(this.conf);
-		Assert.assertEquals("https://localhost/Tic", this.conf.getUrl());
-		// Simulates configuration file change
-		this.factory.withResourceName("org/jsconf/core/sample/app_05_2").reload();
+    @Test
+    @Repeat(value = 4)
+    public void test() {
+        final Object ref = this.conf;
+        Assert.assertNotNull(this.conf);
+        Assert.assertEquals("https://localhost/Tic", this.conf.getUrl());
+        // Simulates configuration file change
+        this.factory.withResourceName("org/jsconf/core/sample/app_05_2").reload();
 
-		Assert.assertTrue(ref == this.conf);
-		Assert.assertEquals("https://localhost/Tac", this.conf.getUrl());
-		this.factory.withResourceName("org/jsconf/core/sample/app_05").reload();
-	}
+        Assert.assertTrue(ref == this.conf);
+        Assert.assertEquals("https://localhost/Tac", this.conf.getUrl());
+        this.factory.withResourceName("org/jsconf/core/sample/app_05").reload();
+    }
 
-	@Configuration
-	static class ContextConfiguration {
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_05").withDefinition(true);
-		}
-	}
+    @Configuration
+    static class ContextConfiguration {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_05").withDefinition(true);
+        }
+    }
 }

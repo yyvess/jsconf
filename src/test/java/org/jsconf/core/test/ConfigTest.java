@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.test;
 
 import static org.junit.Assert.assertEquals;
@@ -39,43 +40,43 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ConfigTest {
 
-	@Autowired()
-	@Qualifier(value = "test_2")
-	private SimpleBeanSpring config;
+    @Autowired()
+    @Qualifier(value = "test_2")
+    private SimpleBeanSpring config;
 
-	@Autowired()
-	private ServiceSpringBean service;
+    @Autowired()
+    private ServiceSpringBean service;
 
-	@Test
-	public void testServiceSpringBean() {
-		MyConfig localConfig = this.service.getConfig();
-		assertNotNull(localConfig.getAChild());
-		assertEquals("Hello World, I a spring bean!", this.service.getValue());
-		assertEquals("Hello from Config", localConfig.getValue());
-		assertEquals(10, localConfig.getAInt());
-		assertNotNull(localConfig.getAChild());
-		assertNotEquals(localConfig, localConfig.getAChild());
-		assertEquals("Hello from child", localConfig.getAChild().getValue());
-		assertEquals("Spring value", localConfig.getAChild().getSpringValue());
-		assertEquals(5, localConfig.getAChild().getAInt());
-		assertEquals(1, localConfig.getAMap().size());
-		assertEquals("{word1=A map value}", localConfig.getAMap().toString());
-	}
+    @Test
+    public void testServiceSpringBean() {
+        MyConfig localConfig = this.service.getConfig();
+        assertNotNull(localConfig.getAChild());
+        assertEquals("Hello World, I a spring bean!", this.service.getValue());
+        assertEquals("Hello from Config", localConfig.getValue());
+        assertEquals(10, localConfig.getAInt());
+        assertNotNull(localConfig.getAChild());
+        assertNotEquals(localConfig, localConfig.getAChild());
+        assertEquals("Hello from child", localConfig.getAChild().getValue());
+        assertEquals("Spring value", localConfig.getAChild().getSpringValue());
+        assertEquals(5, localConfig.getAChild().getAInt());
+        assertEquals(1, localConfig.getAMap().size());
+        assertEquals("{word1=A map value}", localConfig.getAMap().toString());
+    }
 
-	@Test
-	public void testSimpleBeanSpring() {
-		assertEquals("I am a child of springOnConf!", this.config.getValue());
-		assertEquals("Hello from child", this.config.getChildRef().getValue());
-		assertEquals(this.service.getConfig().getAChild(), this.config.getChildRef());
-	}
+    @Test
+    public void testSimpleBeanSpring() {
+        assertEquals("I am a child of springOnConf!", this.config.getValue());
+        assertEquals("Hello from child", this.config.getChildRef().getValue());
+        assertEquals(this.service.getConfig().getAChild(), this.config.getChildRef());
+    }
 
-	@Configuration
-	@ComponentScan(basePackageClasses = { ServiceSpringBean.class })
-	static class ContextConfiguration {
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app").withDefinition(true);
-		}
-	}
+    @Configuration
+    @ComponentScan(basePackageClasses = { ServiceSpringBean.class })
+    static class ContextConfiguration {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app").withDefinition(true);
+        }
+    }
 
 }

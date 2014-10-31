@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample;
 
 import static org.junit.Assert.assertEquals;
@@ -36,26 +37,26 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample08 {
 
-	@Autowired
-	private RootConfigBean myConfig;
+    @Autowired
+    private RootConfigBean myConfig;
 
-	@Autowired
-	private ConfigBean myConfigChild;
+    @Autowired
+    private ConfigBean myConfigChild;
 
-	@Test
-	public void testChild() {
-		assertEquals("Tic", this.myConfig.getValue());
-		assertNotNull(this.myConfig.getChild());
-		assertEquals("https://localhost/Tic", this.myConfig.getChild().getUrl());
-		assertSame(this.myConfigChild, this.myConfig.getChild());
-	}
+    @Test
+    public void testChild() {
+        assertEquals("Tic", this.myConfig.getValue());
+        assertNotNull(this.myConfig.getChild());
+        assertEquals("https://localhost/Tic", this.myConfig.getChild().getUrl());
+        assertSame(this.myConfigChild, this.myConfig.getChild());
+    }
 
-	@Configuration
-	static class ContextConfiguration01 {
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_08")
-					.withBean("myRoot", RootConfigBean.class).withBean("myRoot/child", ConfigBean.class);
-		}
-	}
+    @Configuration
+    static class ContextConfiguration01 {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_08")
+                    .withBean("myRoot", RootConfigBean.class).withBean("myRoot/child", ConfigBean.class);
+        }
+    }
 }

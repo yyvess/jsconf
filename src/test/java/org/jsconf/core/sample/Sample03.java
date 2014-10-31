@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample;
 
 import org.jsconf.core.sample.bean.SpringBean;
@@ -29,25 +30,25 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/org/jsconf/core/sample/applicationContext_03.xml" })
 public class Sample03 {
 
-	@Autowired
-	@Qualifier("node")
-	private SpringBean node1;
+    @Autowired
+    @Qualifier("node")
+    private SpringBean node1;
 
-	@Autowired
-	@Qualifier("Node_02")
-	private SpringBean node2;
+    @Autowired
+    @Qualifier("Node_02")
+    private SpringBean node2;
 
-	@Test
-	public void test() {
-		Assert.assertNotNull(this.node1);
-		Assert.assertNotNull(this.node2);
-		Assert.assertNotEquals(this.node1, this.node2);
-		Assert.assertEquals("yves", this.node1.getName());
-		Assert.assertEquals("Joe", this.node2.getName());
-		Assert.assertNotNull(this.node1.getChild());
-		Assert.assertNotNull(this.node2.getChild());
-		Assert.assertNotEquals(this.node1.getChild(), this.node2.getChild());
-		Assert.assertEquals(15, this.node1.getChild().getPort());
-		Assert.assertEquals(25, this.node2.getChild().getPort());
-	}
+    @Test
+    public void test() {
+        Assert.assertNotNull(this.node1);
+        Assert.assertNotNull(this.node2);
+        Assert.assertNotEquals(this.node1, this.node2);
+        Assert.assertEquals("yves", this.node1.getName());
+        Assert.assertEquals("Joe", this.node2.getName());
+        Assert.assertNotNull(this.node1.getChild());
+        Assert.assertNotNull(this.node2.getChild());
+        Assert.assertNotEquals(this.node1.getChild(), this.node2.getChild());
+        Assert.assertEquals(15, this.node1.getChild().getPort());
+        Assert.assertEquals(25, this.node2.getChild().getPort());
+    }
 }

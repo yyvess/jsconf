@@ -26,54 +26,54 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class RealReloadingTest {
 
-	private static final String TIC = "Tic";
-	private static final String TAC = "Tac";
+    private static final String TIC = "Tic";
+    private static final String TAC = "Tac";
 
-	private static File tempFile;
+    private static File tempFile;
 
-	@Autowired
-	private ConfigBean conf;
+    @Autowired
+    private ConfigBean conf;
 
-	@Autowired
-	private ConfigurationFactory factory;
+    @Autowired
+    private ConfigurationFactory factory;
 
-	@BeforeClass
-	public static void init() throws IOException {
-		String prefix = Long.toString(System.nanoTime());
-		tempFile = File.createTempFile(prefix, "_app.conf");
-		tempFile.deleteOnExit();
-	}
+    @BeforeClass
+    public static void init() throws IOException {
+        String prefix = Long.toString(System.nanoTime());
+        tempFile = File.createTempFile(prefix, "_app.conf");
+        tempFile.deleteOnExit();
+    }
 
-	@Test
-	@Repeat
-	public void testRealReloading() throws IOException, InterruptedException {
-		final Object ref = this.conf;
-		assertNotNull(this.conf);
+    @Test
+    @Repeat
+    public void testRealReloading() throws IOException, InterruptedException {
+        final Object ref = this.conf;
+        assertNotNull(this.conf);
 
-		assertEquals(null, this.conf.getUrl());
-		write(TIC);
-		assertEquals(TIC, this.conf.getUrl());
-		write(TAC);
-		assertEquals(TAC, this.conf.getUrl());
-		write(TIC);
-		assertEquals(TIC, this.conf.getUrl());
+        assertEquals(null, this.conf.getUrl());
+        write(TIC);
+        assertEquals(TIC, this.conf.getUrl());
+        write(TAC);
+        assertEquals(TAC, this.conf.getUrl());
+        write(TIC);
+        assertEquals(TIC, this.conf.getUrl());
 
-		assertTrue(ref == this.conf);
-	}
+        assertTrue(ref == this.conf);
+    }
 
-	private void write(String value) throws IOException, InterruptedException {
-		try (FileWriter fw = new FileWriter(tempFile)) {
-			fw.append("simpleConf : {  url : \"" + value + "\" }");
-		}
-		Thread.sleep(1000);
-	}
+    private void write(String value) throws IOException, InterruptedException {
+        try (FileWriter fw = new FileWriter(tempFile)) {
+            fw.append("simpleConf : {  url : \"" + value + "\" }");
+        }
+        Thread.sleep(1000);
+    }
 
-	@Configuration
-	static class ContextConfiguration {
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName(tempFile.getName())//
-					.withBean("simpleConf", ConfigBean.class, "myBeanId", true);
-		}
-	}
+    @Configuration
+    static class ContextConfiguration {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName(tempFile.getName())//
+                    .withBean("simpleConf", ConfigBean.class, "myBeanId", true);
+        }
+    }
 }

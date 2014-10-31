@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample;
 
 import org.jsconf.core.ConfigurationFactory;
@@ -33,29 +34,29 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample02 {
 
-	@Autowired
-	@Qualifier("beanId")
-	// This interface not required implementation
-	private ConfigBean conf;
+    @Autowired
+    @Qualifier("beanId")
+    // This interface not required implementation
+    private ConfigBean conf;
 
-	@Test
-	public void test() {
-		Assert.assertNotNull(this.conf);
-		Assert.assertEquals("Hello World", this.conf.getUrl());
-		Assert.assertEquals(12, this.conf.getPort());
-		Assert.assertNotNull(this.conf.getAMap());
-		Assert.assertEquals("value1", this.conf.getAMap().get("key1"));
-		Assert.assertEquals("value2", this.conf.getAMap().get("key2"));
-		Assert.assertEquals("value1", this.conf.getAList().get(0));
-		Assert.assertEquals("value2", this.conf.getAList().get(1));
-	}
+    @Test
+    public void test() {
+        Assert.assertNotNull(this.conf);
+        Assert.assertEquals("Hello World", this.conf.getUrl());
+        Assert.assertEquals(12, this.conf.getPort());
+        Assert.assertNotNull(this.conf.getAMap());
+        Assert.assertEquals("value1", this.conf.getAMap().get("key1"));
+        Assert.assertEquals("value2", this.conf.getAMap().get("key2"));
+        Assert.assertEquals("value1", this.conf.getAList().get(0));
+        Assert.assertEquals("value2", this.conf.getAList().get(1));
+    }
 
-	@Configuration
-	static class ContextConfiguration {
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_02") //
-					.withBean("simpleConf", ConfigBean.class, "beanId");
-		}
-	}
+    @Configuration
+    static class ContextConfiguration {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_02") //
+                    .withBean("simpleConf", ConfigBean.class, "beanId");
+        }
+    }
 }

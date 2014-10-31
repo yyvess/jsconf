@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.test.bean;
 
 import org.springframework.stereotype.Component;
@@ -21,22 +22,22 @@ import org.springframework.stereotype.Component;
 @Component("springOnConf")
 public class SimpleBeanSpring {
 
-	private String value;
-	private MyConfig childRef;
+    private String value;
+    private MyConfig childRef;
 
-	public String getValue() {
-		return this.value;
-	}
+    public String getValue() {
+        return this.value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public MyConfig getChildRef() {
-		return this.childRef;
-	}
+    public MyConfig getChildRef() {
+        return this.childRef;
+    }
 
-	public void setChildRef(MyConfig childRef) {
-		this.childRef = childRef;
-	}
+    public void setChildRef(MyConfig childRef) {
+        this.childRef = childRef;
+    }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample;
 
 import org.jsconf.core.ConfigFormat;
@@ -33,23 +34,23 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample04 {
 
-	@Autowired
-	private Sequence sequence;
+    @Autowired
+    private Sequence sequence;
 
-	@Test
-	public void test() {
-		Assert.assertNotNull(this.sequence);
-		Assert.assertEquals("SEQ_NAME", this.sequence.getName());
-		Assert.assertEquals("org.apache.commons.dbcp.BasicDataSource", this.sequence.getDataSource().getClass()
-				.getName());
-	}
+    @Test
+    public void test() {
+        Assert.assertNotNull(this.sequence);
+        Assert.assertEquals("SEQ_NAME", this.sequence.getName());
+        Assert.assertEquals("org.apache.commons.dbcp.BasicDataSource", this.sequence.getDataSource().getClass()
+                .getName());
+    }
 
-	@Configuration
-	static class ContextConfiguration {
-		@Bean
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_04.conf")
-					.withFormat(ConfigFormat.CONF).withDefinition(true).withStrict(true);
-		}
-	}
+    @Configuration
+    static class ContextConfiguration {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_04.conf")
+                    .withFormat(ConfigFormat.CONF).withDefinition(true).withStrict(true);
+        }
+    }
 }

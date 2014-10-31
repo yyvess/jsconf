@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.sample.bean;
 
 import java.util.List;
@@ -21,12 +22,12 @@ import java.util.Map;
 
 public interface ConfigBean {
 
-	String getUrl();
+    String getUrl();
 
-	int getPort();
+    int getPort();
 
-	Map<?, ?> getAMap();
+    Map<?, ?> getAMap();
 
-	List<?> getAList();
+    List<?> getAList();
 
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.jsconf.core.test;
 
 import org.jsconf.core.ConfigurationFactory;
@@ -34,43 +35,43 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ProfileTest {
 
-	@Autowired
-	private ConfigBean simpleConf;
+    @Autowired
+    private ConfigBean simpleConf;
 
-	@Autowired
-	private ConfigBean simpleConf2;
+    @Autowired
+    private ConfigBean simpleConf2;
 
-	@Autowired
-	private ConfigurationFactory context01;
+    @Autowired
+    private ConfigurationFactory context01;
 
-	@Autowired
-	private ConfigurationFactory context02;
+    @Autowired
+    private ConfigurationFactory context02;
 
-	@Test
-	public void testProfile() {
-		Assert.assertEquals("Tac", this.simpleConf.getUrl());
-	}
+    @Test
+    public void testProfile() {
+        Assert.assertEquals("Tac", this.simpleConf.getUrl());
+    }
 
-	@Test
-	public void testProfileConf() {
-		Assert.assertEquals("Tac", this.simpleConf.getUrl());
-	}
+    @Test
+    public void testProfileConf() {
+        Assert.assertEquals("Tac", this.simpleConf.getUrl());
+    }
 
-	@Configuration
-	static class ContextConfiguration01 {
-		@Bean(name = "context01")
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_profile").withProfiles(true)
-					.withDefinition(true);
-		}
-	}
+    @Configuration
+    static class ContextConfiguration01 {
+        @Bean(name = "context01")
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_profile").withProfiles(true)
+                    .withDefinition(true);
+        }
+    }
 
-	@Configuration
-	static class ContextConfiguration02 {
-		@Bean(name = "context02")
-		public static ConfigurationFactory configurationFactory() {
-			return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_profile.conf")
-					.withBean("simpleConf2", ConfigBean.class).withProfiles(true).withStrict(false).withFormat(null);
-		}
-	}
+    @Configuration
+    static class ContextConfiguration02 {
+        @Bean(name = "context02")
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_profile.conf")
+                    .withBean("simpleConf2", ConfigBean.class).withProfiles(true).withStrict(false).withFormat(null);
+        }
+    }
 }
