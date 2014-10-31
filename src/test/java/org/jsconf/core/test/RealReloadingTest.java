@@ -1,12 +1,15 @@
 package org.jsconf.core.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import org.jsconf.core.ConfigurationFactory;
 import org.jsconf.core.sample.bean.ConfigBean;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,22 +46,22 @@ public class RealReloadingTest {
 
 	@Test
 	@Repeat
-	public void test() throws IOException, InterruptedException {
+	public void testRealReloading() throws IOException, InterruptedException {
 		final Object ref = this.conf;
-		Assert.assertNotNull(this.conf);
+		assertNotNull(this.conf);
 
-		Assert.assertEquals(null, this.conf.getUrl());
+		assertEquals(null, this.conf.getUrl());
 		write(TIC);
-		Assert.assertEquals(TIC, this.conf.getUrl());
+		assertEquals(TIC, this.conf.getUrl());
 		write(TAC);
-		Assert.assertEquals(TAC, this.conf.getUrl());
+		assertEquals(TAC, this.conf.getUrl());
 		write(TIC);
-		Assert.assertEquals(TIC, this.conf.getUrl());
+		assertEquals(TIC, this.conf.getUrl());
 
-		Assert.assertTrue(ref == this.conf);
+		assertTrue(ref == this.conf);
 	}
 
-	private static void write(String value) throws IOException, InterruptedException {
+	private void write(String value) throws IOException, InterruptedException {
 		try (FileWriter fw = new FileWriter(tempFile)) {
 			fw.append("simpleConf : {  url : \"" + value + "\" }");
 		}
@@ -68,7 +71,7 @@ public class RealReloadingTest {
 	@Configuration
 	static class ContextConfiguration {
 		@Bean
-		public ConfigurationFactory configurationFactory() {
+		public static ConfigurationFactory configurationFactory() {
 			return new ConfigurationFactory().withResourceName(tempFile.getName())//
 					.withBean("simpleConf", ConfigBean.class, "myBeanId", true);
 		}

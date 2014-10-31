@@ -16,11 +16,14 @@
  */
 package org.jsconf.core.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.jsconf.core.ConfigurationFactory;
 import org.jsconf.core.test.bean.MyConfig;
 import org.jsconf.core.test.bean.ServiceSpringBean;
 import org.jsconf.core.test.bean.SimpleBeanSpring;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,30 +44,29 @@ public class ConfigTest {
 	private SimpleBeanSpring config;
 
 	@Autowired()
-	@Qualifier(value = "serviceSpring")
 	private ServiceSpringBean service;
 
 	@Test
-	public void test() {
+	public void testServiceSpringBean() {
 		MyConfig localConfig = this.service.getConfig();
-		Assert.assertNotNull(localConfig.getAChild());
-		Assert.assertEquals("Hello World, I a spring bean!", this.service.getValue());
-		Assert.assertEquals("Hello from Config", localConfig.getValue());
-		Assert.assertEquals(10, localConfig.getAInt());
-		Assert.assertNotNull(localConfig.getAChild());
-		Assert.assertNotEquals(localConfig, localConfig.getAChild());
-		Assert.assertEquals("Hello from child", localConfig.getAChild().getValue());
-		Assert.assertEquals("Spring value", localConfig.getAChild().getSpringValue());
-		Assert.assertEquals(5, localConfig.getAChild().getAInt());
-		Assert.assertEquals(1, localConfig.getAMap().size());
-		Assert.assertEquals("{word1=A map value}", localConfig.getAMap().toString());
+		assertNotNull(localConfig.getAChild());
+		assertEquals("Hello World, I a spring bean!", this.service.getValue());
+		assertEquals("Hello from Config", localConfig.getValue());
+		assertEquals(10, localConfig.getAInt());
+		assertNotNull(localConfig.getAChild());
+		assertNotEquals(localConfig, localConfig.getAChild());
+		assertEquals("Hello from child", localConfig.getAChild().getValue());
+		assertEquals("Spring value", localConfig.getAChild().getSpringValue());
+		assertEquals(5, localConfig.getAChild().getAInt());
+		assertEquals(1, localConfig.getAMap().size());
+		assertEquals("{word1=A map value}", localConfig.getAMap().toString());
 	}
 
 	@Test
-	public void test2() {
-		Assert.assertEquals("I am a child of springOnConf!", this.config.getValue());
-		Assert.assertEquals("Hello from child", this.config.getChildRef().getValue());
-		Assert.assertEquals(this.service.getConfig().getAChild(), this.config.getChildRef());
+	public void testSimpleBeanSpring() {
+		assertEquals("I am a child of springOnConf!", this.config.getValue());
+		assertEquals("Hello from child", this.config.getChildRef().getValue());
+		assertEquals(this.service.getConfig().getAChild(), this.config.getChildRef());
 	}
 
 	@Configuration

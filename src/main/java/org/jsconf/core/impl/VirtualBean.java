@@ -16,11 +16,11 @@ public class VirtualBean implements InvocationHandler {
 	private static final String GET_PREFIX = "get";
 	private static final String HASH_CODE_METHOD = "hashCode";
 	private static final String EQUALS_METHOD = "equals";
+	private static final String TO_STRING_METHOD = "toString";
 
-	private final Map<String, Object> values;
+	private final Map<String, Object> values = new HashMap<>();
 
 	public VirtualBean(Map<String, Object> values) {
-		this.values = new HashMap<>();
 		for (Entry<String, Object> e : values == null ? this.values.entrySet() : values.entrySet()) {
 			this.values.put(toGetMethod(e.getKey()), e.getValue());
 		}
@@ -34,6 +34,8 @@ public class VirtualBean implements InvocationHandler {
 			return magicGet(methodName);
 		} else if (methodName.startsWith(HASH_CODE_METHOD) && nbArgs == 0) {
 			return hashCode();
+		} else if (methodName.startsWith(TO_STRING_METHOD) && nbArgs == 0) {
+			return toString();
 		} else if (methodName.startsWith(EQUALS_METHOD) && nbArgs == 1) {
 			return equals(args[0]);
 		}
@@ -56,6 +58,11 @@ public class VirtualBean implements InvocationHandler {
 	}
 
 	@Override
+	public String toString() {
+		return this.values.toString();
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -63,24 +70,20 @@ public class VirtualBean implements InvocationHandler {
 		if (obj == null) {
 			return false;
 		}
+		if (Proxy.isProxyClass(obj.getClass())) {
+			return obj.equals(this);
+		}
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		VirtualBean other = (VirtualBean) obj;
-		if (this.values == null) {
-			if (other.values != null) {
-				return false;
-			}
-		} else if (!this.values.equals(other.values)) {
-			return false;
-		}
-		return true;
+		return this.values.equals(other.values);
 	};
 
 	@Override
 	public int hashCode() {
 		final int prime = 47;
-		return prime + (this.values == null ? 0 : this.values.hashCode());
+		return prime + this.values.hashCode();
 	}
 
 	@SuppressWarnings("unchecked")
