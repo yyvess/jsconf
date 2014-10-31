@@ -54,7 +54,7 @@ public class ProxyPostProcessor {
 			proxy.setBean(bean);
 			return proxy;
 		} else {
-			throw new BeanCreationException(beanName, String.format("Only bean with interface can be proxy : ",
+			throw new BeanCreationException(beanName, String.format("Only bean with interface can be proxy : %s",
 					beanName));
 		}
 	}
