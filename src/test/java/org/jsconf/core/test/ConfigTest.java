@@ -50,24 +50,24 @@ public class ConfigTest {
     @Test
     public void testServiceSpringBean() {
         MyConfig localConfig = this.service.getConfig();
-        assertNotNull(localConfig.getAChild());
+        assertNotNull(localConfig.getChild());
         assertEquals("Hello World, I a spring bean!", this.service.getValue());
         assertEquals("Hello from Config", localConfig.getValue());
-        assertEquals(10, localConfig.getAInt());
-        assertNotNull(localConfig.getAChild());
-        assertNotEquals(localConfig, localConfig.getAChild());
-        assertEquals("Hello from child", localConfig.getAChild().getValue());
-        assertEquals("Spring value", localConfig.getAChild().getSpringValue());
-        assertEquals(5, localConfig.getAChild().getAInt());
-        assertEquals(1, localConfig.getAMap().size());
-        assertEquals("{word1=A map value}", localConfig.getAMap().toString());
+        assertEquals(10, localConfig.getInteger());
+        assertNotNull(localConfig.getChild());
+        assertNotEquals(localConfig, localConfig.getChild());
+        assertEquals("Hello from child", localConfig.getChild().getValue());
+        assertEquals("Spring value", localConfig.getChild().getSpringValue());
+        assertEquals(5, localConfig.getChild().getInteger());
+        assertEquals(1, localConfig.getMap().size());
+        assertEquals("{word1=A map value}", localConfig.getMap().toString());
     }
 
     @Test
     public void testSimpleBeanSpring() {
         assertEquals("I am a child of springOnConf!", this.config.getValue());
         assertEquals("Hello from child", this.config.getChildRef().getValue());
-        assertEquals(this.service.getConfig().getAChild(), this.config.getChildRef());
+        assertEquals(this.service.getConfig().getChild(), this.config.getChildRef());
     }
 
     @Configuration

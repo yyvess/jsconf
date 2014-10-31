@@ -58,19 +58,19 @@ public class ChildTest {
     @Test
     public void testChild1() {
         assertEquals("Tic", this.myConfig.getValue());
-        assertNotSame(this.myConfig, this.myConfig.getAChild());
-        assertNotNull(this.myConfig.getAChild());
-        assertEquals("Tac", this.myConfig.getAChild().getValue());
-        assertSame(this.myConfigChild, this.myConfig.getAChild());
+        assertNotSame(this.myConfig, this.myConfig.getChild());
+        assertNotNull(this.myConfig.getChild());
+        assertEquals("Tac", this.myConfig.getChild().getValue());
+        assertSame(this.myConfigChild, this.myConfig.getChild());
     }
 
     @Test
     public void testChild2() {
         assertEquals("Tic", this.myConfig2.getValue());
-        assertNotSame(this.myConfig2, this.myConfig2.getAChild());
-        assertNotNull(this.myConfig2.getAChild());
-        assertEquals("Tac", this.myConfig2.getAChild().getValue());
-        assertSame(this.myConfigChild2, this.myConfig2.getAChild());
+        assertNotSame(this.myConfig2, this.myConfig2.getChild());
+        assertNotNull(this.myConfig2.getChild());
+        assertEquals("Tac", this.myConfig2.getChild().getValue());
+        assertSame(this.myConfigChild2, this.myConfig2.getChild());
     }
 
     @Configuration
@@ -87,7 +87,7 @@ public class ChildTest {
         public static ConfigurationFactory configurationFactory() {
             return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_child2")
                     .withBean("myConfig", MyConfig.class, "myConfig2")
-                    .withBean("myConfig/aChild", MyConfig.class, "myConfigChild2");
+                    .withBean("myConfig/child", MyConfig.class, "myConfigChild2");
         }
     }
 }

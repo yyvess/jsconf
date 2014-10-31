@@ -28,11 +28,11 @@ public class MyConfig {
 
     private String value;
 
-    private MyConfig aChild;
+    private MyConfig child;
 
-    private int aInt;
+    private int integer;
 
-    private Map<String, String> aMap;
+    private Map<String, String> map;
 
     public String getValue() {
         return this.value;
@@ -42,28 +42,28 @@ public class MyConfig {
         this.value = value;
     }
 
-    public MyConfig getAChild() {
-        return this.aChild;
+    public MyConfig getChild() {
+        return this.child;
     }
 
-    public void setAChild(MyConfig aChild) {
-        this.aChild = aChild;
+    public void setChild(MyConfig child) {
+        this.child = child;
     }
 
-    public int getAInt() {
-        return this.aInt;
+    public int getInteger() {
+        return this.integer;
     }
 
-    public void setAInt(int aInt) {
-        this.aInt = aInt;
+    public void setInteger(int integer) {
+        this.integer = integer;
     }
 
-    public Map<String, String> getAMap() {
-        return this.aMap;
+    public Map<String, String> getMap() {
+        return this.map;
     }
 
-    public void setAMap(Map<String, String> aMap) {
-        this.aMap = aMap;
+    public void setMap(Map<String, String> map) {
+        this.map = map;
     }
 
     public String getSpringValue() {

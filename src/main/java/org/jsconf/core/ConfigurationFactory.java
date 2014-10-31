@@ -129,7 +129,6 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 
     public ConfigurationFactory withBean(String path, Class<?> bean, String id, boolean proxy) {
         Map<String, Object> properties = new HashMap<>(2);
-        Map<String, Map<String, ? extends Object>> object = new HashMap<>(2);
         if (StringUtils.hasText(id)) {
             properties.put("\"" + ID + "\"", id);
         }
@@ -142,6 +141,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
             properties.put("\"" + CLASS + "\"", bean.getCanonicalName());
         }
         String[] splitedPath = path.split("/");
+        Map<String, Map<String, ? extends Object>> object = new HashMap<>(2);
         object.put(splitedPath[splitedPath.length - 1], properties);
         for (int i = splitedPath.length - 2; i >= 0; i--) {
             Map<String, Map<String, ? extends Object>> child = object;
