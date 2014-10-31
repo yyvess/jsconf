@@ -39,15 +39,15 @@ public class Sample08 {
 	@Autowired
 	private RootConfigBean myConfig;
 
-	 @Autowired
-	 private ConfigBean myConfigChild;
+	@Autowired
+	private ConfigBean myConfigChild;
 
 	@Test
 	public void testChild() {
 		assertEquals("Tic", this.myConfig.getValue());
 		assertNotNull(this.myConfig.getChild());
 		assertEquals("https://localhost/Tic", this.myConfig.getChild().getUrl());
-		 assertSame(this.myConfigChild, this.myConfig.getChild());
+		assertSame(this.myConfigChild, this.myConfig.getChild());
 	}
 
 	@Configuration
