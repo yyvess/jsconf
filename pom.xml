@@ -22,7 +22,7 @@
     <scm>
         <connection>scm:git:https://github.com/yyvess/jsconf.git</connection>
         <url>https://github.com/yyvess/jsconf.git</url>
-        <tag>v1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <developers>
         <developer>
