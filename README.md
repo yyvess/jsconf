@@ -12,8 +12,32 @@ Configure easily your applications with format JSON instead of flat properties f
 - Hot reloading
 - Spring profile
 
+##Binary Releases
 
-##Examples
+You can find published releases (compiled for Java 7 and above) on Maven Central.
+
+		<dependency>
+			<groupId>net.jmob</groupId>
+			<artifactId>jsconf</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+You also need to import Spring context
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>3.X.X.RELEASE</version>
+		</dependency>
+		
+
+Link for direct download if you don't use a dependency manager:
+
+ - http://central.maven.org/maven2/net/jmob/jsconf/
+
+ 
+ 
+## Using the Library
 
 ####Simplest bean definition 
 
