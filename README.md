@@ -114,7 +114,59 @@ static class ContextConfiguration {
 }
 ```
 
-####Usage with definition file 
+####Usage of @ConfigurationProperties (Required version > 1.0.0)
+File `app.conf` :
+
+```javascript
+{ 
+ "root":{
+    "simpleConf":{
+        "url":"Hello World",
+        "port":12,
+        "aMap":{
+            "key1":"value1",
+            "key2":"value2"
+        },
+        "aList":[
+            "value1",
+            "value2"
+        ]
+    }
+}
+```
+
+File `ConfigBean.java` :
+```java  
+@ConfigurationProperties("simpleConf", id="beanID")
+public interface ConfigBean {
+    String getUrl();
+    int getPort();
+    Map<?, ?> getAMap();
+    List<?> getAList();
+}
+```
+
+Use it as a bean Spring ... it's a bean Spring 
+```java  
+@Service("service")
+public class Service {
+	@Autowired
+    private ConfigBean configBean;
+}
+```
+
+```java  
+    @Configuration
+    public class ContextConfiguration {
+        @Bean
+        public static ConfigurationFactory configurationFactory() {
+            return new ConfigurationFactory().withResourceName("app.conf") //
+                    .withScanPackage("org.jsconf.core.sample.bean");
+        }
+    }
+```
+
+####Use definition file 
 
 Definitionine only values on your first configuration file. 
 Into a second file packaged with your application, define beans.
