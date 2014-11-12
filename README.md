@@ -137,7 +137,7 @@ File `app.conf` :
 
 File `ConfigBean.java` :
 ```java  
-@ConfigurationProperties("simpleConf", id="beanID")
+@ConfigurationProperties("root/simpleConf")
 public interface ConfigBean {
     String getUrl();
     int getPort();
