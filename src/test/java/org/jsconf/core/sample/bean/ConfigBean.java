@@ -20,6 +20,9 @@ package org.jsconf.core.sample.bean;
 import java.util.List;
 import java.util.Map;
 
+import org.jsconf.core.ConfigurationProperties;
+
+@ConfigurationProperties("simpleConf")
 public interface ConfigBean {
 
     String getUrl();

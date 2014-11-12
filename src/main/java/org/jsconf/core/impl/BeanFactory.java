@@ -101,7 +101,7 @@ public class BeanFactory {
         }
         this.log.debug("Initalize bean id : {}", beanId);
         if (StringUtils.hasText(this.parentId)) {
-            beanDefinition = buildBEanFromParent(beanId);
+            beanDefinition = buildBeanFromParent(beanId);
         } else if (StringUtils.hasText(this.className)) {
             beanDefinition = buildBeanFromClass(beanId);
         } else if (StringUtils.hasText(this.interfaceName)) {
@@ -114,7 +114,7 @@ public class BeanFactory {
         return beanId;
     }
 
-    private BeanDefinitionBuilder buildBEanFromParent(String beanId) {
+    private BeanDefinitionBuilder buildBeanFromParent(String beanId) {
         BeanDefinitionBuilder beanDefinition = BeanDefinitionBuilder.childBeanDefinition(this.parentId);
         if (StringUtils.hasText(this.className)) {
             throw new BeanCreationException(beanId, String.format("Bean have a Class %s and a Parent defined : %s",

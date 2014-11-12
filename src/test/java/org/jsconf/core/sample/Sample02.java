@@ -23,7 +23,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,7 +34,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 public class Sample02 {
 
     @Autowired
-    @Qualifier("beanId")
     // This interface not required implementation
     private ConfigBean conf;
 
@@ -56,7 +54,9 @@ public class Sample02 {
         @Bean
         public static ConfigurationFactory configurationFactory() {
             return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_02") //
-                    .withBean("simpleConf", ConfigBean.class, "beanId");
+                    // .withBean("simpleConf", ConfigBean.class)
+                    // .withBean(ConfigBean.class)
+                    .withScanPackage(ConfigBean.class.getPackage().toString());
         }
     }
 }

@@ -21,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-//Required to put ${java.io.tmpdir} on classpath
+// Test required to have put ${java.io.tmpdir} on ClassPath
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class RealReloadingTest {
@@ -46,6 +46,7 @@ public class RealReloadingTest {
 
     @Test
     @Repeat
+    // Test required to have put ${java.io.tmpdir} on ClassPath
     public void testRealReloading() throws IOException, InterruptedException {
         final Object ref = this.conf;
         assertNotNull(this.conf);

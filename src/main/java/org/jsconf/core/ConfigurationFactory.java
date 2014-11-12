@@ -33,9 +33,12 @@ import java.util.Set;
 import org.jsconf.core.impl.BeanFactory;
 import org.jsconf.core.impl.ProxyPostProcessor;
 import org.jsconf.core.service.WatchResource;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -115,6 +118,30 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
         return this;
     }
 
+    public void setScanPackage(String forPackage) {
+        if (StringUtils.hasText(forPackage)) {
+            withScanPackage(forPackage);
+        }
+    }
+
+    public ConfigurationFactory withScanPackage(String forPackage) {
+        Reflections reflections = new Reflections(ClasspathHelper.forPackage(forPackage));
+        Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(ConfigurationProperties.class);
+        for (Class<?> cl : annotated) {
+            withBean(cl);
+        }
+        return this;
+    }
+
+    public ConfigurationFactory withBean(Class<?> bean) {
+        if (bean.isAnnotationPresent(ConfigurationProperties.class)) {
+            ConfigurationProperties cf = bean.getAnnotation(ConfigurationProperties.class);
+            return withBean(cf.value(), bean, cf.id(), cf.proxy());
+        }
+        throw new BeanInitializationException(String.format("Missing @ConfigurationProperties annotation on class %s",
+                bean));
+    }
+
     public ConfigurationFactory withBean(String path, Class<?> bean) {
         return withBean(path, bean, null);
     }
@@ -190,16 +217,23 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
             localConfig = localConfig.withFallback(ConfigFactory.parseResourcesAnySyntax(resource, this.options));
         }
         this.log.debug("Initalize beans");
-        for (Entry<String, ConfigValue> entry : localConfig.root().entrySet()) {
-            BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(entry);
-            if (beanBuilder.isValid()) {
-                buildBeans(beanBuilder);
-            }
-        }
+        extracted(localConfig.root().entrySet());
         this.log.debug("Beans are initalzed");
         if (!this.proxyBeanName.isEmpty()) {
             for (String resource : ressources) {
                 this.watcher.add(new WatchResource(this).watch(resource));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void extracted(Set<Entry<String, ConfigValue>> entrySet) {
+        for (Entry<String, ConfigValue> entry : entrySet) {
+            BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(entry);
+            if (beanBuilder.isValid()) {
+                buildBeans(beanBuilder);
+            } else if (entry.getValue() instanceof Map) {
+                extracted(((Map<String, ConfigValue>) entry.getValue()).entrySet());
             }
         }
     }
@@ -240,11 +274,11 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
                 ressourcesName.add(nameWithProfile);
             }
         }
-        ressourcesName.addAll(withDefinition(name));
+        ressourcesName.addAll(getDefinition(name));
         return ressourcesName;
     }
 
-    private List<String> withDefinition(String name) {
+    private List<String> getDefinition(String name) {
         List<String> ressourcesName = new ArrayList<>();
         if (this.withDefinition) {
             int idx = name.lastIndexOf(".");

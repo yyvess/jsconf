@@ -36,28 +36,28 @@ public class ExceptionTest {
     @Test(expected = BeanCreationException.class)
     public void testClassNotFound() {
         ConfigurationFactory confFactory = new ConfigurationFactory()
-                .withResourceName("org/jsconf/core/test/app_exception01.conf");
+        .withResourceName("org/jsconf/core/test/app_exception01.conf");
         confFactory.postProcessBeanFactory(null);
     }
 
     @Test(expected = BeanCreationException.class)
     public void testInterfaceNotFound() {
         ConfigurationFactory confFactory = new ConfigurationFactory()
-                .withResourceName("org/jsconf/core/test/app_exception02.conf");
+        .withResourceName("org/jsconf/core/test/app_exception02.conf");
         confFactory.postProcessBeanFactory(null);
     }
 
     @Test(expected = BeanCreationException.class)
     public void testNotAnInterface() {
         ConfigurationFactory confFactory = new ConfigurationFactory()
-                .withResourceName("org/jsconf/core/test/app_exception03.conf");
+        .withResourceName("org/jsconf/core/test/app_exception03.conf");
         confFactory.postProcessBeanFactory(null);
     }
 
     @Test(expected = BeanCreationException.class)
     public void testClassAndParentDefined() {
         ConfigurationFactory confFactory = new ConfigurationFactory()
-                .withResourceName("org/jsconf/core/test/app_exception05.conf");
+        .withResourceName("org/jsconf/core/test/app_exception05.conf");
         confFactory.setApplicationContext(mock(GenericApplicationContext.class));
         confFactory.postProcessBeanFactory(mock(ConfigurableListableBeanFactory.class));
     }
@@ -65,7 +65,7 @@ public class ExceptionTest {
     @Test(expected = BeanCreationException.class)
     public void testTryToProxyAClass() {
         ConfigurationFactory confFactory = new ConfigurationFactory()
-                .withResourceName("org/jsconf/core/test/app_exception04.conf");
+        .withResourceName("org/jsconf/core/test/app_exception04.conf");
         confFactory.setApplicationContext(mock(GenericApplicationContext.class));
         confFactory.postProcessBeanFactory(mock(ConfigurableListableBeanFactory.class));
         confFactory.postProcessBeforeInitialization(new Object(), "simpleConf");

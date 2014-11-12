@@ -21,6 +21,7 @@
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="resource" type="xsd:token" use="required" />
+                    <xsd:attribute name="scanPackage" type="xsd:token" />
                     <xsd:attribute name="strict" type="xsd:boolean" />
                     <xsd:attribute name="format" type="Format" />
                     <xsd:attribute name="definition" type="xsd:boolean" />
