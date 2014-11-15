@@ -56,7 +56,7 @@ public class Sample02 {
             return new ConfigurationFactory().withResourceName("org/jsconf/core/sample/app_02") //
                     // .withBean("simpleConf", ConfigBean.class)
                     // .withBean(ConfigBean.class)
-                    .withScanPackage(ConfigBean.class.getPackage().toString());
+                    .withScanPackage(ConfigBean.class.getPackage().getName());
         }
     }
 }

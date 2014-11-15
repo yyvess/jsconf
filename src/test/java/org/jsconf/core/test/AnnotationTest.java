@@ -53,7 +53,7 @@ public class AnnotationTest {
         @Bean
         public static ConfigurationFactory configurationFactory() {
             return new ConfigurationFactory().withResourceName("org/jsconf/core/test/app_annoted.conf")
-                    .withScanPackage(MyConfigAnnoted.class.getPackage().toString());
+                    .withScanPackage(MyConfigAnnoted.class.getPackage().getName());
         }
     }
 }

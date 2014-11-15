@@ -32,9 +32,8 @@ import java.util.Set;
 
 import org.jsconf.core.impl.BeanFactory;
 import org.jsconf.core.impl.ProxyPostProcessor;
+import org.jsconf.core.service.ClassPathScanningCandidate;
 import org.jsconf.core.service.WatchResource;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -45,6 +44,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.StringUtils;
 
 import com.typesafe.config.Config;
@@ -125,9 +125,10 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
     }
 
     public ConfigurationFactory withScanPackage(String forPackage) {
-        Reflections reflections = new Reflections(ClasspathHelper.forPackage(forPackage));
-        Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(ConfigurationProperties.class);
-        for (Class<?> cl : annotated) {
+        ClassPathScanningCandidate candidateComponentProvider = new ClassPathScanningCandidate(false);
+        candidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(ConfigurationProperties.class));
+        Set<Class<?>> candidate = candidateComponentProvider.findCandidateClass(forPackage);
+        for (Class<?> cl : candidate) {
             withBean(cl);
         }
         return this;
