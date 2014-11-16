@@ -19,7 +19,7 @@ You can find published releases (compiled for Java 7 and above) on Maven Central
 		<dependency>
 			<groupId>net.jmob</groupId>
 			<artifactId>jsconf</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0</version>
 		</dependency>
 
 You also need to import Spring context
