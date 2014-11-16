@@ -114,7 +114,7 @@ static class ContextConfiguration {
 }
 ```
 
-####Usage of @ConfigurationProperties (Required version > 1.0.0)
+####Usage of @ConfigurationProperties
 File `app.conf` :
 
 ```javascript
