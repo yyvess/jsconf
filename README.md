@@ -168,8 +168,7 @@ public class Service {
 
 ####Use definition file 
 
-Definitionine only values on your first configuration file. 
-Into a second file packaged with your application, define beans.
+Specify values on a first configuration file and into a second file packaged with your application, define beans.
 
 Your external configuration file `app.conf` :
 
