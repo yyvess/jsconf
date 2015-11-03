@@ -1,11 +1,11 @@
 package org.jsconf.core.service;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class ClassPathScanningCandidate extends ClassPathScanningCandidateComponentProvider {
 

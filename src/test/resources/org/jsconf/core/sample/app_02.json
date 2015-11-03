@@ -1,14 +1,14 @@
 {
-    "simpleConf":{
-        "url":"Hello World",
-        "port":12,
-        "aMap":{
-            "key1":"value1",
-            "key2":"value2"
-        },
-        "aList":[
-            "value1",
-            "value2"
-        ]
-    }
+  "simpleConf": {
+    "url": "Hello World",
+    "port": 12,
+    "aMap": {
+      "key1": "value1",
+      "key2": "value2"
+    },
+    "aList": [
+      "value1",
+      "value2"
+    ]
+  }
 }

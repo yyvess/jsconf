@@ -1,5 +1,6 @@
-
 /.settings
+/.idea
 /.classpath
 /.project
 /target
+jsconf.iml

@@ -1,35 +1,26 @@
 /**
  * Copyright 2013 Yves Galante
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package org.jsconf.core;
 
-import static org.jsconf.core.impl.BeanFactory.CLASS;
-import static org.jsconf.core.impl.BeanFactory.ID;
-import static org.jsconf.core.impl.BeanFactory.INTERFACE;
-import static org.jsconf.core.impl.BeanFactory.PROXY;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigParseOptions;
+import com.typesafe.config.ConfigSyntax;
+import org.jsconf.core.impl.BeanDefinition;
 import org.jsconf.core.impl.BeanFactory;
 import org.jsconf.core.impl.ProxyPostProcessor;
 import org.jsconf.core.service.ClassPathScanningCandidate;
@@ -45,30 +36,34 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.util.StringUtils;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigParseOptions;
-import com.typesafe.config.ConfigSyntax;
-import com.typesafe.config.ConfigValue;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import static java.lang.String.format;
 
 public class ConfigurationFactory implements ApplicationContextAware, BeanFactoryPostProcessor, BeanPostProcessor {
+
+    private static final String PROFILE_SEPARATOR = "-";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final Set<String> beanName = new HashSet<>();
     private final Set<String> proxyBeanName = new HashSet<>();
     private final List<WatchResource> watcher = new ArrayList<>();
-
-    private boolean withDefinition = false;
-    private boolean withProfiles = false;
+    private final Config config = ConfigFactory.empty();
+    private final Map<String, BeanDefinition> beanDefinitions = new HashMap<>();
 
     private String resourceName;
+    private boolean withProfiles = false;
 
     private GenericApplicationContext context;
     private ProxyPostProcessor proxyPostProcessor;
     private ConfigParseOptions options = ConfigParseOptions.defaults().setAllowMissing(false);
-    private Config config = ConfigFactory.empty();
 
     public void setFormat(ConfigFormat format) {
         if (format != null) {
@@ -80,18 +75,17 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
         this.options = this.options.setAllowMissing(!strict);
     }
 
-    public void setDefinition(boolean withDefinition) {
-        this.withDefinition = Boolean.valueOf(withDefinition);
-    }
-
     public void setProfiles(boolean withProfiles) {
         this.withProfiles = withProfiles;
     }
 
-    // TOOD use enum
     public ConfigurationFactory withFormat(ConfigFormat format) {
         setFormat(format);
         return this;
+    }
+
+    public ConfigurationFactory strict() {
+        return withStrict(true);
     }
 
     public ConfigurationFactory withStrict(boolean strict) {
@@ -99,10 +93,10 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
         return this;
     }
 
-    public ConfigurationFactory withDefinition(boolean def) {
-        setDefinition(def);
-        return this;
+    public ConfigurationFactory useProfiles() {
+        return withProfiles(true);
     }
+
 
     public ConfigurationFactory withProfiles(boolean profile) {
         setProfiles(profile);
@@ -118,12 +112,6 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
         return this;
     }
 
-    public void setScanPackage(String forPackage) {
-        if (StringUtils.hasText(forPackage)) {
-            withScanPackage(forPackage);
-        }
-    }
-
     public ConfigurationFactory withScanPackage(String forPackage) {
         ClassPathScanningCandidate candidateComponentProvider = new ClassPathScanningCandidate(false);
         candidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(ConfigurationProperties.class));
@@ -137,46 +125,31 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
     public ConfigurationFactory withBean(Class<?> bean) {
         if (bean.isAnnotationPresent(ConfigurationProperties.class)) {
             ConfigurationProperties cf = bean.getAnnotation(ConfigurationProperties.class);
-            return withBean(cf.value(), bean, cf.id(), cf.proxy());
+            return withBean(cf.value(), bean, cf.id(), cf.hotReloading());
         }
-        throw new BeanInitializationException(String.format("Missing @ConfigurationProperties annotation on class %s",
-                bean));
+        throw new BeanInitializationException(format("Missing @ConfigurationProperties annotation on class %s", bean));
     }
 
     public ConfigurationFactory withBean(String path, Class<?> bean) {
         return withBean(path, bean, null);
     }
 
-    public ConfigurationFactory withBean(String path, Class<?> bean, boolean proxy) {
-        return withBean(path, bean, null, proxy);
-    }
-
     public ConfigurationFactory withBean(String path, Class<?> bean, String id) {
         return withBean(path, bean, id, false);
     }
 
-    public ConfigurationFactory withBean(String path, Class<?> bean, String id, boolean proxy) {
-        Map<String, Object> properties = new HashMap<>(2);
-        if (StringUtils.hasText(id)) {
-            properties.put("\"" + ID + "\"", id);
-        }
-        if (proxy) {
-            properties.put("\"" + PROXY + "\"", true);
-        }
-        if (bean.isInterface()) {
-            properties.put("\"" + INTERFACE + "\"", bean.getCanonicalName());
-        } else {
-            properties.put("\"" + CLASS + "\"", bean.getCanonicalName());
-        }
-        String[] splitedPath = path.split("/");
-        Map<String, Map<String, ? extends Object>> object = new HashMap<>(2);
-        object.put(splitedPath[splitedPath.length - 1], properties);
-        for (int i = splitedPath.length - 2; i >= 0; i--) {
-            Map<String, Map<String, ? extends Object>> child = object;
-            object = new HashMap<>(2);
-            object.put(splitedPath[i], child);
-        }
-        this.config = this.config.withFallback(ConfigFactory.parseMap(object));
+    public ConfigurationFactory withBean(String path, Class<?> bean, boolean reloading) {
+        return withBean(path, bean, null, reloading);
+    }
+
+    public ConfigurationFactory withBean(String path, Class<?> bean, String id, boolean reloading) {
+        this.beanDefinitions.put(path.replace('/', '.')
+                , new org.jsconf.core.impl.BeanDefinition()
+                        .withId(id)
+                        .withKey(path)
+                        .withReloading(reloading)
+                        .withClassName(bean.getCanonicalName())
+                        .isAInterface(bean.isInterface()));
         return this;
     }
 
@@ -188,7 +161,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
     public synchronized void reload() {
         clearContext();
         loadContext();
-        this.proxyPostProcessor.forceProxyInitalization();
+        this.proxyPostProcessor.forceProxyInitialization();
     }
 
     @Override
@@ -213,29 +186,27 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
     private void loadContext() {
         this.log.debug("Loading configuration");
         Config localConfig = this.config;
-        List<String> ressources = new ArrayList<>(withProfile(this.resourceName));
-        for (String resource : ressources) {
+        List<String> resources = new ArrayList<>(withProfile(this.resourceName));
+        for (String resource : resources) {
             localConfig = localConfig.withFallback(ConfigFactory.parseResourcesAnySyntax(resource, this.options));
         }
-        this.log.debug("Initalize beans");
-        extracted(localConfig.root().entrySet());
-        this.log.debug("Beans are initalzed");
+        this.log.debug("Initialize beans");
+        registerBeans(localConfig);
+        this.log.debug("Beans are initialized");
         if (!this.proxyBeanName.isEmpty()) {
-            for (String resource : ressources) {
+            for (String resource : resources) {
                 this.watcher.add(new WatchResource(this).watch(resource));
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void extracted(Set<Entry<String, ConfigValue>> entrySet) {
-        for (Entry<String, ConfigValue> entry : entrySet) {
-            BeanFactory beanBuilder = new BeanFactory(this, this.context).withConfig(entry);
-            if (beanBuilder.isValid()) {
-                buildBeans(beanBuilder);
-            } else if (entry.getValue() instanceof Map) {
-                extracted(((Map<String, ConfigValue>) entry.getValue()).entrySet());
-            }
+    private void registerBeans(Config config) {
+        for (Entry<String, BeanDefinition> entry : beanDefinitions.entrySet()) {
+            registerBean(new BeanFactory(this.context)
+                    .withConfig(config)
+                    .withBeanDefinitions(beanDefinitions)
+                    .withPath(entry.getKey())
+                    .withBeanDefinition(entry.getValue()));
         }
     }
 
@@ -251,9 +222,9 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
         this.proxyBeanName.clear();
     }
 
-    private String buildBeans(BeanFactory beanBuilder) {
+    private String registerBean(BeanFactory beanBuilder) {
         String beanId = beanBuilder.registerBean();
-        if (beanBuilder.isProxy()) {
+        if (beanBuilder.isReloading()) {
             this.proxyBeanName.add(beanId);
         }
         this.beanName.add(beanId);
@@ -261,35 +232,25 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
     }
 
     private List<String> withProfile(String name) {
-        List<String> ressourcesName = new ArrayList<>();
+        List<String> resourcesName = new ArrayList<>();
         if (this.withProfiles) {
             String[] profiles = this.context.getEnvironment().getActiveProfiles();
             for (String profile : profiles) {
-                String nameWithProfile = name;
-                int idx = name.lastIndexOf(".");
-                if (idx > 0) {
-                    nameWithProfile = nameWithProfile.subSequence(0, idx) + "-" + profile + name.substring(idx);
-                } else {
-                    nameWithProfile = nameWithProfile + "-" + profile;
-                }
-                ressourcesName.add(nameWithProfile);
+                resourcesName.add(buildNameWithProfile(name, profile));
             }
         }
-        ressourcesName.addAll(getDefinition(name));
-        return ressourcesName;
+        resourcesName.add(name);
+        return resourcesName;
     }
 
-    private List<String> getDefinition(String name) {
-        List<String> ressourcesName = new ArrayList<>();
-        if (this.withDefinition) {
-            int idx = name.lastIndexOf(".");
-            if (idx > 0) {
-                ressourcesName.add(name.subSequence(0, idx) + ".def" + name.substring(idx));
-            } else {
-                ressourcesName.add(name + ".def");
-            }
+    private String buildNameWithProfile(String name, String profile) {
+        String nameWithProfile = name;
+        int idx = name.lastIndexOf(".");
+        if (idx > 0) {
+            nameWithProfile = nameWithProfile.subSequence(0, idx) + PROFILE_SEPARATOR + profile + name.substring(idx);
+        } else {
+            nameWithProfile = nameWithProfile + PROFILE_SEPARATOR + profile;
         }
-        ressourcesName.add(name);
-        return ressourcesName;
+        return nameWithProfile;
     }
 }

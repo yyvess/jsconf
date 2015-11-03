@@ -1,4 +1,23 @@
+/**
+ * Copyright 2015 Yves Galante
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jsconf.core.impl;
+
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.jmx.access.InvocationFailureException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -9,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.springframework.jmx.access.InvocationFailureException;
+import static java.lang.String.format;
+import static org.jsconf.core.impl.BeanValidator.beanValidation;
 
 public class VirtualBean implements InvocationHandler {
 
@@ -26,6 +46,17 @@ public class VirtualBean implements InvocationHandler {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T factory(Class<T> beanInterface, Map<String, Object> values) throws BeanCreationException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        List<Class<?>> asList = new ArrayList<>();
+        asList.add(beanInterface);
+        Class<?>[] interfaces = asList.toArray(new Class<?>[asList.size()]);
+        T bean = (T) Proxy.newProxyInstance(cl, interfaces, new VirtualBean(values));
+        beanValidation(bean, beanInterface);
+        return bean;
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
@@ -39,7 +70,7 @@ public class VirtualBean implements InvocationHandler {
         } else if (methodName.startsWith(EQUALS_METHOD) && nbArgs == 1) {
             return equals(args[0]);
         }
-        throw new InvocationFailureException(String.format("Incorect method name %s:%s", methodName, nbArgs));
+        throw new InvocationFailureException(format("Incorrect method name %s:%s", methodName, nbArgs));
     }
 
     private Object magicGet(String methodName) {
@@ -84,14 +115,5 @@ public class VirtualBean implements InvocationHandler {
     public int hashCode() {
         final int prime = 47;
         return prime + this.values.hashCode();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T factory(Class<T> beanInterface, Map<String, Object> values) {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        List<Class<?>> asList = new ArrayList<>();
-        asList.add(beanInterface);
-        Class<?>[] interfaces = asList.toArray(new Class<?>[asList.size()]);
-        return (T) Proxy.newProxyInstance(cl, interfaces, new VirtualBean(values));
     }
 }
