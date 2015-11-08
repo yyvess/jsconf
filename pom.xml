@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.jmob</groupId>
     <artifactId>jsconf</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1-SHAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>JSON Spring Configuration</name>
