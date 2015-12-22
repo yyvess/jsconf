@@ -146,6 +146,3 @@ public class Service {
 The license is Apache 2.0, see LICENSE file.
 
 Copyright (c) 2013-2015, Yves Galante
-
-####Feedback 
-We welcome your feedback jsconf@jmob.net
