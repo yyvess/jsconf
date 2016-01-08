@@ -1,6 +1,6 @@
 Spring configuration module provides JSON & HOCON support, build on the top of Typesafe config
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.jmob/jsconf/badge.svg)]
+![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.jmob/jsconf/badge.svg)
 
 JSConf
 ======
