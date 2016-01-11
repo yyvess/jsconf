@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
 // Test required to have put ${java.io.tmpdir} on ClassPath
@@ -72,8 +73,9 @@ public class RealReloadingTest {
     private void write(String value) throws IOException, InterruptedException {
         try (FileWriter fw = new FileWriter(new File(tempFile.toUri()))) {
             fw.append("simpleConf : {  url : \"").append(value).append("\" }");
+            fw.flush();
         }
-        Thread.sleep(1000);
+        sleep(5000);
     }
 
     @Configuration
