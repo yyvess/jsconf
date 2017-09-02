@@ -16,26 +16,7 @@
 
 package net.jmob.jsconf.core;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigParseOptions;
-import com.typesafe.config.ConfigSyntax;
-import net.jmob.jsconf.core.impl.BeanDefinition;
-import net.jmob.jsconf.core.impl.BeanFactory;
-import net.jmob.jsconf.core.impl.ProxyPostProcessor;
-import net.jmob.jsconf.core.service.ClassPathScanningCandidate;
-import net.jmob.jsconf.core.service.WatchResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
+import static java.lang.String.format;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +26,30 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static java.lang.String.format;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigParseOptions;
+import com.typesafe.config.ConfigSyntax;
+
+import net.jmob.jsconf.core.impl.BeanDefinition;
+import net.jmob.jsconf.core.impl.BeanFactory;
+import net.jmob.jsconf.core.impl.ProxyPostProcessor;
+import net.jmob.jsconf.core.service.ClassPathScanningCandidate;
+import net.jmob.jsconf.core.service.WatchResource;
 
 public class ConfigurationFactory implements ApplicationContextAware, BeanFactoryPostProcessor, BeanPostProcessor {
 
@@ -61,7 +65,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
     private String resourceName;
     private boolean withProfiles = false;
 
-    private GenericApplicationContext context;
+    private ApplicationContext context;
     private ProxyPostProcessor proxyPostProcessor;
     private ConfigParseOptions options = ConfigParseOptions.defaults().setAllowMissing(false);
 
@@ -179,7 +183,7 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = (GenericApplicationContext) applicationContext;
+        this.context = applicationContext;
         this.proxyPostProcessor = new ProxyPostProcessor(applicationContext);
     }
 
@@ -214,8 +218,10 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
         for (WatchResource watch : this.watcher) {
             watch.stop();
         }
+        AutowireCapableBeanFactory factory = context.getAutowireCapableBeanFactory();
+        BeanDefinitionRegistry registry = (BeanDefinitionRegistry) factory;
         for (String name : this.beanName) {
-            this.context.removeBeanDefinition(name);
+            registry.removeBeanDefinition(name);
         }
         this.watcher.clear();
         this.beanName.clear();
