@@ -16,14 +16,8 @@
 
 package net.jmob.jsconf.core.impl;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
-import com.typesafe.config.ConfigValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.context.support.GenericApplicationContext;
+import static java.lang.String.format;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,20 +25,30 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static java.lang.String.format;
-import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ApplicationContext;
+
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigValue;
 
 public class BeanFactory {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final GenericApplicationContext context;
+    private final ApplicationContext context;
 
     private BeanDefinition beanDefinition;
     private Config config;
     private String path;
     private Map<String, BeanDefinition> beanDefinitions;
 
-    public BeanFactory(GenericApplicationContext context) {
+    public BeanFactory(ApplicationContext context) {
         this.context = context;
     }
 
@@ -82,7 +86,9 @@ public class BeanFactory {
             beanDefinition = buildBeanFromClass();
         }
         this.log.debug("Register bean id : {}", beanId);
-        this.context.registerBeanDefinition(beanId, beanDefinition.getBeanDefinition());
+        AutowireCapableBeanFactory factory = context.getAutowireCapableBeanFactory();
+        BeanDefinitionRegistry registry = (BeanDefinitionRegistry) factory;
+        registry.registerBeanDefinition(beanId, beanDefinition.getBeanDefinition());
         return beanId;
     }
 
