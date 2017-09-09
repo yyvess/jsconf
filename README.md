@@ -22,7 +22,7 @@ You can find published releases (compiled for Java 7 and above) on Maven Central
 		<dependency>
 			<groupId>net.jmob</groupId>
 			<artifactId>jsconf</artifactId>
-			<version>1.3.0</version>
+			<version>1.3.1</version>
 		</dependency>
 
 Spring context is required, it's not provided by this library
