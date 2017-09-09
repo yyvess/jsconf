@@ -16,16 +16,15 @@
 
 package net.jmob.jsconf.core;
 
-import static java.lang.String.format;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigParseOptions;
+import com.typesafe.config.ConfigSyntax;
+import net.jmob.jsconf.core.impl.BeanDefinition;
+import net.jmob.jsconf.core.impl.BeanFactory;
+import net.jmob.jsconf.core.impl.ProxyPostProcessor;
+import net.jmob.jsconf.core.service.ClassPathScanningCandidate;
+import net.jmob.jsconf.core.service.WatchResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -37,19 +36,12 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigParseOptions;
-import com.typesafe.config.ConfigSyntax;
+import java.util.*;
+import java.util.Map.Entry;
 
-import net.jmob.jsconf.core.impl.BeanDefinition;
-import net.jmob.jsconf.core.impl.BeanFactory;
-import net.jmob.jsconf.core.impl.ProxyPostProcessor;
-import net.jmob.jsconf.core.service.ClassPathScanningCandidate;
-import net.jmob.jsconf.core.service.WatchResource;
+import static java.lang.String.format;
 
 public class ConfigurationFactory implements ApplicationContextAware, BeanFactoryPostProcessor, BeanPostProcessor {
 
@@ -228,13 +220,12 @@ public class ConfigurationFactory implements ApplicationContextAware, BeanFactor
         this.proxyBeanName.clear();
     }
 
-    private String registerBean(BeanFactory beanBuilder) {
+    private void registerBean(BeanFactory beanBuilder) {
         String beanId = beanBuilder.registerBean();
         if (beanBuilder.isReloading()) {
             this.proxyBeanName.add(beanId);
         }
         this.beanName.add(beanId);
-        return beanId;
     }
 
     private List<String> withProfile(String name) {

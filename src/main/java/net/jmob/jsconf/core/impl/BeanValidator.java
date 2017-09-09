@@ -38,9 +38,9 @@ class BeanValidator {
         ValidatorFactory f = null;
         try {
             f = Validation.buildDefaultValidatorFactory();
-            log.debug("Vadliation factory builded");
+            log.debug("Validation factory builded");
         } catch (ValidationException e) {
-            log.debug("No vadliation factory found in classpath");
+            log.debug("No validation factory found in classpath");
         } finally {
             factory = f;
         }
