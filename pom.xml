@@ -30,7 +30,7 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-version>3.2.4.RELEASE</spring-version>
+        <spring-version>5.2.0.RELEASE</spring-version>
         <junit-version>4.11</junit-version>
         <typesafe-version>1.2.1</typesafe-version>
         <logback-version>1.1.2</logback-version>
