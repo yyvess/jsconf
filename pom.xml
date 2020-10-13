@@ -31,7 +31,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-version>3.2.4.RELEASE</spring-version>
-        <junit-version>4.11</junit-version>
+        <junit-version>4.13.1</junit-version>
         <typesafe-version>1.2.1</typesafe-version>
         <logback-version>1.1.2</logback-version>
         <dhcp.version>1.4</dhcp.version>
