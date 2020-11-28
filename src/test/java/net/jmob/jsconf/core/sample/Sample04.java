@@ -17,22 +17,23 @@
 package net.jmob.jsconf.core.sample;
 
 import net.jmob.jsconf.core.ConfigFormat;
-import org.apache.commons.dbcp.BasicDataSource;
 import net.jmob.jsconf.core.ConfigurationFactory;
 import net.jmob.jsconf.core.sample.bean.Sequence;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample04 {
 
@@ -41,7 +42,7 @@ public class Sample04 {
 
     @Test
     public void test() {
-        Assert.assertNotNull(this.sequence);
+        assertNotNull(this.sequence);
         assertEquals("SEQ_NAME", this.sequence.getName());
         assertEquals("org.apache.commons.dbcp.BasicDataSource", this.sequence.getDataSource()
                 .getClass().getName());

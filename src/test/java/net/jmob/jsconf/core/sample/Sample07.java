@@ -18,19 +18,22 @@ package net.jmob.jsconf.core.sample;
 
 import net.jmob.jsconf.core.ConfigurationFactory;
 import net.jmob.jsconf.core.sample.bean.ConfigBean;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 @ActiveProfiles("PROD")
-@RunWith(SpringJUnit4ClassRunner.class)
+
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class Sample07 {
 
@@ -42,7 +45,7 @@ public class Sample07 {
 
     @Test
     public void test() {
-        Assert.assertEquals("Tac", this.conf.getUrl());
+        assertEquals("Tac", this.conf.getUrl());
     }
 
     @Configuration

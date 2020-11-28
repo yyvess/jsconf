@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Yves Galante
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,11 +16,11 @@
 
 package net.jmob.jsconf.core.test;
 
-import net.jmob.jsconf.core.test.bean.ConfigByInterface;
 import net.jmob.jsconf.core.ConfigurationFactory;
 import net.jmob.jsconf.core.impl.VirtualBean;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import net.jmob.jsconf.core.test.bean.ConfigByInterface;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,14 +29,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jmx.access.InvocationFailureException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class VirtualBeanTest {
 
@@ -84,9 +85,9 @@ public class VirtualBeanTest {
         assertEquals("xxx", this.conf3.getX());
     }
 
-    @Test(expected = InvocationFailureException.class)
+    @Test
     public void testSet() {
-        this.conf3.setX("yyy");
+        assertThrows(InvocationFailureException.class, () -> this.conf3.setX("yyy"));
     }
 
     @Test
@@ -95,10 +96,11 @@ public class VirtualBeanTest {
                 .getBean("simpleConf");
     }
 
-    @Test(expected = BeanCreationException.class)
+    @Test
     public void validationFailed() {
-        new AnnotationConfigApplicationContext(ContextConfigurationValidationFailed.class)
-                .getBean("simpleConf");
+        assertThrows(BeanCreationException.class, () ->
+                new AnnotationConfigApplicationContext(ContextConfigurationValidationFailed.class)
+                        .getBean("simpleConf"));
     }
 
     @Configuration

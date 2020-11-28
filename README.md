@@ -2,6 +2,7 @@ Spring configuration module provides JSON & HOCON support, build on the top of T
 
 ![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.jmob/jsconf/badge.svg)
 [![Build Status](https://travis-ci.org/yyvess/jsconf.svg?branch=master)](https://travis-ci.org/yyvess/jsconf)
+[![Sonar Status](https://sonarcloud.io/api/project_badges/measure?project=net.jmob%3Aguice.conf&metric=alert_status)](https://sonarcloud.io/dashboard?id=net.jmob%3Aguice.conf)  [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=net.jmob%3Aguice.conf&metric=coverage)](https://sonarcloud.io/dashboard?id=net.jmob%3Aguice.conf)
 
 JSConf
 ======

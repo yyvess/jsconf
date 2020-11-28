@@ -2,15 +2,15 @@ package net.jmob.jsconf.core.test;
 
 import net.jmob.jsconf.core.ConfigurationFactory;
 import net.jmob.jsconf.core.sample.bean.ConfigBean;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.io.File;
@@ -21,10 +21,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.Thread.sleep;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 // Test required to have put ${java.io.tmpdir} on ClassPath
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class RealReloadingTest {
 
@@ -37,13 +38,13 @@ public class RealReloadingTest {
     @Autowired
     private ConfigBean conf;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws IOException {
         tempDirectory = Files.createTempDirectory("jsconf-" .concat(Long.toString(System.nanoTime())));
         tempFile = Files.createFile(Paths.get(tempDirectory.toString(), "app.conf"));
     }
 
-    @AfterClass
+    @AfterAll
     public static void clean() throws IOException {
         Files.deleteIfExists(tempFile);
         Files.deleteIfExists(tempDirectory);
@@ -75,7 +76,7 @@ public class RealReloadingTest {
             fw.append("simpleConf : {  url : \"").append(value).append("\" }");
             fw.flush();
         }
-        sleep(5000);
+        sleep(10000);
     }
 
     @Configuration

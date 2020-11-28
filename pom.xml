@@ -6,6 +6,10 @@
     <version>${revision}${changelist}</version>
     <packaging>jar</packaging>
 
+    <prerequisites>
+        <maven>3.6.0</maven>
+    </prerequisites>
+
     <name>JSON Spring Configuration</name>
     <description>
         Spring configuration module provides JSON and HOCON support
@@ -32,9 +36,9 @@
         <revision>0.0.0</revision>
         <changelist>-SNAPSHOT</changelist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-version>3.2.4.RELEASE</spring-version>
-        <junit-version>4.11</junit-version>
-        <typesafe-version>1.2.1</typesafe-version>
+        <spring-version>5.3.1</spring-version>
+        <junit-version>5.7.0</junit-version>
+        <typesafe-version>1.4.1</typesafe-version>
         <logback-version>1.1.2</logback-version>
         <dhcp.version>1.4</dhcp.version>
     </properties>
@@ -74,8 +78,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
             <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
@@ -106,7 +110,7 @@
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.el</artifactId>
-            <version>2.2.4</version>
+            <version>2.2.6</version>
             <scope>test</scope>
         </dependency>
 
@@ -168,7 +172,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>flatten-maven-plugin</artifactId>
-                        <version>1.1.0</version>
+                        <version>1.2.5</version>
                         <configuration>
                             <updatePomFile>true</updatePomFile>
                             <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -199,16 +203,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.7.0</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -221,7 +225,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.10</version>
+                <version>2.20</version>
                 <configuration>
                     <parallel>classes</parallel>
                     <includes>

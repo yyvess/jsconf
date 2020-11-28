@@ -16,37 +16,41 @@
 
 package net.jmob.jsconf.core.test;
 
-import net.jmob.jsconf.core.test.bean.MyConfig;
 import net.jmob.jsconf.core.ConfigurationFactory;
 import net.jmob.jsconf.core.test.bean.ConfigAnnotated;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import net.jmob.jsconf.core.test.bean.MyConfig;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class AnnotationTest {
 
     @Autowired
     private ConfigAnnotated conf;
 
-    @Test(expected = BeanInitializationException.class)
+    @Test
     public void testMissingAnnotation() {
+        assertThrows(BeanInitializationException.class, () ->
         new ConfigurationFactory()
                 .withResourceName("net/jmob/jsconf/core/test/app_annotated")
-                .withBean(MyConfig.class);
+                .withBean(MyConfig.class));
     }
 
     @Test
     public void testAnnotated() {
-        Assert.assertEquals("Test", this.conf.getValue());
+        assertEquals("Test", this.conf.getValue());
     }
 
     @Configuration
