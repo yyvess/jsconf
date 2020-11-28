@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Yves Galante
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,22 +20,23 @@ import net.jmob.jsconf.core.ConfigurationFactory;
 import net.jmob.jsconf.core.test.bean.MyConfig;
 import net.jmob.jsconf.core.test.bean.ServiceSpringBean;
 import net.jmob.jsconf.core.test.bean.SimpleBeanSpring;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
-public class ConfigTest {
+class ConfigTest {
 
     @Autowired()
     @Qualifier(value = "test_2")
@@ -45,7 +46,7 @@ public class ConfigTest {
     private ServiceSpringBean service;
 
     @Test
-    public void testServiceSpringBean() {
+    void testServiceSpringBean() {
         MyConfig localConfig = this.service.getConfig();
         assertNotNull(localConfig.getChild());
         assertEquals("Hello World, I a spring bean!", this.service.getValue());
@@ -61,7 +62,7 @@ public class ConfigTest {
     }
 
     @Test
-    public void testSimpleBeanSpring() {
+    void testSimpleBeanSpring() {
         assertEquals("I am a child of springOnConf!", this.config.getValue());
         assertEquals("Hello from child", this.config.getChildRef().getValue());
         assertEquals(this.service.getConfig().getChild(), this.config.getChildRef());
@@ -69,7 +70,7 @@ public class ConfigTest {
 
     @Configuration
     @ComponentScan(basePackageClasses = {ServiceSpringBean.class})
-    static class ContextConfiguration {
+    public static class ContextConfiguration {
         @Bean
         public static ConfigurationFactory configurationFactory() {
             return new ConfigurationFactory()
