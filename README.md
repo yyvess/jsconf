@@ -1,7 +1,9 @@
 Spring configuration module provides JSON & HOCON support, build on the top of Typesafe config
 
 ![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.jmob/jsconf/badge.svg)
-[![Build Status](https://travis-ci.org/yyvess/jsconf.svg?branch=master)](https://travis-ci.org/yyvess/jsconf)
+[![Sonar Status](https://sonarcloud.io/api/project_badges/measure?project=net.jmob%3Ajsconf&metric=alert_status)](https://sonarcloud.io/dashboard?id=net.jmob%3Ajsconf)  [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=net.jmob%3Ajsconf&metric=coverage)](https://sonarcloud.io/dashboard?id=net.jmob%3Ajsconf)
+
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 JSConf
 ======
@@ -22,7 +24,7 @@ You can find published releases (compiled for Java 7 and above) on Maven Central
 		<dependency>
 			<groupId>net.jmob</groupId>
 			<artifactId>jsconf</artifactId>
-			<version>1.3.1</version>
+			<version>1.4.0</version>
 		</dependency>
 
 Spring context is required, it's not provided by this library
