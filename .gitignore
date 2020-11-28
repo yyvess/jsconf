@@ -4,3 +4,4 @@
 /.project
 /target
 jsconf.iml
+.flattened-pom.xml
