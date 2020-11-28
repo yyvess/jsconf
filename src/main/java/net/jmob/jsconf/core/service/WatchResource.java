@@ -7,13 +7,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
+import java.nio.file.*;
 import java.nio.file.WatchEvent.Kind;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -77,7 +72,7 @@ public class WatchResource {
         public void run() {
             try (WatchService watchService = this.path.getFileSystem().newWatchService()) {
                 this.path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
-                this.log.debug("Watch configuration change on {}", this.path.toString());
+                this.log.debug("Watch configuration change on {}", this.path);
                 WatchKey watchKey;
                 do {
                     watchKey = watchService.take();
@@ -93,9 +88,11 @@ public class WatchResource {
                 } while (watchKey.reset());
                 this.log.info("Configuration watching service stopped");
                 watchKey.cancel();
-                watchService.close();
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 this.log.error("Configuration watching service stopped", e);
+            } catch (InterruptedException e) {
+                this.log.error("Configuration watching service stopped", e);
+                Thread.currentThread().interrupt();
             }
         }
     }
