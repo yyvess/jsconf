@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Yves Galante
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,15 +16,9 @@
 
 package net.jmob.jsconf.core.impl;
 
-import static java.lang.String.format;
-import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
@@ -33,10 +27,14 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
-import com.typesafe.config.ConfigValue;
+import static java.lang.String.format;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class BeanFactory {
 
@@ -77,25 +75,25 @@ public class BeanFactory {
     }
 
     public String registerBean() {
-        final BeanDefinitionBuilder beanDefinition;
+        final BeanDefinitionBuilder bd;
         final String beanId = this.beanDefinition.getId();
         this.log.debug("Initialize bean id : {}", beanId);
         if (this.beanDefinition.isAInterface()) {
-            beanDefinition = buildBeanFromInterface();
+            bd = buildBeanFromInterface();
         } else {
-            beanDefinition = buildBeanFromClass();
+            bd = buildBeanFromClass();
         }
         this.log.debug("Register bean id : {}", beanId);
         AutowireCapableBeanFactory factory = context.getAutowireCapableBeanFactory();
         BeanDefinitionRegistry registry = (BeanDefinitionRegistry) factory;
-        registry.registerBeanDefinition(beanId, beanDefinition.getBeanDefinition());
+        registry.registerBeanDefinition(beanId, bd.getBeanDefinition());
         return beanId;
     }
 
     private BeanDefinitionBuilder buildBeanFromClass() {
         try {
-            BeanDefinitionBuilder beanDefinition = genericBeanDefinition(Class.forName(this.beanDefinition.getClassName()));
-            return addPropertiesValue(beanDefinition, buildProperties(beanDefinition));
+            BeanDefinitionBuilder bd = genericBeanDefinition(Class.forName(this.beanDefinition.getClassName()));
+            return addPropertiesValue(bd, buildProperties(bd));
         } catch (ClassNotFoundException e) {
             throw new BeanCreationException(format("Class not found : %s", this.beanDefinition.getClassName()), e);
         }
