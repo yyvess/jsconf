@@ -39,7 +39,7 @@
         <spring-version>5.3.1</spring-version>
         <junit-version>5.7.0</junit-version>
         <typesafe-version>1.4.1</typesafe-version>
-        <logback-version>1.1.2</logback-version>
+        <logback-version>1.2.0</logback-version>
         <dhcp.version>1.4</dhcp.version>
     </properties>
 
