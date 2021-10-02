@@ -36,12 +36,12 @@
         <revision>0.0.0</revision>
         <changelist>-SNAPSHOT</changelist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-version>5.3.1</spring-version>
-        <junit-version>5.7.0</junit-version>
+        <spring-version>5.3.10</spring-version>
+        <junit-version>5.8.1</junit-version>
         <typesafe-version>1.4.1</typesafe-version>
-        <logback-version>1.1.2</logback-version>
+        <logback-version>1.2.6</logback-version>
         <dhcp.version>1.4</dhcp.version>
-    </properties>
+     </properties>
 
     <dependencies>
         <dependency>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator-cdi</artifactId>
-            <version>5.2.2.Final</version>
+            <version>5.4.3.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -203,7 +203,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -240,7 +240,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>3.3.1</version>
                 <configuration>
                     <quiet>true</quiet>
                     <nonavbar>true</nonavbar>
@@ -260,7 +260,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>

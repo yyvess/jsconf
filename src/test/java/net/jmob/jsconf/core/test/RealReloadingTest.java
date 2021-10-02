@@ -52,8 +52,8 @@ class RealReloadingTest {
         Files.deleteIfExists(tempDirectory);
     }
 
+    // Test required to have put ${java.io.tmpdir} on ClassPath
     @Test
-        // Test required to have put ${java.io.tmpdir} on ClassPath
     void testRealReloading() throws IOException, InterruptedException {
         final Object ref = this.conf;
         assertNotNull(this.conf);
