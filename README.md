@@ -17,14 +17,14 @@ Configure easily your applications with format JSON instead of flat properties f
 - Hot reloading
 - Spring profile
 
-##Binary Releases
+## Binary Releases
 
 You can find published releases (compiled for Java 7 and above) on Maven Central.
 
 		<dependency>
 			<groupId>net.jmob</groupId>
 			<artifactId>jsconf</artifactId>
-			<version>1.4.0</version>
+			<version>1.4.1</version>
 		</dependency>
 
 Spring context is required, it's not provided by this library
@@ -52,7 +52,7 @@ Link for direct download if you don't use a dependency manager:
  
 ## Library usage
 
-####Sample usage with JavaConfig
+#### Sample usage with JavaConfig
 
 File `app.conf` :
 
@@ -87,7 +87,7 @@ static class ContextConfiguration {
 }
 ```
 
-####Usage of @ConfigurationProperties
+#### Usage of @ConfigurationProperties
 File `app.conf` :
 
 ```javascript
