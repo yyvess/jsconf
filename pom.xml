@@ -36,7 +36,7 @@
         <revision>0.0.0</revision>
         <changelist>-SNAPSHOT</changelist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-version>5.3.10</spring-version>
+        <spring-version>5.3.26</spring-version>
         <junit-version>5.8.1</junit-version>
         <typesafe-version>1.4.1</typesafe-version>
         <logback-version>1.2.6</logback-version>
